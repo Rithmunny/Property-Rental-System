@@ -1,0 +1,28 @@
+import { Outlet } from 'react-router-dom'
+import { Building2, FileText, CreditCard, Users, LayoutDashboard, Plus, Inbox } from 'lucide-react'
+import DashboardShell from '../../../components/dashboard/DashboardShell'
+
+const MENU_ITEMS = [
+  { to: '/dashboard/landlord', label: 'Overview', icon: LayoutDashboard, end: true },
+  { to: '/dashboard/landlord/listings', label: 'Listings', icon: Building2 },
+  { to: '/dashboard/landlord/requests', label: 'Requests', icon: Inbox },
+  { to: '/dashboard/landlord/contracts', label: 'Contracts', icon: FileText },
+  { to: '/dashboard/landlord/payments', label: 'Payments', icon: CreditCard },
+  { to: '/dashboard/landlord/tenants', label: 'Tenants', icon: Users },
+]
+
+const PROMO_CARD = {
+  title: 'List a New Property',
+  description: 'Reach more tenants by adding another rental to your portfolio.',
+  href: '/dashboard/landlord/listings',
+  cta: 'Add Listing',
+  icon: Plus,
+}
+
+export default function LandlordLayout() {
+  return (
+    <DashboardShell menuItems={MENU_ITEMS} promoCard={PROMO_CARD}>
+      <Outlet />
+    </DashboardShell>
+  )
+}
