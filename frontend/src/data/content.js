@@ -4,18 +4,22 @@ export const HERO_IMAGE =
 export const SHOWCASE = [
   {
     label: 'Modern House',
+    type: 'House',
     image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&auto=format&fit=crop',
   },
   {
     label: 'Luxury Condo',
+    type: 'Condo',
     image: 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&auto=format&fit=crop',
   },
   {
     label: 'Classic House',
+    type: 'House',
     image: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=400&auto=format&fit=crop',
   },
   {
     label: 'Cozy Studio',
+    type: 'Studio',
     image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&auto=format&fit=crop',
   },
 ]

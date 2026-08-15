@@ -1,6 +1,8 @@
+import { Link } from 'react-router-dom'
 import { useProperties } from '../../../context/PropertiesContext'
 import { useSaved } from '../../../context/SavedContext'
 import PropertyCard from '../../../components/common/PropertyCard'
+import SkeletonCard from '../../../components/common/SkeletonCard'
 import PageHeader from '../../../components/dashboard/PageHeader'
 
 export default function TenantSavedHomes() {
@@ -17,7 +19,11 @@ export default function TenantSavedHomes() {
       )}
 
       {loading ? (
-        <p className="mt-6 py-10 text-center text-sm text-gray-500">Loading saved homes…</p>
+        <div className="mt-6 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
       ) : (
         <div className="mt-6 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
           {savedProperties.map((p) => (
@@ -25,9 +31,15 @@ export default function TenantSavedHomes() {
           ))}
 
           {savedProperties.length === 0 && (
-            <p className="col-span-full py-10 text-center text-sm text-gray-500">
-              No saved homes yet. Browse listings to save your favorites.
-            </p>
+            <div className="col-span-full py-10 text-center">
+              <p className="text-sm text-gray-500">No saved homes yet.</p>
+              <Link
+                to="/listings"
+                className="mt-3 inline-block text-sm font-semibold text-forest hover:underline"
+              >
+                Browse listings
+              </Link>
+            </div>
           )}
         </div>
       )}

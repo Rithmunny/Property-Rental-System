@@ -59,6 +59,9 @@ export default function Login() {
             <option value="landlord">Landlord</option>
             <option value="admin">Admin</option>
           </select>
+          <span className="text-xs font-normal text-gray-500">
+            Demo tip: pick a role (Tenant, Landlord, or Admin) to open that dashboard in mock mode.
+          </span>
         </label>
 
         <button

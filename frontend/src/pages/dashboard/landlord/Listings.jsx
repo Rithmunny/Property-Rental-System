@@ -2,11 +2,10 @@ import { useState } from 'react'
 import { Plus, Pencil, Trash2, Check, X } from 'lucide-react'
 import { useAuth } from '../../../context/AuthContext'
 import { useProperties } from '../../../context/PropertiesContext'
+import { isLandlordListing } from '../../../utils/dashboard'
 import PageHeader from '../../../components/dashboard/PageHeader'
 import StatusPill from '../../../components/dashboard/StatusPill'
 import PropertyFormModal from '../../../components/dashboard/PropertyFormModal'
-
-const LANDLORD_PROPERTY_IDS = [1, 2, 3]
 
 export default function LandlordListings() {
   const { user } = useAuth()
@@ -15,7 +14,7 @@ export default function LandlordListings() {
   const [editingProperty, setEditingProperty] = useState(null)
   const [confirmDeleteId, setConfirmDeleteId] = useState(null)
 
-  const listings = properties.filter((p) => LANDLORD_PROPERTY_IDS.includes(p.id) || p.landlordOwned)
+  const listings = properties.filter((p) => isLandlordListing(p, user?.name))
 
   const openAddModal = () => {
     setEditingProperty(null)
@@ -115,9 +114,16 @@ export default function LandlordListings() {
         ))}
 
         {listings.length === 0 && (
-          <p className="col-span-full py-10 text-center text-sm text-gray-500">
-            No listings yet. Add your first property.
-          </p>
+          <div className="col-span-full py-10 text-center">
+            <p className="text-sm text-gray-500">No listings yet. Add your first property to start receiving requests.</p>
+            <button
+              type="button"
+              onClick={openAddModal}
+              className="mt-3 text-sm font-semibold text-forest hover:underline"
+            >
+              Add a listing
+            </button>
+          </div>
         )}
       </div>
 

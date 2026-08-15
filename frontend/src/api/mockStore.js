@@ -77,6 +77,23 @@ export function getTenantPayments() {
   })
 }
 
+export function setTenantPayments(data) {
+  write(STORAGE_KEYS.payments, data)
+}
+
+export function appendTenantPayment(entry) {
+  const data = getTenantPayments()
+  const payment = {
+    method: 'aba',
+    status: 'paid',
+    ...entry,
+    id: nextId(data.history || []),
+  }
+  const next = { ...data, history: [payment, ...(data.history || [])] }
+  setTenantPayments(next)
+  return next
+}
+
 export function getLandlordPayments() {
   return {
     reminders: PAYMENT_REMINDERS,
@@ -106,12 +123,25 @@ export function getUsers() {
   })
 }
 
+export function setUsers(users) {
+  write(STORAGE_KEYS.users, users)
+}
+
+export function updateLandlordStatus(id, status) {
+  const users = getUsers()
+  users.landlords = users.landlords.map((l) =>
+    l.id === Number(id) ? { ...l, status } : l,
+  )
+  setUsers(users)
+  return users.landlords.find((l) => l.id === Number(id))
+}
+
 export function registerUser(user) {
   const users = getUsers()
   const list = user.role === 'landlord' ? users.landlords : users.tenants
-  const nextId = list.length ? Math.max(...list.map((u) => u.id)) + 1 : 1
+  const id = list.length ? Math.max(...list.map((u) => u.id)) + 1 : 1
   const entry = {
-    id: nextId,
+    id,
     name: user.name,
     telegram: `@${user.email.split('@')[0]}`,
     status: 'active',
@@ -119,7 +149,7 @@ export function registerUser(user) {
   }
   if (user.role === 'landlord') users.landlords = [entry, ...users.landlords]
   else users.tenants = [entry, ...users.tenants]
-  write(STORAGE_KEYS.users, users)
+  setUsers(users)
 }
 
 export function nextId(items) {

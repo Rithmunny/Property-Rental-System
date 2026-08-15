@@ -1,8 +1,11 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useProperties } from '../../../context/PropertiesContext'
 import { useRequests } from '../../../context/RequestsContext'
+import { useToast } from '../../../context/ToastContext'
 import PageHeader from '../../../components/dashboard/PageHeader'
 import StatusPill from '../../../components/dashboard/StatusPill'
+import SkeletonRow from '../../../components/common/SkeletonRow'
 
 const REQUEST_STATUS = {
   pending: { label: 'Pending', tone: 'warning' },
@@ -13,12 +16,20 @@ const REQUEST_STATUS = {
 export default function LandlordRequests() {
   const { properties } = useProperties()
   const { inbox, loading, error, updateStatus } = useRequests()
+  const { showToast } = useToast()
   const [updatingId, setUpdatingId] = useState(null)
 
   const handleStatus = async (id, status) => {
     setUpdatingId(id)
     try {
       await updateStatus(id, status)
+      showToast(
+        status === 'accepted'
+          ? 'Request accepted — contract stub created'
+          : 'Request declined',
+      )
+    } catch (err) {
+      showToast(err.message || 'Could not update request')
     } finally {
       setUpdatingId(null)
     }
@@ -34,7 +45,11 @@ export default function LandlordRequests() {
 
       <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-2 sm:p-3">
         {loading ? (
-          <p className="py-6 text-center text-sm text-gray-500">Loading requests…</p>
+          <div>
+            {Array.from({ length: 3 }).map((_, i) => (
+              <SkeletonRow key={i} />
+            ))}
+          </div>
         ) : (
           <div className="flex flex-col divide-y divide-gray-100">
             {inbox.map((r) => {
@@ -51,18 +66,18 @@ export default function LandlordRequests() {
                   <div className="flex items-center gap-2">
                     <StatusPill label={status.label} tone={status.tone} />
                     {r.status === 'pending' && (
-                      <div className="ml-2 flex gap-2">
+                      <div className="ml-0 flex w-full gap-2 sm:ml-2 sm:w-auto">
                         <button
                           onClick={() => handleStatus(r.id, 'accepted')}
                           disabled={updatingId === r.id}
-                          className="rounded-full bg-forest px-3 py-1.5 text-xs font-semibold text-white hover:bg-forest-dark disabled:opacity-60"
+                          className="min-h-10 flex-1 rounded-full bg-forest px-4 py-2 text-xs font-semibold text-white hover:bg-forest-dark disabled:opacity-60 sm:flex-none sm:py-1.5"
                         >
                           Accept
                         </button>
                         <button
                           onClick={() => handleStatus(r.id, 'declined')}
                           disabled={updatingId === r.id}
-                          className="rounded-full border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+                          className="min-h-10 flex-1 rounded-full border border-gray-300 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-60 sm:flex-none sm:py-1.5"
                         >
                           Decline
                         </button>
@@ -74,9 +89,17 @@ export default function LandlordRequests() {
             })}
 
             {inbox.length === 0 && (
-              <p className="py-6 text-center text-sm text-gray-500">
-                No incoming requests yet.
-              </p>
+              <div className="px-3 py-10 text-center">
+                <p className="text-sm text-gray-500">
+                  No incoming requests yet. Keep your listings up to date so tenants can find you.
+                </p>
+                <Link
+                  to="/dashboard/landlord/listings"
+                  className="mt-3 inline-block text-sm font-semibold text-forest hover:underline"
+                >
+                  Manage listings
+                </Link>
+              </div>
             )}
           </div>
         )}

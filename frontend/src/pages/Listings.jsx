@@ -5,6 +5,7 @@ import { Search } from 'lucide-react'
 import { CITIES, PROPERTY_TYPES } from '../data/properties'
 import { useProperties } from '../context/PropertiesContext'
 import PropertyCard from '../components/common/PropertyCard'
+import SkeletonCard from '../components/common/SkeletonCard'
 
 const stagger = {
   hidden: {},
@@ -15,12 +16,17 @@ const fadeUp = {
   show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
 }
 
+function normalizeFilter(value) {
+  if (!value || value === 'Any') return 'All'
+  return value
+}
+
 export default function Listings() {
-  const { properties, loading, error } = useProperties()
+  const { properties, loading, error, refresh } = useProperties()
   const [searchParams] = useSearchParams()
   const [query, setQuery] = useState('')
-  const [city, setCity] = useState(searchParams.get('city') || 'All')
-  const [type, setType] = useState(searchParams.get('type') || 'All')
+  const [city, setCity] = useState(normalizeFilter(searchParams.get('city')))
+  const [type, setType] = useState(normalizeFilter(searchParams.get('type')))
   const [maxPrice, setMaxPrice] = useState(1000)
 
   const filtered = useMemo(() => {
@@ -35,28 +41,21 @@ export default function Listings() {
     })
   }, [properties, query, city, type, maxPrice])
 
-  if (loading) {
-    return (
-      <div className="mx-auto max-w-7xl px-4 py-16 text-center text-sm text-gray-500">
-        Loading listings…
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="mx-auto max-w-7xl px-4 py-16 text-center text-sm text-red-600">
-        {error}
-      </div>
-    )
+  const clearFilters = () => {
+    setQuery('')
+    setCity('All')
+    setType('All')
+    setMaxPrice(1000)
   }
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-10">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">All Stays</h1>
-          <p className="mt-1 text-sm text-gray-500">{filtered.length} properties found</p>
+          <h1 className="text-2xl font-semibold text-gray-900">Available Rentals</h1>
+          <p className="mt-1 text-sm text-gray-500">
+            {loading ? 'Loading…' : `${filtered.length} properties found`}
+          </p>
         </div>
 
         <div className="flex items-center rounded-full border border-gray-300 py-2 pl-4 pr-1.5 shadow-sm">
@@ -89,15 +88,39 @@ export default function Listings() {
         </label>
       </div>
 
-      {filtered.length === 0 ? (
-        <p className="mt-16 text-center text-gray-500">No properties match your filters.</p>
+      {error ? (
+        <div className="mt-16 text-center">
+          <p className="text-sm text-red-600">{error}</p>
+          <button
+            onClick={refresh}
+            className="mt-4 rounded-full bg-forest px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-forest-dark"
+          >
+            Try again
+          </button>
+        </div>
+      ) : loading ? (
+        <div className="mt-8 grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="mt-16 text-center">
+          <p className="text-gray-500">No properties match your filters.</p>
+          <button
+            onClick={clearFilters}
+            className="mt-4 rounded-full border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50"
+          >
+            Clear filters
+          </button>
+        </div>
       ) : (
         <motion.div
           key={`${city}-${type}-${query}-${maxPrice}`}
           initial="hidden"
           animate="show"
           variants={stagger}
-          className="mt-8 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+          className="mt-8 grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5"
         >
           {filtered.map((p) => (
             <motion.div key={p.id} variants={fadeUp}>

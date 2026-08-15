@@ -1,8 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import * as usersApi from '../../../api/users'
+import { useToast } from '../../../context/ToastContext'
 import PageHeader from '../../../components/dashboard/PageHeader'
 import StatusPill from '../../../components/dashboard/StatusPill'
 import TelegramIcon from '../../../components/dashboard/TelegramIcon'
+import SkeletonRow from '../../../components/common/SkeletonRow'
 
 const LANDLORD_STATUS = {
   active: { label: 'Active', tone: 'positive' },
@@ -11,17 +14,38 @@ const LANDLORD_STATUS = {
 }
 
 export default function AdminLandlords() {
+  const { showToast } = useToast()
   const [landlords, setLandlords] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [updatingId, setUpdatingId] = useState(null)
 
-  useEffect(() => {
-    usersApi
+  const refresh = useCallback(() => {
+    setLoading(true)
+    setError(null)
+    return usersApi
       .listLandlords()
       .then(setLandlords)
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false))
   }, [])
+
+  useEffect(() => {
+    refresh()
+  }, [refresh])
+
+  const handleStatus = async (id, status) => {
+    setUpdatingId(id)
+    try {
+      await usersApi.updateLandlordStatus(id, status)
+      showToast(status === 'active' ? 'Landlord approved' : 'Landlord suspended')
+      await refresh()
+    } catch (err) {
+      showToast(err.message || 'Could not update landlord')
+    } finally {
+      setUpdatingId(null)
+    }
+  }
 
   return (
     <div>
@@ -33,7 +57,11 @@ export default function AdminLandlords() {
 
       <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-2 sm:p-3">
         {loading ? (
-          <p className="py-6 text-center text-sm text-gray-500">Loading landlords…</p>
+          <div>
+            {Array.from({ length: 4 }).map((_, i) => (
+              <SkeletonRow key={i} />
+            ))}
+          </div>
         ) : (
           <div className="flex flex-col divide-y divide-gray-100">
             {landlords.map((l) => {
@@ -51,7 +79,7 @@ export default function AdminLandlords() {
                       </p>
                     </div>
                   </div>
-                  <div className="flex shrink-0 items-center gap-2">
+                  <div className="flex shrink-0 flex-wrap items-center gap-2">
                     <StatusPill label={status.label} tone={status.tone} />
                     <a
                       href={`https://t.me/${l.telegram.replace('@', '')}`}
@@ -62,13 +90,41 @@ export default function AdminLandlords() {
                     >
                       <TelegramIcon className="h-4 w-4" />
                     </a>
+                    {(l.status === 'pending' || l.status === 'suspended') && (
+                      <button
+                        type="button"
+                        disabled={updatingId === l.id}
+                        onClick={() => handleStatus(l.id, 'active')}
+                        className="min-h-9 rounded-full bg-forest px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-forest-dark disabled:opacity-60"
+                      >
+                        Approve
+                      </button>
+                    )}
+                    {l.status === 'active' && (
+                      <button
+                        type="button"
+                        disabled={updatingId === l.id}
+                        onClick={() => handleStatus(l.id, 'suspended')}
+                        className="min-h-9 rounded-full border border-gray-300 px-3.5 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+                      >
+                        Suspend
+                      </button>
+                    )}
                   </div>
                 </div>
               )
             })}
 
             {landlords.length === 0 && (
-              <p className="py-6 text-center text-sm text-gray-500">No landlords registered yet.</p>
+              <div className="px-3 py-10 text-center">
+                <p className="text-sm text-gray-500">No landlords registered yet.</p>
+                <Link
+                  to="/dashboard/admin"
+                  className="mt-3 inline-block text-sm font-semibold text-forest hover:underline"
+                >
+                  Back to overview
+                </Link>
+              </div>
             )}
           </div>
         )}

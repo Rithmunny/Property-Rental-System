@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import * as usersApi from '../../../api/users'
 import PageHeader from '../../../components/dashboard/PageHeader'
 import StatusPill from '../../../components/dashboard/StatusPill'
 import TelegramIcon from '../../../components/dashboard/TelegramIcon'
+import SkeletonRow from '../../../components/common/SkeletonRow'
 
 const TENANT_STATUS = {
   active: { label: 'Active', tone: 'positive' },
@@ -33,7 +35,11 @@ export default function AdminTenants() {
 
       <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-2 sm:p-3">
         {loading ? (
-          <p className="py-6 text-center text-sm text-gray-500">Loading tenants…</p>
+          <div>
+            {Array.from({ length: 4 }).map((_, i) => (
+              <SkeletonRow key={i} />
+            ))}
+          </div>
         ) : (
           <div className="flex flex-col divide-y divide-gray-100">
             {tenants.map((t) => {
@@ -66,7 +72,15 @@ export default function AdminTenants() {
             })}
 
             {tenants.length === 0 && (
-              <p className="py-6 text-center text-sm text-gray-500">No tenants registered yet.</p>
+              <div className="px-3 py-10 text-center">
+                <p className="text-sm text-gray-500">No tenants registered yet.</p>
+                <Link
+                  to="/dashboard/admin"
+                  className="mt-3 inline-block text-sm font-semibold text-forest hover:underline"
+                >
+                  Back to overview
+                </Link>
+              </div>
             )}
           </div>
         )}

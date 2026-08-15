@@ -3,7 +3,7 @@ import { Link, NavLink } from 'react-router-dom'
 import { Home as HomeIcon, Menu, X, Search, User } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 
-const TICKER_TEXT = 'SAVE UP TO 20% ON YOUR FIRST BOOKING'
+const TICKER_TEXT = 'Verified rental homes across Cambodia — find your next place today'
 
 const links = [
   { to: '/', label: 'Home' },
@@ -99,7 +99,7 @@ export default function Navbar() {
                   to="/register"
                   className="rounded-full bg-forest px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-forest-dark"
                 >
-                  Contact us
+                  Sign up
                 </Link>
               </>
             )}
@@ -145,7 +145,7 @@ export default function Navbar() {
                   Log in
                 </Link>
                 <Link to="/register" className="text-sm font-medium text-forest" onClick={() => setOpen(false)}>
-                  Contact us
+                  Sign up
                 </Link>
               </>
             )}

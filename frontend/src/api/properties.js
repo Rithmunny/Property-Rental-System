@@ -1,3 +1,4 @@
+// updateProperty already supports available toggle / soft fields via PUT body
 import { USE_MOCK } from './config'
 import { request } from './client'
 import { getProperties, setProperties, nextId } from './mockStore'

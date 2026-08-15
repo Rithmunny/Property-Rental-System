@@ -1,4 +1,23 @@
 import { motion } from 'framer-motion'
+import { Search, Send, LayoutDashboard } from 'lucide-react'
+
+const STEPS = [
+  {
+    icon: Search,
+    title: 'Browse listings',
+    description: 'Explore verified rental homes across Cambodia and filter by city, type, and budget.',
+  },
+  {
+    icon: Send,
+    title: 'Request to rent',
+    description: 'Found the right place? Send a rental request directly to the landlord from the listing page.',
+  },
+  {
+    icon: LayoutDashboard,
+    title: 'Manage in dashboard',
+    description: 'Track your requests, saved homes, payments, and lease details all in one place.',
+  },
+]
 
 export default function About() {
   return (
@@ -10,16 +29,28 @@ export default function About() {
     >
       <h1 className="text-2xl font-bold text-gray-900">About PRS</h1>
       <p className="mt-4 text-sm leading-relaxed text-gray-600">
-        The Property Rental System (PRS) connects tenants with landlords, making it simple to
-        browse verified listings, request to rent a property, and manage bookings — all in one
-        place.
+        The Property Rental System (PRS) connects tenants with landlords across Cambodia, making
+        it simple to browse verified listings, request to rent a property, and manage your rental
+        — all in one place.
       </p>
       <p className="mt-4 text-sm leading-relaxed text-gray-600">
-        This frontend build is ready for backend integration. All data flows through a unified API
-        layer (`src/api/`) that currently uses mock adapters. Your backend teammate can implement
-        the REST endpoints defined in <code className="text-forest">API_CONTRACT.md</code> and
-        switch <code className="text-forest">VITE_USE_MOCK=false</code> to connect the live server.
+        Whether you're looking for your next home or managing properties as a landlord, PRS gives
+        you the tools to search, save favorites, send rental requests, and manage payments
+        from a single dashboard.
       </p>
+
+      <h2 className="mt-10 text-lg font-semibold text-gray-900">How it works</h2>
+      <div className="mt-5 grid gap-5 sm:grid-cols-3">
+        {STEPS.map((step) => (
+          <div key={step.title} className="rounded-2xl border border-gray-200 bg-white p-5">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-sage/60 text-forest">
+              <step.icon className="h-5 w-5" />
+            </span>
+            <h3 className="mt-3 font-semibold text-gray-900">{step.title}</h3>
+            <p className="mt-1 text-sm leading-relaxed text-gray-600">{step.description}</p>
+          </div>
+        ))}
+      </div>
     </motion.div>
   )
 }

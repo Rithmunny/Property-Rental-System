@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { MapPin } from 'lucide-react'
 import { useProperties } from '../../../context/PropertiesContext'
 import * as rentalsApi from '../../../api/rentals'
 import PageHeader from '../../../components/dashboard/PageHeader'
 import StatusPill from '../../../components/dashboard/StatusPill'
 import TelegramIcon from '../../../components/dashboard/TelegramIcon'
+import SkeletonRow from '../../../components/common/SkeletonRow'
 
 export default function TenantMyRental() {
   const { properties } = useProperties()
@@ -24,7 +26,10 @@ export default function TenantMyRental() {
     return (
       <div>
         <PageHeader title="My Rental" subtitle="Your current lease details" />
-        <p className="mt-6 text-center text-sm text-gray-500">Loading rental details…</p>
+        <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-2 sm:p-3">
+          <SkeletonRow />
+          <SkeletonRow />
+        </div>
       </div>
     )
   }
@@ -33,9 +38,19 @@ export default function TenantMyRental() {
     return (
       <div>
         <PageHeader title="My Rental" subtitle="Your current lease details" />
-        <p className="mt-6 text-center text-sm text-gray-500">
-          {error || 'No active rental on file.'}
-        </p>
+        <div className="mt-10 text-center">
+          <p className="text-sm text-gray-500">
+            {error || 'No active rental on file yet.'}
+          </p>
+          {!error && (
+            <Link
+              to="/listings"
+              className="mt-3 inline-block text-sm font-semibold text-forest hover:underline"
+            >
+              Browse listings
+            </Link>
+          )}
+        </div>
       </div>
     )
   }

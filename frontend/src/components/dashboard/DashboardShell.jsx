@@ -11,12 +11,22 @@ import {
   Home as HomeIcon,
 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
+import { useToast } from '../../context/ToastContext'
 
-export default function DashboardShell({ title, subtitle, actions, menuItems, promoCard, children }) {
+const ROLE_LABELS = {
+  tenant: 'Tenant',
+  landlord: 'Landlord',
+  admin: 'Admin',
+}
+
+export default function DashboardShell({ roleLabel, title, subtitle, actions, menuItems, promoCard, children }) {
   const { user, logout } = useAuth()
+  const { showToast } = useToast()
   const navigate = useNavigate()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [activeHref, setActiveHref] = useState(() => menuItems.find((item) => item.href)?.href)
+
+  const badgeLabel = roleLabel || ROLE_LABELS[user?.role] || 'User'
 
   useEffect(() => {
     const sections = menuItems
@@ -41,6 +51,8 @@ export default function DashboardShell({ title, subtitle, actions, menuItems, pr
     logout()
     navigate('/login')
   }
+
+  const comingSoon = () => showToast('Coming soon')
 
   const navLinkClass = ({ isActive }) =>
     `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
@@ -110,15 +122,24 @@ export default function DashboardShell({ title, subtitle, actions, menuItems, pr
 
         <p className="mt-6 px-2 text-xs font-semibold uppercase tracking-wider text-gray-400">General</p>
         <nav className="mt-2 flex flex-col gap-1">
-          <button className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-gray-600 hover:bg-sage/40 hover:text-forest">
+          <button
+            type="button"
+            onClick={comingSoon}
+            className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-gray-600 hover:bg-sage/40 hover:text-forest"
+          >
             <Settings className="h-4 w-4" />
             Settings
           </button>
-          <button className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-gray-600 hover:bg-sage/40 hover:text-forest">
+          <button
+            type="button"
+            onClick={comingSoon}
+            className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-gray-600 hover:bg-sage/40 hover:text-forest"
+          >
             <HelpCircle className="h-4 w-4" />
             Help
           </button>
           <button
+            type="button"
             onClick={handleLogout}
             className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-gray-600 hover:bg-sage/40 hover:text-forest"
           >
@@ -160,13 +181,22 @@ export default function DashboardShell({ title, subtitle, actions, menuItems, pr
             <Menu className="h-5 w-5 text-gray-600" />
           </button>
 
-          <div className="hidden max-w-xs flex-1 items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm text-gray-400 sm:flex">
+          <button
+            type="button"
+            onClick={comingSoon}
+            className="hidden max-w-xs flex-1 items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-left text-sm text-gray-400 transition-colors hover:border-forest/40 hover:text-gray-500 sm:flex"
+          >
             <Search className="h-4 w-4" />
-            Search task
-          </div>
+            Search
+          </button>
 
-          <div className="ml-auto flex items-center gap-4">
-            <button aria-label="Messages" className="text-gray-500 hover:text-forest">
+          <div className="ml-auto flex items-center gap-3 sm:gap-4">
+            <button
+              type="button"
+              onClick={comingSoon}
+              aria-label="Notifications"
+              className="text-gray-500 hover:text-forest"
+            >
               <Bell className="h-5 w-5" />
             </button>
             <div className="flex items-center gap-2.5">
@@ -174,9 +204,17 @@ export default function DashboardShell({ title, subtitle, actions, menuItems, pr
                 {(user?.name || 'U').charAt(0).toUpperCase()}
               </span>
               <div className="hidden sm:block">
-                <p className="text-sm font-medium text-gray-900">{user?.name}</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-medium text-gray-900">{user?.name}</p>
+                  <span className="rounded-full bg-sage/50 px-2 py-0.5 text-[11px] font-semibold text-forest">
+                    {badgeLabel}
+                  </span>
+                </div>
                 <p className="text-xs text-gray-500">{user?.email}</p>
               </div>
+              <span className="rounded-full bg-sage/50 px-2 py-0.5 text-[11px] font-semibold text-forest sm:hidden">
+                {badgeLabel}
+              </span>
             </div>
           </div>
         </header>

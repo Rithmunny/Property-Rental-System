@@ -1,6 +1,15 @@
+// Accepting a request also creates a contract stub in mockStore (see mockUpdateStatus)
 import { USE_MOCK } from './config'
 import { request } from './client'
-import { getRequests, setRequests, getSession, nextId, getProperties } from './mockStore'
+import {
+  getRequests,
+  setRequests,
+  getSession,
+  nextId,
+  getProperties,
+  getContracts,
+  setContracts,
+} from './mockStore'
 
 async function mockCreate(propertyId) {
   const session = getSession()
@@ -47,7 +56,39 @@ async function mockUpdateStatus(id, status) {
   const requests = getRequests()
   const next = requests.map((r) => (r.id === Number(id) ? { ...r, status } : r))
   setRequests(next)
-  return next.find((r) => r.id === Number(id))
+  const updated = next.find((r) => r.id === Number(id))
+
+  if (updated && status === 'accepted') {
+    const property = getProperties().find((p) => p.id === updated.propertyId)
+    const contracts = getContracts()
+    const already = contracts.some(
+      (c) =>
+        c.propertyId === updated.propertyId &&
+        c.tenant === (updated.tenantName ?? 'Tenant') &&
+        c.status === 'active',
+    )
+    if (!already) {
+      const start = new Date()
+      const end = new Date(start)
+      end.setFullYear(end.getFullYear() + 1)
+      const rent = property?.price ?? 0
+      setContracts([
+        {
+          id: nextId(contracts),
+          propertyId: updated.propertyId,
+          tenant: updated.tenantName ?? 'Tenant',
+          startDate: start.toISOString().slice(0, 10),
+          endDate: end.toISOString().slice(0, 10),
+          rent,
+          deposit: rent * 2,
+          status: 'active',
+        },
+        ...contracts,
+      ])
+    }
+  }
+
+  return updated
 }
 
 async function mockHasRequest(propertyId) {

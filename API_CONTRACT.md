@@ -321,3 +321,60 @@ Mock implementations live in `frontend/src/api/*.js`. Each module checks `VITE_U
 - `false` → HTTP via `client.js`
 
 Replace mock behavior by implementing these endpoints; no page changes required.
+
+---
+
+## Frontend mock extensions (Agent 2)
+
+These shapes are used by the frontend mock layer and should be mirrored by a real backend when ready. Existing GET contracts above are unchanged.
+
+### POST /api/payments/mark-paid
+
+**Auth:** tenant
+
+**Body**
+```json
+{ "amount": 900, "month": "August 2026", "date": "2026-08-10" }
+```
+
+All fields optional; mock defaults from current rental / today.
+
+**Response** `200` — full tenant payments payload (same as `GET /api/payments?role=tenant`) with the new history row prepended.
+
+### POST /api/contracts
+
+**Auth:** landlord
+
+**Body**
+```json
+{
+  "propertyId": 1,
+  "tenant": "Ratana Chea",
+  "rent": 450,
+  "deposit": 900,
+  "startDate": "2026-08-01",
+  "endDate": "2027-07-31",
+  "status": "active"
+}
+```
+
+**Response** `200` — created Contract object.
+
+Note: Accepting a rental request (`PATCH /api/requests/:id` with `{ "status": "accepted" }`) also creates an active contract stub in the mock store when one does not already exist for that property + tenant.
+
+### PATCH /api/admin/landlords/:id
+
+**Auth:** admin
+
+**Body**
+```json
+{ "status": "active" }
+```
+
+`status` is one of `active` | `pending` | `suspended`.
+
+**Response** `200` — updated landlord object.
+
+### PUT /api/properties/:id (availability)
+
+Admin UI toggles availability via existing `updateProperty` with `{ "available": true|false }`.

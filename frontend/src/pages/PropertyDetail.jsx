@@ -6,6 +6,7 @@ import { useProperties } from '../context/PropertiesContext'
 import { useAuth } from '../context/AuthContext'
 import { useRequests } from '../context/RequestsContext'
 import { useSaved } from '../context/SavedContext'
+import { useToast } from '../context/ToastContext'
 
 export default function PropertyDetail() {
   const { id } = useParams()
@@ -14,6 +15,7 @@ export default function PropertyDetail() {
   const { user } = useAuth()
   const { createRequest, checkHasRequest } = useRequests()
   const { isSaved, toggleSaved } = useSaved()
+  const { showToast } = useToast()
   const [requested, setRequested] = useState(false)
   const [requestPending, setRequestPending] = useState(false)
   const [savePending, setSavePending] = useState(false)
@@ -41,6 +43,7 @@ export default function PropertyDetail() {
     try {
       await createRequest(property.id)
       setRequested(true)
+      showToast('Request sent!')
     } catch (err) {
       setRequestError(err.message || 'Could not send request')
     } finally {
@@ -52,7 +55,8 @@ export default function PropertyDetail() {
     if (!user) return
     setSavePending(true)
     try {
-      await toggleSaved(property.id)
+      const nowSaved = await toggleSaved(property.id)
+      showToast(nowSaved ? 'Saved' : 'Removed from saved')
     } finally {
       setSavePending(false)
     }

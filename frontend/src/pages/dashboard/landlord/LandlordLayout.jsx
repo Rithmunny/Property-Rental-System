@@ -21,7 +21,7 @@ const PROMO_CARD = {
 
 export default function LandlordLayout() {
   return (
-    <DashboardShell menuItems={MENU_ITEMS} promoCard={PROMO_CARD}>
+    <DashboardShell roleLabel="Landlord" menuItems={MENU_ITEMS} promoCard={PROMO_CARD}>
       <Outlet />
     </DashboardShell>
   )

@@ -1,8 +1,14 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { DollarSign, Clock3, Heart, Send, MapPin } from 'lucide-react'
 import { useProperties } from '../../../context/PropertiesContext'
-import { CURRENT_RENTAL, NEXT_PAYMENT, RENTAL_REQUESTS, SAVED_PROPERTY_IDS } from '../../../data/tenant'
+import { useSaved } from '../../../context/SavedContext'
+import { useRequests } from '../../../context/RequestsContext'
+import * as rentalsApi from '../../../api/rentals'
+import * as paymentsApi from '../../../api/payments'
 import PropertyCard from '../../../components/common/PropertyCard'
+import SkeletonCard from '../../../components/common/SkeletonCard'
+import SkeletonRow from '../../../components/common/SkeletonRow'
 import StatCard from '../../../components/dashboard/StatCard'
 import PageHeader from '../../../components/dashboard/PageHeader'
 import StatusPill from '../../../components/dashboard/StatusPill'
@@ -10,20 +16,59 @@ import PaymentMethodBadge from '../../../components/dashboard/PaymentMethodBadge
 
 export default function TenantOverview() {
   const { properties } = useProperties()
-  const rentalProperty = properties.find((p) => p.id === CURRENT_RENTAL.propertyId)
-  const savedProperties = properties.filter((p) => SAVED_PROPERTY_IDS.includes(p.id))
-  const pendingRequests = RENTAL_REQUESTS.filter((r) => r.status === 'pending').length
+  const { savedIds, loading: savedLoading } = useSaved()
+  const { requests, loading: requestsLoading } = useRequests()
+  const [rental, setRental] = useState(null)
+  const [paymentData, setPaymentData] = useState(null)
+  const [dataLoading, setDataLoading] = useState(true)
+
+  useEffect(() => {
+    Promise.all([rentalsApi.getCurrentRental(), paymentsApi.getPayments('tenant')])
+      .then(([r, p]) => {
+        setRental(r)
+        setPaymentData(p)
+      })
+      .finally(() => setDataLoading(false))
+  }, [])
+
+  const loading = dataLoading || savedLoading || requestsLoading
+  const savedProperties = properties.filter((p) => savedIds.includes(p.id))
+  const pendingRequests = requests.filter((r) => r.status === 'pending').length
+  const currentRental = paymentData?.currentRental ?? rental
+  const nextPayment = paymentData?.nextPayment
+  const rentalProperty = currentRental
+    ? properties.find((p) => p.id === currentRental.propertyId)
+    : null
 
   return (
     <div>
       <PageHeader title="Dashboard" subtitle="Your rental, payments, and saved homes." />
 
-      <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <StatCard icon={DollarSign} label="Current Rent" value={`$${CURRENT_RENTAL.rent}/mo`} />
-        <StatCard icon={Clock3} label={`Due ${NEXT_PAYMENT.dueDate}`} value={`$${NEXT_PAYMENT.amount}`} />
-        <StatCard icon={Heart} label="Saved Homes" value={savedProperties.length} />
-        <StatCard icon={Send} label="Pending Requests" value={pendingRequests} />
-      </div>
+      {loading ? (
+        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="animate-pulse rounded-2xl border border-gray-200 bg-white p-5">
+              <div className="h-4 w-20 rounded bg-gray-200" />
+              <div className="mt-3 h-8 w-16 rounded bg-gray-200" />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <StatCard
+            icon={DollarSign}
+            label="Current Rent"
+            value={currentRental ? `$${currentRental.rent}/mo` : '—'}
+          />
+          <StatCard
+            icon={Clock3}
+            label={nextPayment ? `Due ${nextPayment.dueDate}` : 'Next Payment'}
+            value={nextPayment ? `$${nextPayment.amount}` : '—'}
+          />
+          <StatCard icon={Heart} label="Saved Homes" value={savedProperties.length} />
+          <StatCard icon={Send} label="Pending Requests" value={pendingRequests} />
+        </div>
+      )}
 
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="rounded-2xl border border-gray-200 bg-white p-5 lg:col-span-2">
@@ -34,7 +79,9 @@ export default function TenantOverview() {
             </Link>
           </div>
 
-          {rentalProperty && (
+          {loading ? (
+            <SkeletonRow />
+          ) : rentalProperty && currentRental ? (
             <div className="mt-4 flex flex-col gap-4 sm:flex-row">
               <div className="h-32 w-full shrink-0 overflow-hidden rounded-xl sm:w-44">
                 <img src={rentalProperty.image} alt={rentalProperty.title} className="h-full w-full object-cover" />
@@ -55,30 +102,54 @@ export default function TenantOverview() {
                 <div className="mt-3 grid grid-cols-3 gap-3 text-sm">
                   <div>
                     <p className="text-gray-500">Rent</p>
-                    <p className="font-semibold text-gray-900">${CURRENT_RENTAL.rent}/mo</p>
+                    <p className="font-semibold text-gray-900">${currentRental.rent}/mo</p>
                   </div>
                   <div>
                     <p className="text-gray-500">Deposit</p>
-                    <p className="font-semibold text-gray-900">${CURRENT_RENTAL.deposit}</p>
+                    <p className="font-semibold text-gray-900">${currentRental.deposit}</p>
                   </div>
                   <div>
                     <p className="text-gray-500">Lease Ends</p>
-                    <p className="font-semibold text-gray-900">{CURRENT_RENTAL.endDate}</p>
+                    <p className="font-semibold text-gray-900">{currentRental.endDate}</p>
                   </div>
                 </div>
               </div>
             </div>
+          ) : (
+            <p className="mt-4 text-sm text-gray-500">
+              No active rental yet.{' '}
+              <Link to="/listings" className="font-semibold text-forest hover:underline">
+                Browse listings
+              </Link>{' '}
+              to find your next home.
+            </p>
           )}
         </div>
 
         <div className="rounded-2xl border border-gray-200 bg-white p-5 lg:col-span-1">
           <h3 className="font-semibold text-gray-900">Next Payment</h3>
-          <p className="text-sm text-gray-500">Due {NEXT_PAYMENT.dueDate}</p>
-          <p className="mt-4 text-3xl font-bold text-gray-900">${NEXT_PAYMENT.amount}</p>
-
-          <div className="mt-4">
-            <PaymentMethodBadge method={CURRENT_RENTAL.paymentMethod} />
-          </div>
+          {loading ? (
+            <div className="mt-4 animate-pulse space-y-3">
+              <div className="h-3 w-24 rounded bg-gray-200" />
+              <div className="h-10 w-20 rounded bg-gray-200" />
+            </div>
+          ) : nextPayment && currentRental ? (
+            <>
+              <p className="text-sm text-gray-500">Due {nextPayment.dueDate}</p>
+              <p className="mt-4 text-3xl font-bold text-gray-900">${nextPayment.amount}</p>
+              <div className="mt-4">
+                <PaymentMethodBadge method={currentRental.paymentMethod} />
+              </div>
+            </>
+          ) : (
+            <p className="mt-4 text-sm text-gray-500">
+              No upcoming payments.{' '}
+              <Link to="/listings" className="font-semibold text-forest hover:underline">
+                Browse listings
+              </Link>{' '}
+              to find a home.
+            </p>
+          )}
 
           <Link
             to="/dashboard/tenant/payments"
@@ -98,11 +169,27 @@ export default function TenantOverview() {
         </div>
         <p className="text-sm text-gray-500">Properties you've favorited for later</p>
 
-        <div className="mt-5 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
-          {savedProperties.slice(0, 4).map((p) => (
-            <PropertyCard key={p.id} property={p} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="mt-5 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
+        ) : savedProperties.length === 0 ? (
+          <p className="mt-5 text-sm text-gray-500">
+            No saved homes yet.{' '}
+            <Link to="/listings" className="font-semibold text-forest hover:underline">
+              Browse listings
+            </Link>{' '}
+            to save your favorites.
+          </p>
+        ) : (
+          <div className="mt-5 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
+            {savedProperties.slice(0, 4).map((p) => (
+              <PropertyCard key={p.id} property={p} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )

@@ -7,6 +7,7 @@ import { AuthProvider } from './context/AuthContext.jsx'
 import { PropertiesProvider } from './context/PropertiesContext.jsx'
 import { RequestsProvider } from './context/RequestsContext.jsx'
 import { SavedProvider } from './context/SavedContext.jsx'
+import { ToastProvider } from './context/ToastContext.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -15,7 +16,9 @@ createRoot(document.getElementById('root')).render(
         <PropertiesProvider>
           <RequestsProvider>
             <SavedProvider>
-              <App />
+              <ToastProvider>
+                <App />
+              </ToastProvider>
             </SavedProvider>
           </RequestsProvider>
         </PropertiesProvider>

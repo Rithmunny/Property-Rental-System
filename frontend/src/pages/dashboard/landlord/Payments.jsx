@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import * as paymentsApi from '../../../api/payments'
 import PageHeader from '../../../components/dashboard/PageHeader'
 import PaymentDonut from '../../../components/dashboard/PaymentDonut'
+import SkeletonRow from '../../../components/common/SkeletonRow'
 
 export default function LandlordPayments() {
   const [data, setData] = useState(null)
@@ -20,7 +22,11 @@ export default function LandlordPayments() {
     return (
       <div>
         <PageHeader title="Payments" subtitle="Rent collection and payment methods" />
-        <p className="mt-6 text-center text-sm text-gray-500">Loading payments…</p>
+        <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-2 sm:p-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <SkeletonRow key={i} />
+          ))}
+        </div>
       </div>
     )
   }
@@ -70,7 +76,15 @@ export default function LandlordPayments() {
             ))}
 
             {reminders.length === 0 && (
-              <p className="py-6 text-center text-sm text-gray-500">No upcoming payments due.</p>
+              <div className="px-3 py-8 text-center">
+                <p className="text-sm text-gray-500">No upcoming payments due.</p>
+                <Link
+                  to="/dashboard/landlord/contracts"
+                  className="mt-3 inline-block text-sm font-semibold text-forest hover:underline"
+                >
+                  View contracts
+                </Link>
+              </div>
             )}
           </div>
         </div>

@@ -11,7 +11,7 @@ export default function NotFound() {
     >
       <h1 className="text-4xl font-bold text-gray-900">404</h1>
       <p className="mt-2 text-sm text-gray-600">Page not found.</p>
-      <Link to="/" className="mt-6 rounded-lg bg-forest px-4 py-2.5 text-sm font-semibold text-white hover:bg-forest-dark">
+      <Link to="/" className="mt-6 rounded-full bg-forest px-4 py-2.5 text-sm font-semibold text-white hover:bg-forest-dark">
         Back to Home
       </Link>
     </motion.div>

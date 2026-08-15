@@ -1,7 +1,9 @@
+import { Link } from 'react-router-dom'
 import { useProperties } from '../../../context/PropertiesContext'
 import { useRequests } from '../../../context/RequestsContext'
 import PageHeader from '../../../components/dashboard/PageHeader'
 import StatusPill from '../../../components/dashboard/StatusPill'
+import SkeletonRow from '../../../components/common/SkeletonRow'
 
 const REQUEST_STATUS = {
   pending: { label: 'Pending', tone: 'warning' },
@@ -23,7 +25,11 @@ export default function TenantRequests() {
 
       <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-2 sm:p-3">
         {loading ? (
-          <p className="py-6 text-center text-sm text-gray-500">Loading requests…</p>
+          <div>
+            {Array.from({ length: 3 }).map((_, i) => (
+              <SkeletonRow key={i} />
+            ))}
+          </div>
         ) : (
           <div className="flex flex-col divide-y divide-gray-100">
             {requests.map((r) => {
@@ -41,9 +47,17 @@ export default function TenantRequests() {
             })}
 
             {requests.length === 0 && (
-              <p className="py-6 text-center text-sm text-gray-500">
-                No rental requests yet. Browse listings and request a property to rent.
-              </p>
+              <div className="px-3 py-10 text-center">
+                <p className="text-sm text-gray-500">
+                  No rental requests yet. Find a home and send a request to the landlord.
+                </p>
+                <Link
+                  to="/listings"
+                  className="mt-3 inline-block text-sm font-semibold text-forest hover:underline"
+                >
+                  Browse listings
+                </Link>
+              </div>
             )}
           </div>
         )}

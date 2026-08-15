@@ -1,27 +1,58 @@
-import { useEffect, useState } from 'react'
-import { ReceiptText } from 'lucide-react'
+import { useCallback, useEffect, useState } from 'react'
+import { ReceiptText, X, QrCode } from 'lucide-react'
 import * as paymentsApi from '../../../api/payments'
+import { useToast } from '../../../context/ToastContext'
 import PageHeader from '../../../components/dashboard/PageHeader'
 import PaymentMethodBadge from '../../../components/dashboard/PaymentMethodBadge'
+import SkeletonRow from '../../../components/common/SkeletonRow'
 
 export default function TenantPayments() {
+  const { showToast } = useToast()
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [payOpen, setPayOpen] = useState(false)
+  const [paying, setPaying] = useState(false)
 
-  useEffect(() => {
-    paymentsApi
+  const refresh = useCallback(() => {
+    setLoading(true)
+    setError(null)
+    return paymentsApi
       .getPayments('tenant')
       .then(setData)
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false))
   }, [])
 
-  if (loading) {
+  useEffect(() => {
+    refresh()
+  }, [refresh])
+
+  const handleMarkPaid = async () => {
+    setPaying(true)
+    try {
+      const next = await paymentsApi.markPaymentPaid({
+        amount: data?.nextPayment?.amount,
+      })
+      setData(next)
+      setPayOpen(false)
+      showToast('Payment marked as paid')
+    } catch (err) {
+      showToast(err.message || 'Payment failed')
+    } finally {
+      setPaying(false)
+    }
+  }
+
+  if (loading && !data) {
     return (
       <div>
         <PageHeader title="Payments" subtitle="Track your rent payments" />
-        <p className="mt-6 text-center text-sm text-gray-500">Loading payments…</p>
+        <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-2 sm:p-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <SkeletonRow key={i} />
+          ))}
+        </div>
       </div>
     )
   }
@@ -51,7 +82,11 @@ export default function TenantPayments() {
             <PaymentMethodBadge method={currentRental.paymentMethod} />
           </div>
 
-          <button className="mt-5 w-full rounded-full bg-forest px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-forest-dark">
+          <button
+            type="button"
+            onClick={() => setPayOpen(true)}
+            className="mt-5 w-full rounded-full bg-forest px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-forest-dark"
+          >
             Pay via ABA QR
           </button>
         </div>
@@ -61,7 +96,12 @@ export default function TenantPayments() {
           <p className="text-sm text-gray-500">Your past rent payments</p>
 
           {history.length === 0 ? (
-            <p className="mt-6 text-center text-sm text-gray-500">No payment history yet.</p>
+            <div className="mt-6 text-center">
+              <p className="text-sm text-gray-500">No payment history yet.</p>
+              <p className="mt-1 text-xs text-gray-400">
+                Payments will appear here after your first rent payment.
+              </p>
+            </div>
           ) : (
             <div className="mt-3 flex flex-col divide-y divide-gray-100">
               {history.map((p) => (
@@ -85,6 +125,45 @@ export default function TenantPayments() {
           )}
         </div>
       </div>
+
+      {payOpen && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-4">
+          <div className="w-full max-w-sm rounded-2xl bg-white p-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold text-gray-900">Pay via ABA QR</h2>
+              <button
+                type="button"
+                onClick={() => setPayOpen(false)}
+                aria-label="Close"
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <p className="mt-2 text-sm text-gray-500">
+              Scan this mock QR in the ABA app, then confirm below.
+            </p>
+
+            <div className="mx-auto mt-6 flex h-48 w-48 flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50">
+              <QrCode className="h-16 w-16 text-forest" strokeWidth={1.25} />
+              <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                ABA QR Placeholder
+              </p>
+              <p className="mt-1 text-sm font-semibold text-gray-900">${nextPayment.amount}</p>
+            </div>
+
+            <button
+              type="button"
+              disabled={paying}
+              onClick={handleMarkPaid}
+              className="mt-6 w-full rounded-full bg-forest px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-forest-dark disabled:opacity-60"
+            >
+              {paying ? 'Saving…' : 'Mark as paid'}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

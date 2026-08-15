@@ -109,14 +109,18 @@ export default function Home() {
         >
           {SHOWCASE.map((item) => (
             <motion.div key={item.label} variants={fadeUp} className="group">
-              <div className="overflow-hidden rounded-2xl">
-                <img
-                  src={item.image}
-                  alt={item.label}
-                  className="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-              </div>
-              <p className="mt-3 text-center text-sm font-medium text-gray-800">{item.label}</p>
+              <Link to={`/listings?type=${encodeURIComponent(item.type)}`} className="block">
+                <div className="overflow-hidden rounded-2xl">
+                  <img
+                    src={item.image}
+                    alt={item.label}
+                    className="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                </div>
+                <p className="mt-3 text-center text-sm font-medium text-gray-800 group-hover:text-forest">
+                  {item.label}
+                </p>
+              </Link>
             </motion.div>
           ))}
         </motion.div>

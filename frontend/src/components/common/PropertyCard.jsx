@@ -1,13 +1,25 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Heart, Star } from 'lucide-react'
+import { useAuth } from '../../context/AuthContext'
+import { useSaved } from '../../context/SavedContext'
+import { useToast } from '../../context/ToastContext'
 
 export default function PropertyCard({ property }) {
-  const [liked, setLiked] = useState(false)
+  const { user } = useAuth()
+  const { isSaved, toggleSaved } = useSaved()
+  const { showToast } = useToast()
+  const navigate = useNavigate()
+  const saved = isSaved(property.id)
 
-  const toggleLike = (e) => {
+  const toggleLike = async (e) => {
     e.preventDefault()
-    setLiked((v) => !v)
+    e.stopPropagation()
+    if (!user) {
+      navigate('/login')
+      return
+    }
+    const nowSaved = await toggleSaved(property.id)
+    showToast(nowSaved ? 'Saved' : 'Removed from saved')
   }
 
   return (
@@ -25,7 +37,7 @@ export default function PropertyCard({ property }) {
           className="absolute right-3 top-3 transition-transform hover:scale-110"
         >
           <Heart
-            className={`h-6 w-6 drop-shadow ${liked ? 'fill-rose-500 text-rose-500' : 'fill-black/30 text-white'}`}
+            className={`h-6 w-6 drop-shadow ${saved ? 'fill-forest text-forest' : 'fill-black/30 text-white'}`}
           />
         </button>
 
