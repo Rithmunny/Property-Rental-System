@@ -1,11 +1,15 @@
+import { Card, CardContent } from '@/components/ui/card'
+
 export default function StatCard({ icon: Icon, label, value }) {
   return (
-    <div className="rounded-2xl border border-gray-200 p-5">
-      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-sage/60 text-forest">
-        <Icon className="h-5 w-5" />
-      </div>
-      <p className="mt-4 text-2xl font-semibold text-gray-900">{value}</p>
-      <p className="mt-1 text-sm text-gray-500">{label}</p>
-    </div>
+    <Card>
+      <CardContent>
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-primary">
+          <Icon className="h-5 w-5" />
+        </div>
+        <p className="mt-4 text-2xl font-semibold text-foreground">{value}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{label}</p>
+      </CardContent>
+    </Card>
   )
 }
