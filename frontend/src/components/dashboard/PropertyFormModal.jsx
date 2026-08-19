@@ -111,167 +111,211 @@ export default function PropertyFormModal({ open, title, initialValues, onClose,
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-4">
-      <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6">
-        <div className="flex items-center justify-between">
+      <div className="flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white">
+        <div className="flex shrink-0 items-center justify-between border-b border-gray-100 px-6 py-4">
           <h2 className="text-lg font-bold text-gray-900">{title}</h2>
           <button onClick={onClose} aria-label="Close" className="text-gray-400 hover:text-gray-600">
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-5 flex flex-col gap-4">
-          <Field label="Title" name="title" value={form.title} onChange={handleChange} required />
+        <form onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col overflow-hidden">
+          <div className="min-h-0 flex-1 space-y-7 overflow-y-auto px-6 py-5">
+            <FormSection title="Property">
+              <Field label="Title" name="title" value={form.title} onChange={handleChange} required />
+              <SelectField
+                label="Type"
+                name="type"
+                value={form.type}
+                onChange={handleChange}
+                options={PROPERTY_TYPES}
+              />
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                <input
+                  type="checkbox"
+                  name="available"
+                  checked={form.available}
+                  onChange={handleChange}
+                  className="h-4 w-4 rounded border-gray-300 accent-forest"
+                />
+                Available for rent
+              </label>
+            </FormSection>
 
-          <div className="grid grid-cols-2 gap-4">
-            <SelectField label="Type" name="type" value={form.type} onChange={handleChange} options={PROPERTY_TYPES} />
-            <SelectField label="City" name="city" value={form.city} onChange={handleChange} options={CITIES} />
+            <FormSection title="Location">
+              <div className="grid grid-cols-2 gap-4">
+                <SelectField label="City" name="city" value={form.city} onChange={handleChange} options={CITIES} />
+                <SelectField
+                  label="Neighbourhood"
+                  name="neighbourhood"
+                  value={form.neighbourhood}
+                  onChange={handleChange}
+                  options={areaOptions}
+                />
+              </div>
+              <Field label="Street address" name="address" value={form.address} onChange={handleChange} required />
+            </FormSection>
+
+            <FormSection title="Space">
+              <div className="grid grid-cols-3 gap-4">
+                <Field
+                  label="Bedrooms"
+                  name="bedrooms"
+                  type="number"
+                  value={form.bedrooms}
+                  onChange={handleChange}
+                />
+                <Field
+                  label="Bathrooms"
+                  name="bathrooms"
+                  type="number"
+                  value={form.bathrooms}
+                  onChange={handleChange}
+                />
+                <Field
+                  label="Floor area (m²)"
+                  name="area"
+                  type="number"
+                  value={form.area}
+                  onChange={handleChange}
+                />
+              </div>
+              <SelectField
+                label="Furnished"
+                name="furnished"
+                value={form.furnished}
+                onChange={handleChange}
+                options={FURNISHED_OPTIONS}
+              />
+            </FormSection>
+
+            <FormSection title="Rent & terms">
+              <div className="grid grid-cols-2 gap-4">
+                <Field
+                  label="Monthly rent ($)"
+                  name="price"
+                  type="number"
+                  value={form.price}
+                  onChange={handleChange}
+                  required
+                />
+                <SelectField
+                  label="Deposit"
+                  name="depositMonths"
+                  value={form.depositMonths}
+                  onChange={handleChange}
+                  options={DEPOSIT_OPTIONS}
+                />
+              </div>
+              <SelectField
+                label="Lease term"
+                name="leaseTermMonths"
+                value={form.leaseTermMonths}
+                onChange={handleChange}
+                options={LEASE_TERM_OPTIONS}
+              />
+              <div className="grid grid-cols-2 gap-4">
+                <Field
+                  label="Parking ($/mo)"
+                  name="parkingFee"
+                  type="number"
+                  value={form.parkingFee}
+                  onChange={handleChange}
+                  placeholder="0 if none"
+                />
+                <Field
+                  label="Electricity ($/kWh)"
+                  name="electricityRate"
+                  type="number"
+                  value={form.electricityRate}
+                  onChange={handleChange}
+                  placeholder="Leave blank if unknown"
+                  step="0.01"
+                />
+              </div>
+            </FormSection>
+
+            <FormSection title="Photos">
+              <Field
+                label="Cover photo URL"
+                name="image"
+                value={form.image}
+                onChange={handleChange}
+                placeholder="Leave blank for a placeholder"
+              />
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <Field
+                  label="Photo 2"
+                  name="image2"
+                  value={form.image2}
+                  onChange={handleChange}
+                  placeholder="Optional"
+                />
+                <Field
+                  label="Photo 3"
+                  name="image3"
+                  value={form.image3}
+                  onChange={handleChange}
+                  placeholder="Optional"
+                />
+                <Field
+                  label="Photo 4"
+                  name="image4"
+                  value={form.image4}
+                  onChange={handleChange}
+                  placeholder="Optional"
+                />
+              </div>
+            </FormSection>
+
+            <FormSection title="Description">
+              <label className="flex flex-col gap-1.5 text-sm font-medium text-gray-700">
+                About this listing
+                <textarea
+                  name="description"
+                  value={form.description}
+                  onChange={handleChange}
+                  rows={3}
+                  className="rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none transition-colors focus:border-forest focus:ring-2 focus:ring-forest/15"
+                />
+              </label>
+              <Field
+                label="Amenities"
+                name="amenities"
+                value={form.amenities}
+                onChange={handleChange}
+                placeholder="Wi-Fi, Parking, Air Conditioning"
+              />
+            </FormSection>
+
+            <FormSection title="Contact">
+              <div className="grid grid-cols-2 gap-4">
+                <Field
+                  label="Telegram"
+                  name="telegram"
+                  value={form.telegram}
+                  onChange={handleChange}
+                  placeholder="@username"
+                />
+                <Field
+                  label="WhatsApp"
+                  name="whatsapp"
+                  value={form.whatsapp}
+                  onChange={handleChange}
+                  placeholder="+85512..."
+                />
+              </div>
+              <Field
+                label="Phone"
+                name="phone"
+                value={form.phone}
+                onChange={handleChange}
+                placeholder="+855 12 000 000"
+              />
+            </FormSection>
           </div>
 
-          <SelectField
-            label="Neighbourhood"
-            name="neighbourhood"
-            value={form.neighbourhood}
-            onChange={handleChange}
-            options={areaOptions}
-          />
-
-          <Field label="Address" name="address" value={form.address} onChange={handleChange} required />
-
-          <div className="grid grid-cols-3 gap-4">
-            <Field label="Price ($/mo)" name="price" type="number" value={form.price} onChange={handleChange} required />
-            <Field label="Bedrooms" name="bedrooms" type="number" value={form.bedrooms} onChange={handleChange} />
-            <Field label="Bathrooms" name="bathrooms" type="number" value={form.bathrooms} onChange={handleChange} />
-          </div>
-
-          <Field label="Floor area (m²)" name="area" type="number" value={form.area} onChange={handleChange} />
-
-          <div className="grid grid-cols-2 gap-4">
-            <SelectField
-              label="Furnished"
-              name="furnished"
-              value={form.furnished}
-              onChange={handleChange}
-              options={FURNISHED_OPTIONS}
-            />
-            <SelectField
-              label="Lease term"
-              name="leaseTermMonths"
-              value={form.leaseTermMonths}
-              onChange={handleChange}
-              options={LEASE_TERM_OPTIONS}
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <SelectField
-              label="Deposit"
-              name="depositMonths"
-              value={form.depositMonths}
-              onChange={handleChange}
-              options={DEPOSIT_OPTIONS}
-            />
-            <Field
-              label="Parking ($/mo)"
-              name="parkingFee"
-              type="number"
-              value={form.parkingFee}
-              onChange={handleChange}
-              placeholder="0 if none"
-            />
-          </div>
-
-          <Field
-            label="Electricity ($/kWh)"
-            name="electricityRate"
-            type="number"
-            value={form.electricityRate}
-            onChange={handleChange}
-            placeholder="Leave blank if unknown"
-            step="0.01"
-          />
-
-          <Field
-            label="Cover image URL"
-            name="image"
-            value={form.image}
-            onChange={handleChange}
-            placeholder="https://... (leave blank for a placeholder photo)"
-          />
-          <Field
-            label="Photo 2 URL"
-            name="image2"
-            value={form.image2}
-            onChange={handleChange}
-            placeholder="Optional"
-          />
-          <Field
-            label="Photo 3 URL"
-            name="image3"
-            value={form.image3}
-            onChange={handleChange}
-            placeholder="Optional"
-          />
-          <Field
-            label="Photo 4 URL"
-            name="image4"
-            value={form.image4}
-            onChange={handleChange}
-            placeholder="Optional"
-          />
-
-          <label className="flex flex-col gap-1.5 text-sm font-medium text-gray-700">
-            Description
-            <textarea
-              name="description"
-              value={form.description}
-              onChange={handleChange}
-              rows={3}
-              className="rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none transition-colors focus:border-forest focus:ring-2 focus:ring-forest/15"
-            />
-          </label>
-
-          <Field
-            label="Amenities (comma-separated)"
-            name="amenities"
-            value={form.amenities}
-            onChange={handleChange}
-            placeholder="Wi-Fi, Parking, Air Conditioning"
-          />
-
-          <Field
-            label="Telegram"
-            name="telegram"
-            value={form.telegram}
-            onChange={handleChange}
-            placeholder="@username"
-          />
-          <Field
-            label="WhatsApp"
-            name="whatsapp"
-            value={form.whatsapp}
-            onChange={handleChange}
-            placeholder="+85512..."
-          />
-          <Field
-            label="Phone"
-            name="phone"
-            value={form.phone}
-            onChange={handleChange}
-            placeholder="+855 12 000 000"
-          />
-
-          <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-            <input
-              type="checkbox"
-              name="available"
-              checked={form.available}
-              onChange={handleChange}
-              className="h-4 w-4 rounded border-gray-300 accent-forest"
-            />
-            Available for rent
-          </label>
-
-          <div className="mt-2 flex justify-end gap-3">
+          <div className="flex shrink-0 justify-end gap-3 border-t border-gray-100 px-6 py-4">
             <button
               type="button"
               onClick={onClose}
@@ -289,6 +333,15 @@ export default function PropertyFormModal({ open, title, initialValues, onClose,
         </form>
       </div>
     </div>
+  )
+}
+
+function FormSection({ title, children }) {
+  return (
+    <section className="flex flex-col gap-3">
+      <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-400">{title}</h3>
+      {children}
+    </section>
   )
 }
 
