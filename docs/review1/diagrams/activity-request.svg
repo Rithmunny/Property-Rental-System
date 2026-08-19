@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 720" font-family="Calibri, Arial, sans-serif">
+  <rect width="920" height="720" fill="#fff"/>
+  <text x="460" y="28" text-anchor="middle" font-size="16" font-weight="700">Figure 9.2  Activity: Request to Rent (Review 1 demo workflow)</text>
+
+  <ellipse cx="460" cy="70" rx="36" ry="18" fill="#e8f1ea" stroke="#1f3a5f"/>
+  <text x="460" y="74" text-anchor="middle" font-size="12">Start</text>
+  <line x1="460" y1="88" x2="460" y2="118" stroke="#1f3a5f"/>
+
+  <rect x="340" y="118" width="240" height="44" rx="6" fill="#f4f7fb" stroke="#1f3a5f"/>
+  <text x="460" y="145" text-anchor="middle" font-size="12">Tenant authenticates</text>
+  <line x1="460" y1="162" x2="460" y2="188" stroke="#1f3a5f"/>
+
+  <rect x="340" y="188" width="240" height="44" rx="6" fill="#f4f7fb" stroke="#1f3a5f"/>
+  <text x="460" y="215" text-anchor="middle" font-size="12">Browse / open listing</text>
+  <line x1="460" y1="232" x2="460" y2="258" stroke="#1f3a5f"/>
+
+  <polygon points="460,258 530,290 460,322 390,290" fill="#fff6e8" stroke="#1f3a5f"/>
+  <text x="460" y="294" text-anchor="middle" font-size="11">Logged in?</text>
+  <line x1="390" y1="290" x2="200" y2="290" stroke="#1f3a5f"/>
+  <text x="280" y="280" font-size="11" fill="#555">No</text>
+  <rect x="80" y="268" width="120" height="44" rx="6" fill="#f4f7fb" stroke="#1f3a5f"/>
+  <text x="140" y="295" text-anchor="middle" font-size="11">Redirect /login</text>
+  <line x1="140" y1="268" x2="140" y2="140" stroke="#1f3a5f"/>
+  <line x1="140" y1="140" x2="340" y2="140" stroke="#1f3a5f"/>
+
+  <line x1="460" y1="322" x2="460" y2="350" stroke="#1f3a5f"/>
+  <text x="474" y="340" font-size="11" fill="#555">Yes</text>
+  <rect x="340" y="350" width="240" height="44" rx="6" fill="#f4f7fb" stroke="#1f3a5f"/>
+  <text x="460" y="377" text-anchor="middle" font-size="12">Submit Request to Rent</text>
+  <line x1="460" y1="394" x2="460" y2="420" stroke="#1f3a5f"/>
+
+  <polygon points="460,420 560,458 460,496 360,458" fill="#fff6e8" stroke="#1f3a5f"/>
+  <text x="460" y="454" text-anchor="middle" font-size="11">Duplicate / unavailable?</text>
+  <line x1="360" y1="458" x2="140" y2="458" stroke="#1f3a5f"/>
+  <text x="230" y="448" font-size="11" fill="#555">Yes</text>
+  <rect x="40" y="436" width="140" height="44" rx="6" fill="#f7f0f4" stroke="#1f3a5f"/>
+  <text x="110" y="462" text-anchor="middle" font-size="11">Show error / existing</text>
+
+  <line x1="460" y1="496" x2="460" y2="524" stroke="#1f3a5f"/>
+  <text x="474" y="514" font-size="11" fill="#555">No</text>
+  <rect x="330" y="524" width="260" height="44" rx="6" fill="#e8f1ea" stroke="#1f3a5f"/>
+  <text x="460" y="551" text-anchor="middle" font-size="12">Insert rental_requests (pending)</text>
+  <line x1="460" y1="568" x2="460" y2="592" stroke="#1f3a5f"/>
+  <rect x="330" y="592" width="260" height="44" rx="6" fill="#f4f7fb" stroke="#1f3a5f"/>
+  <text x="460" y="619" text-anchor="middle" font-size="12">Show pending on tenant dashboard</text>
+  <line x1="460" y1="636" x2="460" y2="662" stroke="#1f3a5f"/>
+  <rect x="430" y="662" width="60" height="24" fill="#111"/>
+  <text x="460" y="678" text-anchor="middle" font-size="11" fill="#fff">End</text>
+</svg>

@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 420" font-family="Calibri, Arial, sans-serif">
+  <rect width="980" height="420" fill="#fff"/>
+  <text x="490" y="26" text-anchor="middle" font-size="16" font-weight="700">Figure 12.4  Frontend module map (class-level design)</text>
+  <rect x="30" y="55" width="180" height="90" rx="6" fill="#f4f7fb" stroke="#1f3a5f"/>
+  <text x="120" y="80" text-anchor="middle" font-size="12" font-weight="700">pages/</text>
+  <text x="120" y="102" text-anchor="middle" font-size="11">Home, Rent, Login</text>
+  <text x="120" y="120" text-anchor="middle" font-size="11">dashboard/tenant|landlord|admin</text>
+  <rect x="240" y="55" width="180" height="90" rx="6" fill="#f4f7fb" stroke="#1f3a5f"/>
+  <text x="330" y="80" text-anchor="middle" font-size="12" font-weight="700">context/</text>
+  <text x="330" y="102" text-anchor="middle" font-size="11">Auth, Properties</text>
+  <text x="330" y="120" text-anchor="middle" font-size="11">Requests, Messages</text>
+  <rect x="450" y="55" width="180" height="90" rx="6" fill="#e8f1ea" stroke="#1f3a5f"/>
+  <text x="540" y="80" text-anchor="middle" font-size="12" font-weight="700">api/</text>
+  <text x="540" y="102" text-anchor="middle" font-size="11">auth, properties, requests</text>
+  <text x="540" y="120" text-anchor="middle" font-size="11">saved, rentals, payments</text>
+  <rect x="660" y="55" width="140" height="90" rx="6" fill="#fff6e8" stroke="#1f3a5f"/>
+  <text x="730" y="88" text-anchor="middle" font-size="12" font-weight="700">config.js</text>
+  <text x="730" y="112" text-anchor="middle" font-size="11">USE_MOCK, keys</text>
+  <rect x="830" y="55" width="120" height="90" rx="6" fill="#f7f0f4" stroke="#1f3a5f"/>
+  <text x="890" y="88" text-anchor="middle" font-size="12" font-weight="700">Supabase</text>
+  <text x="890" y="112" text-anchor="middle" font-size="11">Postgres</text>
+  <rect x="30" y="180" width="180" height="80" rx="6" fill="#f4f7fb" stroke="#1f3a5f"/>
+  <text x="120" y="208" text-anchor="middle" font-size="12" font-weight="700">RequireRole</text>
+  <text x="120" y="230" text-anchor="middle" font-size="11">RBAC route gate</text>
+  <rect x="240" y="180" width="390" height="80" rx="6" fill="#f4f7fb" stroke="#1f3a5f"/>
+  <text x="435" y="208" text-anchor="middle" font-size="12" font-weight="700">components/common + dashboard + layout</text>
+  <text x="435" y="230" text-anchor="middle" font-size="11">Shared UI; no duplicate Overview.jsx across roles</text>
+  <rect x="660" y="180" width="290" height="80" rx="6" fill="#e8f1ea" stroke="#1f3a5f"/>
+  <text x="805" y="208" text-anchor="middle" font-size="12" font-weight="700">mockStore.js (dev fallback)</text>
+  <text x="805" y="230" text-anchor="middle" font-size="11">localStorage seed  not the Review 1 database</text>
+  <text x="490" y="300" text-anchor="middle" font-size="12">pages ’ context ’ api ’ (Supabase | mockStore). JSON field names stay those in API_CONTRACT.md.</text>
+  <text x="490" y="328" text-anchor="middle" font-size="12">This split lets the group demonstrate a real database without rewriting dashboards.</text>
+  <text x="490" y="370" text-anchor="middle" font-size="12" fill="#333">Rithmunny owns pages/components/context. Phanith owns schema, RLS, seed, and the live adapter path.</text>
+</svg>

@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 720" font-family="Calibri, Arial, sans-serif">
+  <rect width="1100" height="720" fill="#fff"/>
+  <text x="550" y="26" text-anchor="middle" font-size="16" font-weight="700">Figure 11.1  Entity-relationship diagram (Review 1 foundation)</text>
+
+  <!-- profiles -->
+  <g>
+    <rect x="40" y="60" width="240" height="210" fill="#f4f7fb" stroke="#1f3a5f"/>
+    <rect x="40" y="60" width="240" height="28" fill="#1f3a5f"/>
+    <text x="160" y="80" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">PROFILES</text>
+    <text x="52" y="110" font-size="12">PK id (uuid, = auth.users)</text>
+    <text x="52" y="130" font-size="12">name  varchar</text>
+    <text x="52" y="150" font-size="12">email  varchar unique</text>
+    <text x="52" y="170" font-size="12">role  tenant|landlord|admin</text>
+    <text x="52" y="190" font-size="12">phone  varchar null</text>
+    <text x="52" y="210" font-size="12">telegram  varchar null</text>
+    <text x="52" y="230" font-size="12">created_at  timestamptz</text>
+    <text x="52" y="250" font-size="12">updated_at  timestamptz</text>
+  </g>
+
+  <!-- properties -->
+  <g>
+    <rect x="420" y="50" width="260" height="270" fill="#e8f1ea" stroke="#1f3a5f"/>
+    <rect x="420" y="50" width="260" height="28" fill="#1f3a5f"/>
+    <text x="550" y="70" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">PROPERTIES</text>
+    <text x="432" y="100" font-size="12">PK id  uuid</text>
+    <text x="432" y="120" font-size="12">FK landlord_id ’ profiles.id</text>
+    <text x="432" y="140" font-size="12">title, type, city, neighbourhood</text>
+    <text x="432" y="160" font-size="12">address, price, bedrooms, bathrooms</text>
+    <text x="432" y="180" font-size="12">area, lat, lng, description</text>
+    <text x="432" y="200" font-size="12">image, images[], amenities[]</text>
+    <text x="432" y="220" font-size="12">available  boolean</text>
+    <text x="432" y="240" font-size="12">furnished, lease_term_months</text>
+    <text x="432" y="260" font-size="12">deposit_months, contact fields</text>
+    <text x="432" y="280" font-size="12">created_at, updated_at</text>
+    <text x="432" y="300" font-size="12">UNIQUE optional slug later</text>
+  </g>
+
+  <!-- rental_requests -->
+  <g>
+    <rect x="40" y="360" width="260" height="210" fill="#fff6e8" stroke="#1f3a5f"/>
+    <rect x="40" y="360" width="260" height="28" fill="#1f3a5f"/>
+    <text x="170" y="380" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">RENTAL_REQUESTS</text>
+    <text x="52" y="410" font-size="12">PK id  uuid</text>
+    <text x="52" y="430" font-size="12">FK property_id ’ properties.id</text>
+    <text x="52" y="450" font-size="12">FK tenant_id ’ profiles.id</text>
+    <text x="52" y="470" font-size="12">kind  rent | viewing</text>
+    <text x="52" y="490" font-size="12">status  pending|accepted|declined</text>
+    <text x="52" y="510" font-size="12">requested_date, viewing_date/time</text>
+    <text x="52" y="530" font-size="12">note  text</text>
+    <text x="52" y="550" font-size="12">UNIQUE (property, tenant, kind)</text>
+  </g>
+
+  <!-- contracts -->
+  <g>
+    <rect x="420" y="380" width="260" height="190" fill="#f7f0f4" stroke="#1f3a5f"/>
+    <rect x="420" y="380" width="260" height="28" fill="#1f3a5f"/>
+    <text x="550" y="400" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">CONTRACTS</text>
+    <text x="432" y="430" font-size="12">PK id  uuid</text>
+    <text x="432" y="450" font-size="12">FK property_id, tenant_id</text>
+    <text x="432" y="470" font-size="12">FK request_id ’ rental_requests</text>
+    <text x="432" y="490" font-size="12">start_date, end_date</text>
+    <text x="432" y="510" font-size="12">rent, deposit  numeric</text>
+    <text x="432" y="530" font-size="12">status  draft|active|ended</text>
+    <text x="432" y="550" font-size="12">created_at</text>
+  </g>
+
+  <!-- saved -->
+  <g>
+    <rect x="780" y="80" width="260" height="130" fill="#f4f7fb" stroke="#1f3a5f"/>
+    <rect x="780" y="80" width="260" height="28" fill="#1f3a5f"/>
+    <text x="910" y="100" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">SAVED_PROPERTIES</text>
+    <text x="792" y="130" font-size="12">PK (tenant_id, property_id)</text>
+    <text x="792" y="150" font-size="12">FK tenant_id ’ profiles.id</text>
+    <text x="792" y="170" font-size="12">FK property_id ’ properties.id</text>
+    <text x="792" y="190" font-size="12">created_at</text>
+  </g>
+
+  <!-- future -->
+  <g>
+    <rect x="780" y="250" width="260" height="150" fill="#fff" stroke="#1f3a5f" stroke-dasharray="5 4"/>
+    <rect x="780" y="250" width="260" height="28" fill="#5a6b7d"/>
+    <text x="910" y="270" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">PAYMENTS (later)</text>
+    <text x="792" y="300" font-size="12">PK id · FK contract_id</text>
+    <text x="792" y="320" font-size="12">amount, method, status</text>
+    <text x="792" y="340" font-size="12">due_date, paid_at</text>
+    <text x="792" y="360" font-size="12">gateway_ref  varchar</text>
+    <text x="792" y="380" font-size="12">Sandbox PayWay / Stripe</text>
+  </g>
+
+  <g>
+    <rect x="780" y="430" width="260" height="130" fill="#fff" stroke="#1f3a5f" stroke-dasharray="5 4"/>
+    <rect x="780" y="430" width="260" height="28" fill="#5a6b7d"/>
+    <text x="910" y="450" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">REVIEWS (later)</text>
+    <text x="792" y="480" font-size="12">PK id · FK property_id</text>
+    <text x="792" y="500" font-size="12">FK author_id · rating 15</text>
+    <text x="792" y="520" font-size="12">body · created_at</text>
+    <text x="792" y="540" font-size="12">After completed booking</text>
+  </g>
+
+  <!-- relationships -->
+  <line x1="280" y1="140" x2="420" y2="140" stroke="#1f3a5f" stroke-width="1.5"/>
+  <text x="350" y="132" font-size="11">1</text>
+  <text x="400" y="132" font-size="11">*</text>
+  <line x1="170" y1="270" x2="170" y2="360" stroke="#1f3a5f" stroke-width="1.5"/>
+  <text x="176" y="320" font-size="11">1..*</text>
+  <line x1="300" y1="465" x2="420" y2="465" stroke="#1f3a5f" stroke-width="1.5"/>
+  <line x1="550" y1="320" x2="550" y2="380" stroke="#1f3a5f" stroke-width="1.5"/>
+  <line x1="680" y1="160" x2="780" y2="145" stroke="#1f3a5f" stroke-width="1.5"/>
+  <text x="500" y="700" text-anchor="middle" font-size="12" fill="#333">Cardinality: one landlord owns many properties; one tenant submits many requests; accepting a rent request creates one contract and should mark the listing unavailable.</text>
+</svg>

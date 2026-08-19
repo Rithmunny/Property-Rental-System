@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 560" font-family="Calibri, Arial, sans-serif">
+  <rect width="980" height="560" fill="#fff"/>
+  <text x="490" y="26" text-anchor="middle" font-size="16" font-weight="700">Figure 12.1  Sequence: landlord accepts a rent request</text>
+
+  <text x="90" y="70" text-anchor="middle" font-size="12" font-weight="700">Landlord UI</text>
+  <text x="300" y="70" text-anchor="middle" font-size="12" font-weight="700">API adapter</text>
+  <text x="510" y="70" text-anchor="middle" font-size="12" font-weight="700">Supabase Auth</text>
+  <text x="720" y="70" text-anchor="middle" font-size="12" font-weight="700">PostgreSQL</text>
+  <text x="900" y="70" text-anchor="middle" font-size="12" font-weight="700">Tenant UI</text>
+
+  <line x1="90" y1="80" x2="90" y2="520" stroke="#999"/>
+  <line x1="300" y1="80" x2="300" y2="520" stroke="#999"/>
+  <line x1="510" y1="80" x2="510" y2="520" stroke="#999"/>
+  <line x1="720" y1="80" x2="720" y2="520" stroke="#999"/>
+  <line x1="900" y1="80" x2="900" y2="520" stroke="#999"/>
+
+  <line x1="90" y1="120" x2="300" y2="120" stroke="#1f3a5f" marker-end="url(#a)"/>
+  <text x="195" y="112" text-anchor="middle" font-size="11">1. PATCH status=accepted</text>
+
+  <line x1="300" y1="155" x2="510" y2="155" stroke="#1f3a5f" marker-end="url(#a)"/>
+  <text x="405" y="147" text-anchor="middle" font-size="11">2. Validate JWT / role=landlord</text>
+
+  <line x1="510" y1="190" x2="300" y2="190" stroke="#1f3a5f" marker-end="url(#a)"/>
+  <text x="405" y="182" text-anchor="middle" font-size="11">3. Session OK</text>
+
+  <line x1="300" y1="225" x2="720" y2="225" stroke="#1f3a5f" marker-end="url(#a)"/>
+  <text x="500" y="217" text-anchor="middle" font-size="11">4. UPDATE rental_requests SET status</text>
+
+  <line x1="300" y1="270" x2="720" y2="270" stroke="#1f3a5f" marker-end="url(#a)"/>
+  <text x="500" y="262" text-anchor="middle" font-size="11">5. INSERT contracts (stub) + set available=false</text>
+
+  <line x1="720" y1="315" x2="300" y2="315" stroke="#1f3a5f" marker-end="url(#a)"/>
+  <text x="510" y="307" text-anchor="middle" font-size="11">6. Commit / return rows</text>
+
+  <line x1="300" y1="350" x2="90" y2="350" stroke="#1f3a5f" marker-end="url(#a)"/>
+  <text x="195" y="342" text-anchor="middle" font-size="11">7. Inbox shows accepted</text>
+
+  <line x1="900" y1="400" x2="300" y2="400" stroke="#5a6b7d" marker-end="url(#a)"/>
+  <text x="600" y="392" text-anchor="middle" font-size="11">8. Tenant GET /requests/mine</text>
+
+  <line x1="300" y1="435" x2="720" y2="435" stroke="#5a6b7d" marker-end="url(#a)"/>
+  <text x="500" y="427" text-anchor="middle" font-size="11">9. SELECT requests where tenant_id=me</text>
+
+  <line x1="720" y1="470" x2="900" y2="470" stroke="#5a6b7d" marker-end="url(#a)"/>
+  <text x="810" y="462" text-anchor="middle" font-size="11">10. Status = accepted</text>
+
+  <text x="490" y="545" text-anchor="middle" font-size="12" fill="#333">RLS ensures a landlord can update only requests for properties they own.</text>
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#1f3a5f"/>
+    </marker>
+  </defs>
+</svg>
