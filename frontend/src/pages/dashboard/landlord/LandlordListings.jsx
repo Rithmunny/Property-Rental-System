@@ -69,9 +69,17 @@ export default function LandlordListings() {
             <div className="p-4">
               <div className="flex items-center justify-between gap-2">
                 <p className="truncate font-semibold text-gray-900">{p.title}</p>
-                <p className="shrink-0 font-semibold text-gray-900">${p.price}</p>
+                <p className="shrink-0 font-semibold text-gray-900">${p.price}<span className="text-xs font-medium text-gray-500">/mo</span></p>
               </div>
-              <p className="mt-0.5 text-sm text-gray-500">{p.city}</p>
+              <p className="mt-0.5 truncate text-sm text-gray-500">
+                {p.neighbourhood ? `${p.neighbourhood} · ` : ''}
+                {p.city}
+              </p>
+              <p className="mt-0.5 text-sm text-gray-500">
+                {p.type}
+                {p.bedrooms ? ` · ${p.bedrooms} bed` : ''}
+                {p.area ? ` · ${p.area} m²` : ''}
+              </p>
 
               {confirmDeleteId === p.id ? (
                 <div className="mt-3 flex items-center justify-center gap-2 rounded-full bg-gray-50 py-2">
