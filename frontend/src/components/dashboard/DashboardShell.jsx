@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import {
   Bell,
@@ -8,10 +8,12 @@ import {
   LogOut,
   Menu,
   X,
-  Home as HomeIcon,
 } from 'lucide-react'
-import { useAuth } from '../../context/AuthContext'
-import { useToast } from '../../context/ToastContext'
+import { useAuth } from '@/context/AuthContext'
+import { useToast } from '@/context/ToastContext'
+import { useAlerts } from '@/context/AlertsContext'
+import BrandLogo from '@/components/common/BrandLogo'
+import { dashboardPath } from '@/utils/dashboard'
 
 const ROLE_LABELS = {
   tenant: 'Tenant',
@@ -22,11 +24,23 @@ const ROLE_LABELS = {
 export default function DashboardShell({ roleLabel, title, subtitle, actions, menuItems, promoCard, children }) {
   const { user, logout } = useAuth()
   const { showToast } = useToast()
+  const { alerts, unreadCount, markSeen } = useAlerts()
   const navigate = useNavigate()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [alertsOpen, setAlertsOpen] = useState(false)
+  const alertsRef = useRef(null)
   const [activeHref, setActiveHref] = useState(() => menuItems.find((item) => item.href)?.href)
 
   const badgeLabel = roleLabel || ROLE_LABELS[user?.role] || 'User'
+
+  useEffect(() => {
+    if (!alertsOpen) return
+    const onPointer = (e) => {
+      if (alertsRef.current && !alertsRef.current.contains(e.target)) setAlertsOpen(false)
+    }
+    document.addEventListener('mousedown', onPointer)
+    return () => document.removeEventListener('mousedown', onPointer)
+  }, [alertsOpen])
 
   useEffect(() => {
     const sections = menuItems
@@ -46,6 +60,8 @@ export default function DashboardShell({ roleLabel, title, subtitle, actions, me
     sections.forEach((section) => observer.observe(section))
     return () => observer.disconnect()
   }, [menuItems])
+
+  const settingsTo = `${dashboardPath(user?.role)}/settings`
 
   const handleLogout = () => {
     logout()
@@ -74,11 +90,8 @@ export default function DashboardShell({ roleLabel, title, subtitle, actions, me
         }`}
       >
         <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-lg font-bold text-gray-900">
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-forest text-white">
-              <HomeIcon className="h-4 w-4" />
-            </span>
-            PRS
+          <Link to="/" className="flex items-center text-lg font-bold text-gray-900">
+            <BrandLogo className="h-9 w-auto" />
           </Link>
           <button className="lg:hidden" onClick={() => setMobileOpen(false)} aria-label="Close menu">
             <X className="h-5 w-5 text-gray-500" />
@@ -122,14 +135,14 @@ export default function DashboardShell({ roleLabel, title, subtitle, actions, me
 
         <p className="mt-6 px-2 text-xs font-semibold uppercase tracking-wider text-gray-400">General</p>
         <nav className="mt-2 flex flex-col gap-1">
-          <button
-            type="button"
-            onClick={comingSoon}
-            className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-gray-600 hover:bg-sage/40 hover:text-forest"
+          <NavLink
+            to={settingsTo}
+            onClick={() => setMobileOpen(false)}
+            className={navLinkClass}
           >
             <Settings className="h-4 w-4" />
             Settings
-          </button>
+          </NavLink>
           <button
             type="button"
             onClick={comingSoon}
@@ -191,14 +204,62 @@ export default function DashboardShell({ roleLabel, title, subtitle, actions, me
           </button>
 
           <div className="ml-auto flex items-center gap-3 sm:gap-4">
-            <button
-              type="button"
-              onClick={comingSoon}
-              aria-label="Notifications"
-              className="text-gray-500 hover:text-forest"
-            >
-              <Bell className="h-5 w-5" />
-            </button>
+            <div className="relative" ref={alertsRef}>
+              <button
+                type="button"
+                onClick={() => setAlertsOpen((open) => !open)}
+                aria-label="Notifications"
+                className="relative text-gray-500 hover:text-forest"
+              >
+                <Bell className="h-5 w-5" />
+                {unreadCount > 0 && (
+                  <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-forest px-1 text-[10px] font-bold text-white">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+              {alertsOpen && (
+                <div className="absolute right-0 z-50 mt-2 w-80 rounded-2xl border border-gray-200 bg-white p-3 shadow-lg">
+                  <p className="text-sm font-semibold text-gray-900">Listing alerts</p>
+                  {alerts.length === 0 ? (
+                    <p className="mt-2 text-sm text-gray-500">No new matches right now.</p>
+                  ) : (
+                    <div className="mt-2 flex max-h-72 flex-col gap-3 overflow-y-auto">
+                      {alerts.map(({ search, matches }) => (
+                        <div key={search.id} className="rounded-xl bg-gray-50 p-2.5">
+                          {matches.slice(0, 3).map((property) => (
+                            <Link
+                              key={property.id}
+                              to={`/listings/${property.id}`}
+                              onClick={() => setAlertsOpen(false)}
+                              className="block py-1 text-sm text-gray-800 hover:text-forest"
+                            >
+                              {property.title}
+                            </Link>
+                          ))}
+                          <button
+                            type="button"
+                            onClick={() => markSeen(search.id)}
+                            className="mt-1 text-xs font-semibold text-gray-500 hover:text-forest"
+                          >
+                            Mark as seen
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {user?.role === 'tenant' && (
+                    <Link
+                      to="/dashboard/tenant/alerts"
+                      onClick={() => setAlertsOpen(false)}
+                      className="mt-3 block text-center text-xs font-semibold text-forest hover:underline"
+                    >
+                      Manage saved searches
+                    </Link>
+                  )}
+                </div>
+              )}
+            </div>
             <div className="flex items-center gap-2.5">
               <span className="flex h-9 w-9 items-center justify-center rounded-full bg-forest text-sm font-semibold text-white">
                 {(user?.name || 'U').charAt(0).toUpperCase()}

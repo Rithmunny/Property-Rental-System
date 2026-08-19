@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
-import * as requestsApi from '../api/requests'
+import * as requestsApi from '@/api/requests'
 import { useAuth } from './AuthContext'
 
 const RequestsContext = createContext(null)
@@ -39,9 +39,12 @@ export function RequestsProvider({ children }) {
     refresh()
   }, [refresh])
 
-  const createRequest = async (propertyId) => {
-    const created = await requestsApi.createRequest(propertyId)
-    setRequests((prev) => [created, ...prev])
+  const createRequest = async (propertyId, kind = 'rent', extras = {}) => {
+    const created = await requestsApi.createRequest(propertyId, kind, extras)
+    setRequests((prev) => {
+      if (prev.some((r) => r.id === created.id)) return prev
+      return [created, ...prev]
+    })
     return created
   }
 
@@ -53,7 +56,7 @@ export function RequestsProvider({ children }) {
   }
 
   const checkHasRequest = useCallback(
-    (propertyId) => requestsApi.hasRequestForProperty(propertyId),
+    (propertyId, kind = 'rent') => requestsApi.hasRequestForProperty(propertyId, kind),
     [],
   )
 

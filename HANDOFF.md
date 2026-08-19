@@ -51,7 +51,7 @@ Mock store (`api/mockStore.js`) loads these into localStorage on first use.
 ## Do not change without syncing
 
 - JSON field names in API_CONTRACT.md
-- Route paths in `frontend/src/App.jsx`
+- Route paths in `frontend/src/App.jsx` (page files are named `TenantOverview.jsx`, `LandlordPayments.jsx`, etc.)
 - Context provider shapes in `frontend/src/context/`
 
 If you add fields or change shapes, update both the contract and the corresponding `api/*.js` HTTP adapter.

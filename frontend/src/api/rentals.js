@@ -8,7 +8,7 @@ import {
   getSession,
   nextId,
 } from './mockStore'
-import { CURRENT_RENTAL } from '../data/tenant'
+import { CURRENT_RENTAL } from '@/data/tenant'
 
 async function mockGetCurrentRental() {
   const session = getSession()

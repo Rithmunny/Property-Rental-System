@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Home as HomeIcon } from 'lucide-react'
-import { SHOWCASE } from '../../data/content'
+import { SHOWCASE } from '@/data/content'
+import BrandLogo from '@/components/common/BrandLogo'
 
 export default function AuthLayout({ eyebrow, title, subtitle, children, footer }) {
   return (
@@ -15,11 +15,8 @@ export default function AuthLayout({ eyebrow, title, subtitle, children, footer 
         <div className="absolute inset-0 bg-gradient-to-t from-forest-dark via-forest/70 to-forest/20" />
 
         <div className="relative flex h-full flex-col justify-between p-10">
-          <Link to="/" className="flex w-fit items-center gap-2 text-lg font-bold text-white">
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15 backdrop-blur-sm">
-              <HomeIcon className="h-4 w-4" />
-            </span>
-            PRS
+          <Link to="/" className="flex w-fit items-center text-lg font-bold text-white">
+            <BrandLogo className="h-10 w-auto" />
           </Link>
 
           <motion.div

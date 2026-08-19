@@ -95,20 +95,54 @@ Authentication uses `Authorization: Bearer <token>` on protected routes.
   "title": "Modern Downtown Apartment",
   "type": "Apartment",
   "city": "Phnom Penh",
+  "neighbourhood": "BKK1",
   "address": "Street 240, BKK1",
   "price": 450,
   "bedrooms": 2,
   "bathrooms": 1,
   "area": 65,
   "image": "https://example.com/photo.jpg",
+  "images": [
+    "https://example.com/photo.jpg",
+    "https://example.com/living.jpg",
+    "https://example.com/kitchen.jpg"
+  ],
+  "lat": 11.5521,
+  "lng": 104.9284,
   "description": "A bright, modern 2-bedroom apartment…",
   "amenities": ["Wi-Fi", "Air Conditioning", "Parking"],
   "landlord": "Sok Dara",
   "available": true,
   "rating": 4.92,
-  "reviews": 128
+  "reviews": 128,
+  "furnished": "furnished",
+  "leaseTermMonths": 12,
+  "depositMonths": 2,
+  "electricityRate": 0.25,
+  "parkingFee": 0,
+  "telegram": "@sokdara",
+  "whatsapp": "+85512900111",
+  "phone": "+855 12 900 111"
 }
 ```
+
+`area` is floor size in m². `neighbourhood` is the sangkat / area name used by `/rent?area=BKK1`.
+
+`furnished`: `"furnished"` | `"semi"` | `"unfurnished"`
+
+`leaseTermMonths`: `6` | `12` | `0` (`0` = flexible / short-term)
+
+`depositMonths`: `1` or `2`
+
+`electricityRate`: USD/kWh number, or `null` if unknown
+
+`parkingFee`: USD/month (`0` if included or none)
+
+`telegram`, `whatsapp`, `phone`: contact strings; empty string if not listed
+
+`image` is the cover photo. `images` is the full gallery (cover first).
+
+`lat` / `lng` are WGS84 coordinates used by the Rent map. If omitted, the frontend falls back to neighbourhood/city centers.
 
 ---
 
@@ -120,8 +154,20 @@ Authentication uses `Authorization: Bearer <token>` on protected routes.
 
 **Body**
 ```json
-{ "propertyId": 3 }
+{
+  "propertyId": 3,
+  "kind": "viewing",
+  "viewingDate": "2026-08-22",
+  "viewingTime": "10:00",
+  "note": "Prefer late morning"
+}
 ```
+
+`kind`: `"rent"` | `"viewing"`. Defaults to `"rent"` if omitted.
+
+For `kind: "viewing"`, `viewingDate` (YYYY-MM-DD), `viewingTime` (`HH:MM`), and optional `note` are accepted.
+
+Uniqueness is `(propertyId, tenantEmail, kind)` so a tenant can have both a viewing and a rent request on the same listing.
 
 **Response** `201`
 ```json
@@ -131,8 +177,12 @@ Authentication uses `Authorization: Bearer <token>` on protected routes.
   "tenantEmail": "jane@example.com",
   "tenantName": "Jane Doe",
   "landlord": "Ly Vannak",
+  "kind": "viewing",
   "status": "pending",
-  "requestedDate": "2026-08-08"
+  "requestedDate": "2026-08-08",
+  "viewingDate": "2026-08-22",
+  "viewingTime": "10:00",
+  "note": "Prefer late morning"
 }
 ```
 
@@ -158,6 +208,8 @@ Authentication uses `Authorization: Bearer <token>` on protected routes.
 ```
 
 `status`: `"pending"` | `"accepted"` | `"declined"`
+
+Accepting `kind: "rent"` (or a request with no `kind`) should create an active contract stub if one does not already exist for that property + tenant. Accepting `kind: "viewing"` only updates status — do **not** create a contract.
 
 **Response** `200` — updated Request
 
@@ -360,7 +412,7 @@ All fields optional; mock defaults from current rental / today.
 
 **Response** `200` — created Contract object.
 
-Note: Accepting a rental request (`PATCH /api/requests/:id` with `{ "status": "accepted" }`) also creates an active contract stub in the mock store when one does not already exist for that property + tenant.
+Note: Accepting a **rent** request (`PATCH /api/requests/:id` with `{ "status": "accepted" }`) also creates an active contract stub in the mock store when one does not already exist for that property + tenant. Accepting a **viewing** request does not create a contract.
 
 ### PATCH /api/admin/landlords/:id
 
@@ -378,3 +430,170 @@ Note: Accepting a rental request (`PATCH /api/requests/:id` with `{ "status": "a
 ### PUT /api/properties/:id (availability)
 
 Admin UI toggles availability via existing `updateProperty` with `{ "available": true|false }`.
+
+---
+
+## Messages (mock)
+
+Thread uniqueness is `(propertyId, tenantEmail)`.
+
+### GET /api/messages
+
+**Auth:** tenant or landlord
+
+**Response** `200` — array of Thread objects for the current user
+
+```json
+{
+  "id": 1,
+  "propertyId": 1,
+  "tenantEmail": "jane@example.com",
+  "tenantName": "Jane Doe",
+  "landlord": "Sok Dara",
+  "messages": [
+    {
+      "id": 1,
+      "fromEmail": "jane@example.com",
+      "fromRole": "tenant",
+      "text": "Is this still available?",
+      "createdAt": "2026-08-10T09:12:00.000Z"
+    }
+  ]
+}
+```
+
+### POST /api/messages
+
+**Auth:** tenant or landlord
+
+**Body**
+```json
+{
+  "propertyId": 1,
+  "tenantEmail": "jane@example.com",
+  "text": "Hi, can I schedule a viewing?"
+}
+```
+
+`tenantEmail` is required when a landlord starts or replies to a thread. Tenants default to their own email.
+
+**Response** `200` — updated Thread
+
+---
+
+## Reviews (mock)
+
+`rating` and `reviews` on Property are computed from stored reviews.
+
+### GET /api/reviews?propertyId=1
+
+**Response** `200` — array of Review objects
+
+```json
+{
+  "id": 1,
+  "propertyId": 1,
+  "tenantEmail": "linda.k@example.com",
+  "tenantName": "Linda K.",
+  "rating": 5,
+  "comment": "Bright and quiet.",
+  "createdAt": "2026-06-12"
+}
+```
+
+### POST /api/reviews
+
+**Auth:** tenant with an accepted **rent** request (or current rental) for that property. One review per tenant per property.
+
+**Body**
+```json
+{ "propertyId": 1, "rating": 5, "comment": "Great stay." }
+```
+
+**Response** `201` — created Review
+
+---
+
+## Saved searches / alerts (mock, in-app only)
+
+### GET /api/saved-searches
+
+**Auth:** tenant
+
+**Response** `200` — array of saved searches
+
+```json
+{
+  "id": 1,
+  "filters": { "city": "Phnom Penh", "type": "Apartment", "maxPrice": "800" },
+  "createdAt": "2026-08-19T02:00:00.000Z",
+  "lastSeenMaxId": 6
+}
+```
+
+### POST /api/saved-searches
+
+**Auth:** tenant
+
+**Body** — `{ "filters": { ... } }`
+
+**Response** `201` — created saved search
+
+### DELETE /api/saved-searches/:id
+
+**Auth:** tenant
+
+**Response** `204`
+
+New matching listings (`id > lastSeenMaxId`) appear as in-app alerts. Marking a search seen updates `lastSeenMaxId`.
+
+---
+
+## Settings (mock)
+
+Stored per logged-in email in `localStorage` (`prs-settings`).
+
+### GET /api/settings
+
+**Auth:** required
+
+**Response** `200`
+
+```json
+{
+  "phone": "+855 12 000 000",
+  "telegram": "@username",
+  "notifyListings": true,
+  "notifyRequests": true,
+  "notifyPayments": true,
+  "preferredContact": "telegram"
+}
+```
+
+`preferredContact` is one of `telegram` | `whatsapp` | `phone` | `email`.
+
+### PUT /api/settings
+
+**Auth:** required
+
+**Body** — same fields as GET (partial updates merge)
+
+**Response** `200` — saved settings
+
+### PATCH /api/auth/profile
+
+**Auth:** required
+
+**Body** — `{ "name": "Updated Name" }`
+
+**Response** `200` — updated session `{ user, token }`
+
+### POST /api/auth/password
+
+**Auth:** required
+
+**Body** — `{ "currentPassword": "...", "newPassword": "secret1" }`
+
+Mock mode does not verify the current password. New password must be at least 6 characters.
+
+**Response** `200` — `{ "ok": true }`

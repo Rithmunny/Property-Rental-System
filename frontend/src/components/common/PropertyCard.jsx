@@ -1,8 +1,8 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { Heart, Star } from 'lucide-react'
-import { useAuth } from '../../context/AuthContext'
-import { useSaved } from '../../context/SavedContext'
-import { useToast } from '../../context/ToastContext'
+import { useAuth } from '@/context/AuthContext'
+import { useSaved } from '@/context/SavedContext'
+import { useToast } from '@/context/ToastContext'
 
 export default function PropertyCard({ property }) {
   const { user } = useAuth()

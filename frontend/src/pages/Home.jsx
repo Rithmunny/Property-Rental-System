@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Search, ArrowUpRight, ArrowRight } from 'lucide-react'
-import { PROPERTY_TYPES, CITIES } from '../data/properties'
-import { HERO_IMAGE, SHOWCASE, STATS, HELP_ITEMS } from '../data/content'
-import { useCountUp } from '../hooks/useCountUp'
+import { PROPERTY_TYPES, CITIES } from '@/data/properties'
+import { HERO_IMAGE, SHOWCASE, STATS, HELP_ITEMS } from '@/data/content'
+import { useCountUp } from '@/hooks/useCountUp'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 28 },
@@ -26,7 +26,7 @@ export default function Home() {
     const params = new URLSearchParams()
     if (type !== 'Any') params.set('type', type)
     if (city !== 'Any') params.set('city', city)
-    navigate(`/listings?${params.toString()}`)
+    navigate(`/rent?${params.toString()}`)
   }
 
   return (
@@ -109,7 +109,7 @@ export default function Home() {
         >
           {SHOWCASE.map((item) => (
             <motion.div key={item.label} variants={fadeUp} className="group">
-              <Link to={`/listings?type=${encodeURIComponent(item.type)}`} className="block">
+              <Link to={`/rent?type=${encodeURIComponent(item.type)}`} className="block">
                 <div className="overflow-hidden rounded-2xl">
                   <img
                     src={item.image}
@@ -160,7 +160,7 @@ export default function Home() {
               </h3>
             </div>
             <Link
-              to="/listings"
+              to="/rent"
               className="flex w-fit items-center gap-2 rounded-full bg-forest px-4 py-2 text-xs font-medium text-white hover:bg-forest-dark"
             >
               See All

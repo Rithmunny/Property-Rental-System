@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
-import * as savedApi from '../api/saved'
+import * as savedApi from '@/api/saved'
 import { useAuth } from './AuthContext'
 
 const SavedContext = createContext(null)
