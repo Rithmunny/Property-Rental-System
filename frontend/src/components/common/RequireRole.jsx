@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router-dom'
-import { useAuth } from '../../context/AuthContext'
-import { dashboardPath } from '../../utils/dashboard'
+import { useAuth } from '@/context/AuthContext'
+import { dashboardPath } from '@/utils/dashboard'
 
 export default function RequireRole({ role, children }) {
   const { user } = useAuth()

@@ -36,3 +36,55 @@ body {
 .animate-marquee {
   animation: marquee 22s linear infinite;
 }
+
+.rent-map-pin {
+  background: transparent;
+  border: none;
+}
+
+.rent-map-pin-inner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid #1f2e24;
+  background: #fff;
+  color: #1f2e24;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: 0 8px 18px rgba(31, 46, 36, 0.16);
+  white-space: nowrap;
+}
+
+.rent-map-pin-inner.is-active {
+  background: #1f2e24;
+  color: #fff;
+}
+
+.leaflet-container img {
+  max-width: none;
+}
+
+@media print {
+  body.printing * {
+    visibility: hidden;
+  }
+  body.printing .print-sheet,
+  body.printing .print-sheet * {
+    visibility: visible;
+  }
+  body.printing .print-sheet {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: #fff;
+    box-shadow: none;
+    border: none;
+  }
+  body.printing .no-print {
+    display: none !important;
+  }
+}
+

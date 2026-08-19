@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Home as HomeIcon } from 'lucide-react'
+import BrandLogo from '@/components/common/BrandLogo'
 
 const SOCIAL_ICONS = [
   {
@@ -18,7 +18,8 @@ const SOCIAL_ICONS = [
 
 const EXPLORE_LINKS = [
   { to: '/', label: 'Home' },
-  { to: '/listings', label: 'Listings' },
+  { to: '/rent', label: 'Rent' },
+  { to: '/discover', label: 'Discover' },
   { to: '/about', label: 'About' },
 ]
 
@@ -34,11 +35,8 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-10">
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <Link to="/" className="flex w-fit items-center gap-2 text-lg font-bold text-white">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10">
-                <HomeIcon className="h-4 w-4" />
-              </span>
-              PRS
+            <Link to="/" className="flex w-fit items-center text-lg font-bold text-white">
+              <BrandLogo className="h-9 w-auto" />
             </Link>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-gray-400">
               Verified rental homes across Cambodia — find a place that fits your life and your

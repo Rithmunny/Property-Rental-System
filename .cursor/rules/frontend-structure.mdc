@@ -1,0 +1,13 @@
+---
+description: Keep the PRS frontend easy to look up — folders, filenames, and @/ imports
+alwaysApply: true
+---
+
+# Frontend structure
+
+- Public screens live in `frontend/src/pages/`. Dashboard screens live in `pages/dashboard/{tenant|landlord|admin}/`.
+- Dashboard filenames must match the export: `TenantOverview.jsx`, `LandlordPayments.jsx`, `AdminTenants.jsx`. Never reuse `Overview.jsx` or `Payments.jsx` in more than one folder.
+- Put shared UI in `components/common`. Dashboard chrome stays in `components/dashboard`. API adapters stay in `api/` (one domain per file). Seed data stays in `data/`.
+- Import across folders with `@/` (`import { useAuth } from '@/context'`). Same-folder imports may stay relative.
+- Do not import a barrel `index.js` from inside the same folder. Do not re-export `mockStore` from `api/index.js`.
+- Do not add `pages/Dashboard.jsx` — Windows treats that as the same path as `pages/dashboard/`. Use `DashboardRedirect.jsx`.

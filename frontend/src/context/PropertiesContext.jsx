@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
-import * as propertiesApi from '../api/properties'
+import * as propertiesApi from '@/api/properties'
 
 const PropertiesContext = createContext(null)
 

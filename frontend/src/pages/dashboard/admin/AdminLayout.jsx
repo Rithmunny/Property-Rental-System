@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { Building2, Users, Home as HomeIcon, CreditCard, LayoutDashboard, UserCheck } from 'lucide-react'
-import * as usersApi from '../../../api/users'
-import DashboardShell from '../../../components/dashboard/DashboardShell'
+import * as usersApi from '@/api/users'
+import DashboardShell from '@/components/dashboard/DashboardShell'
 
 const MENU_ITEMS = [
   { to: '/dashboard/admin', label: 'Overview', icon: LayoutDashboard, end: true },

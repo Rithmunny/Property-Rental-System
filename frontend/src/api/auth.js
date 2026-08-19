@@ -1,15 +1,28 @@
 import { USE_MOCK } from './config'
 import { request } from './client'
-import { getSession, setSession, registerUser } from './mockStore'
+import { getSession, setSession, registerUser, getSettingsByEmail } from './mockStore'
 
 const MOCK_TOKEN = 'mock-token'
 
 async function mockLogin({ email, password, role }) {
   void password
   const session = getSession()
-  const user = session?.user?.email === email
-    ? session.user
-    : { name: email.split('@')[0] || 'User', email, role: role || 'tenant' }
+  const prefs = getSettingsByEmail(email)
+  const baseUser =
+    session?.user?.email === email
+      ? session.user
+      : { name: email.split('@')[0] || 'User', email, role: role || 'tenant' }
+  const user = {
+    ...baseUser,
+    email,
+    role: role || baseUser.role || 'tenant',
+    phone: prefs.phone,
+    telegram: prefs.telegram,
+    notifyListings: prefs.notifyListings,
+    notifyRequests: prefs.notifyRequests,
+    notifyPayments: prefs.notifyPayments,
+    preferredContact: prefs.preferredContact,
+  }
   const next = { user, token: MOCK_TOKEN }
   setSession(next)
   return next

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useCallback } from 'react'
-import * as authApi from '../api/auth'
+import * as authApi from '@/api/auth'
 
 const AuthContext = createContext(null)
 
@@ -50,8 +50,21 @@ export function AuthProvider({ children }) {
     applySession(null)
   }, [])
 
+  const updateProfile = useCallback(async (updates) => {
+    const { updateProfile: saveProfile } = await import('../api/settings')
+    const session = await saveProfile(updates)
+    applySession(session)
+    return session
+  }, [])
+
+  const refreshSession = useCallback(() => {
+    applySession(authApi.getStoredSession())
+  }, [])
+
   return (
-    <AuthContext.Provider value={{ user, token, login, register, logout, loading, error }}>
+    <AuthContext.Provider
+      value={{ user, token, login, register, logout, updateProfile, refreshSession, loading, error }}
+    >
       {children}
     </AuthContext.Provider>
   )

@@ -1,9 +1,12 @@
 import { STORAGE_KEYS } from './config'
-import { PROPERTIES as SEED_PROPERTIES } from '../data/properties'
-import { RENTAL_REQUESTS } from '../data/tenant'
-import { CONTRACTS, PAYMENT_REMINDERS, TENANTS } from '../data/landlord'
-import { CURRENT_RENTAL, PAYMENT_HISTORY } from '../data/tenant'
-import { LANDLORDS } from '../data/admin'
+import { PROPERTIES as SEED_PROPERTIES } from '@/data/properties'
+import { averageRating, withPropertyDefaults } from '@/utils/listing'
+import { RENTAL_REQUESTS } from '@/data/tenant'
+import { CONTRACTS, PAYMENT_REMINDERS, TENANTS } from '@/data/landlord'
+import { CURRENT_RENTAL, PAYMENT_HISTORY } from '@/data/tenant'
+import { LANDLORDS } from '@/data/admin'
+import { SEED_REVIEWS } from '@/data/reviews'
+import { SEED_THREADS } from '@/data/messages'
 
 function read(key, fallback) {
   try {
@@ -28,7 +31,18 @@ export function setSession(session) {
 }
 
 export function getProperties() {
-  return read(STORAGE_KEYS.properties, SEED_PROPERTIES)
+  const list = read(STORAGE_KEYS.properties, SEED_PROPERTIES)
+  const reviews = getReviews()
+  return list.map((property) => {
+    const withDefaults = withPropertyDefaults(property)
+    const propertyReviews = reviews.filter((r) => r.propertyId === withDefaults.id)
+    if (!propertyReviews.length) return withDefaults
+    return {
+      ...withDefaults,
+      rating: averageRating(propertyReviews),
+      reviews: propertyReviews.length,
+    }
+  })
 }
 
 export function setProperties(properties) {
@@ -37,13 +51,15 @@ export function setProperties(properties) {
 
 export function getRequests() {
   const stored = read(STORAGE_KEYS.requests, null)
-  if (stored) return stored
-  return RENTAL_REQUESTS.map((r) => ({
-    ...r,
-    tenantEmail: r.tenantEmail ?? 'demo@tenant.com',
-    tenantName: r.tenantName ?? 'Demo Tenant',
-    landlord: r.landlord ?? 'Sok Dara',
-  }))
+  const list = stored
+    ? stored
+    : RENTAL_REQUESTS.map((r) => ({
+        ...r,
+        tenantEmail: r.tenantEmail ?? 'demo@tenant.com',
+        tenantName: r.tenantName ?? 'Demo Tenant',
+        landlord: r.landlord ?? 'Sok Dara',
+      }))
+  return list.map((r) => ({ ...r, kind: r.kind ?? 'rent' }))
 }
 
 export function setRequests(requests) {
@@ -150,6 +166,62 @@ export function registerUser(user) {
   if (user.role === 'landlord') users.landlords = [entry, ...users.landlords]
   else users.tenants = [entry, ...users.tenants]
   setUsers(users)
+}
+
+export function getReviews() {
+  return read(STORAGE_KEYS.reviews, SEED_REVIEWS)
+}
+
+export function setReviews(reviews) {
+  write(STORAGE_KEYS.reviews, reviews)
+}
+
+export function getThreads() {
+  return read(STORAGE_KEYS.messages, SEED_THREADS)
+}
+
+export function setThreads(threads) {
+  write(STORAGE_KEYS.messages, threads)
+}
+
+export function getSavedSearchesByEmail(email) {
+  const all = read(STORAGE_KEYS.savedSearches, {})
+  return all[email] ?? []
+}
+
+export function setSavedSearchesByEmail(email, searches) {
+  const all = read(STORAGE_KEYS.savedSearches, {})
+  all[email] = searches
+  write(STORAGE_KEYS.savedSearches, all)
+}
+
+export const DEFAULT_SETTINGS = {
+  phone: '',
+  telegram: '',
+  notifyListings: true,
+  notifyRequests: true,
+  notifyPayments: true,
+  preferredContact: 'telegram',
+}
+
+export function getSettingsByEmail(email) {
+  const all = read(STORAGE_KEYS.settings, {})
+  return { ...DEFAULT_SETTINGS, ...(all[email] || {}) }
+}
+
+export function setSettingsByEmail(email, settings) {
+  const all = read(STORAGE_KEYS.settings, {})
+  all[email] = { ...DEFAULT_SETTINGS, ...(all[email] || {}), ...settings }
+  write(STORAGE_KEYS.settings, all)
+  return all[email]
+}
+
+export function updateSessionUser(updates) {
+  const session = getSession()
+  if (!session?.user) throw new Error('Login required')
+  const next = { ...session, user: { ...session.user, ...updates } }
+  setSession(next)
+  return next
 }
 
 export function nextId(items) {

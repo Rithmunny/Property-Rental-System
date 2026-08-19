@@ -4,7 +4,7 @@ import { Search, Send, LayoutDashboard } from 'lucide-react'
 const STEPS = [
   {
     icon: Search,
-    title: 'Browse listings',
+    title: 'Browse rentals',
     description: 'Explore verified rental homes across Cambodia and filter by city, type, and budget.',
   },
   {
@@ -39,7 +39,7 @@ export default function About() {
         from a single dashboard.
       </p>
 
-      <h2 className="mt-10 text-lg font-semibold text-gray-900">How it works</h2>
+      <h2 id="how-it-works" className="mt-10 text-lg font-semibold text-gray-900">How it works</h2>
       <div className="mt-5 grid gap-5 sm:grid-cols-3">
         {STEPS.map((step) => (
           <div key={step.title} className="rounded-2xl border border-gray-200 bg-white p-5">

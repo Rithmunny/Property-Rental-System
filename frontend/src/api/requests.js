@@ -1,4 +1,4 @@
-// Accepting a request also creates a contract stub in mockStore (see mockUpdateStatus)
+// Accepting a rent request also creates a contract stub in mockStore (see mockUpdateStatus)
 import { USE_MOCK } from './config'
 import { request } from './client'
 import {
@@ -11,12 +11,24 @@ import {
   setContracts,
 } from './mockStore'
 
-async function mockCreate(propertyId) {
+function normalizeKind(kind) {
+  return kind === 'viewing' ? 'viewing' : 'rent'
+}
+
+function requestKind(r) {
+  return r.kind === 'viewing' ? 'viewing' : 'rent'
+}
+
+async function mockCreate(propertyId, kind, extras = {}) {
   const session = getSession()
   if (!session?.user) throw new Error('Login required')
+  const requestKindValue = normalizeKind(kind)
   const requests = getRequests()
   const existing = requests.find(
-    (r) => r.propertyId === Number(propertyId) && r.tenantEmail === session.user.email,
+    (r) =>
+      r.propertyId === Number(propertyId) &&
+      r.tenantEmail === session.user.email &&
+      requestKind(r) === requestKindValue,
   )
   if (existing) return existing
 
@@ -27,8 +39,14 @@ async function mockCreate(propertyId) {
     tenantEmail: session.user.email,
     tenantName: session.user.name,
     landlord: property?.landlord ?? 'Unknown',
+    kind: requestKindValue,
     status: 'pending',
     requestedDate: new Date().toISOString().slice(0, 10),
+  }
+  if (requestKindValue === 'viewing') {
+    newRequest.viewingDate = extras.viewingDate || newRequest.requestedDate
+    newRequest.viewingTime = extras.viewingTime || '10:00'
+    newRequest.note = extras.note || ''
   }
   setRequests([newRequest, ...requests])
   return newRequest
@@ -58,7 +76,7 @@ async function mockUpdateStatus(id, status) {
   setRequests(next)
   const updated = next.find((r) => r.id === Number(id))
 
-  if (updated && status === 'accepted') {
+  if (updated && status === 'accepted' && requestKind(updated) !== 'viewing') {
     const property = getProperties().find((p) => p.id === updated.propertyId)
     const contracts = getContracts()
     const already = contracts.some(
@@ -72,6 +90,7 @@ async function mockUpdateStatus(id, status) {
       const end = new Date(start)
       end.setFullYear(end.getFullYear() + 1)
       const rent = property?.price ?? 0
+      const depositMonths = property?.depositMonths || 2
       setContracts([
         {
           id: nextId(contracts),
@@ -80,7 +99,7 @@ async function mockUpdateStatus(id, status) {
           startDate: start.toISOString().slice(0, 10),
           endDate: end.toISOString().slice(0, 10),
           rent,
-          deposit: rent * 2,
+          deposit: rent * depositMonths,
           status: 'active',
         },
         ...contracts,
@@ -91,17 +110,25 @@ async function mockUpdateStatus(id, status) {
   return updated
 }
 
-async function mockHasRequest(propertyId) {
+async function mockHasRequest(propertyId, kind) {
   const session = getSession()
   if (!session?.user) return false
+  const requestKindValue = normalizeKind(kind)
   return getRequests().some(
-    (r) => r.propertyId === Number(propertyId) && r.tenantEmail === session.user.email,
+    (r) =>
+      r.propertyId === Number(propertyId) &&
+      r.tenantEmail === session.user.email &&
+      requestKind(r) === requestKindValue,
   )
 }
 
-export async function createRequest(propertyId) {
-  if (USE_MOCK) return mockCreate(propertyId)
-  return request('/api/requests', { method: 'POST', body: JSON.stringify({ propertyId }) })
+export async function createRequest(propertyId, kind = 'rent', extras = {}) {
+  const requestKindValue = normalizeKind(kind)
+  if (USE_MOCK) return mockCreate(propertyId, requestKindValue, extras)
+  return request('/api/requests', {
+    method: 'POST',
+    body: JSON.stringify({ propertyId, kind: requestKindValue, ...extras }),
+  })
 }
 
 export async function listMyRequests() {
@@ -119,8 +146,11 @@ export async function updateRequestStatus(id, status) {
   return request(`/api/requests/${id}`, { method: 'PATCH', body: JSON.stringify({ status }) })
 }
 
-export async function hasRequestForProperty(propertyId) {
-  if (USE_MOCK) return mockHasRequest(propertyId)
+export async function hasRequestForProperty(propertyId, kind = 'rent') {
+  const requestKindValue = normalizeKind(kind)
+  if (USE_MOCK) return mockHasRequest(propertyId, requestKindValue)
   const requests = await request('/api/requests/mine')
-  return requests.some((r) => r.propertyId === Number(propertyId))
+  return requests.some(
+    (r) => r.propertyId === Number(propertyId) && requestKind(r) === requestKindValue,
+  )
 }

@@ -1,20 +1,35 @@
-import { useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
-import { Home as HomeIcon, Menu, X, Search, User } from 'lucide-react'
-import { useAuth } from '../../context/AuthContext'
+import { useEffect, useRef, useState } from 'react'
+import { Link, NavLink, useLocation } from 'react-router-dom'
+import { Menu, X, Search, User } from 'lucide-react'
+import { useAuth } from '@/context/AuthContext'
+import RentMegaMenu, { RentNavTrigger, RentMobileAccordion } from './RentMegaMenu'
+import BrandLogo from '@/components/common/BrandLogo'
 
 const TICKER_TEXT = 'Verified rental homes across Cambodia — find your next place today'
-
-const links = [
-  { to: '/', label: 'Home' },
-  { to: '/listings', label: 'Listings' },
-  { to: '/about', label: 'About' },
-]
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [rentOpen, setRentOpen] = useState(false)
   const { user, logout } = useAuth()
+  const location = useLocation()
+  const rentRef = useRef(null)
+  const rentActive = location.pathname.startsWith('/rent') || location.pathname.startsWith('/listings')
+
+  useEffect(() => {
+    setRentOpen(false)
+    setOpen(false)
+    setMenuOpen(false)
+  }, [location.pathname, location.search])
+
+  useEffect(() => {
+    if (!rentOpen) return
+    const onPointer = (e) => {
+      if (rentRef.current && !rentRef.current.contains(e.target)) setRentOpen(false)
+    }
+    document.addEventListener('mousedown', onPointer)
+    return () => document.removeEventListener('mousedown', onPointer)
+  }, [rentOpen])
 
   const linkClass = ({ isActive }) =>
     `text-sm font-medium transition-colors ${
@@ -36,25 +51,34 @@ export default function Navbar() {
 
       <header className="border-b border-gray-200 bg-white">
         <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-10">
-          <Link to="/" className="flex items-center gap-2 text-lg font-bold text-gray-900">
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-forest text-white">
-              <HomeIcon className="h-4 w-4" />
-            </span>
-            PRS
+          <Link to="/" className="flex items-center text-lg font-bold text-gray-900">
+            <BrandLogo className="h-9 w-auto" />
           </Link>
 
           <div className="hidden items-center gap-8 md:flex">
-            {links.map((link) => (
-              <NavLink key={link.to} to={link.to} className={linkClass} end={link.to === '/'}>
-                {link.label}
-              </NavLink>
-            ))}
+            <NavLink to="/" className={linkClass} end>
+              Home
+            </NavLink>
+            <div className="relative" ref={rentRef}>
+              <RentNavTrigger
+                open={rentOpen}
+                isActive={rentActive}
+                onToggle={() => setRentOpen((v) => !v)}
+              />
+              {rentOpen && <RentMegaMenu onNavigate={() => setRentOpen(false)} />}
+            </div>
+            <NavLink to="/about" className={linkClass}>
+              About
+            </NavLink>
+            <NavLink to="/discover" className={linkClass}>
+              Discover
+            </NavLink>
           </div>
 
           <div className="hidden items-center gap-3 md:flex">
             <Link
-              to="/listings"
-              aria-label="Search"
+              to="/rent"
+              aria-label="Search rentals"
               className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-600 hover:border-forest hover:text-forest"
             >
               <Search className="h-4 w-4" />
@@ -112,17 +136,19 @@ export default function Navbar() {
 
         {open && (
           <div className="flex flex-col gap-4 border-t border-gray-200 px-4 py-4 md:hidden">
-            {links.map((link) => (
-              <NavLink
-                key={link.to}
-                to={link.to}
-                className={linkClass}
-                end={link.to === '/'}
-                onClick={() => setOpen(false)}
-              >
-                {link.label}
-              </NavLink>
-            ))}
+            <NavLink to="/" className={linkClass} end onClick={() => setOpen(false)}>
+              Home
+            </NavLink>
+            <Link to="/rent" className="text-sm font-medium text-forest" onClick={() => setOpen(false)}>
+              Rent
+            </Link>
+            <RentMobileAccordion onNavigate={() => setOpen(false)} />
+            <NavLink to="/about" className={linkClass} onClick={() => setOpen(false)}>
+              About
+            </NavLink>
+            <NavLink to="/discover" className={linkClass} onClick={() => setOpen(false)}>
+              Discover
+            </NavLink>
             <hr className="border-gray-200" />
             {user ? (
               <>

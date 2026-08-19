@@ -47,13 +47,27 @@ Log in with any email/password and pick a role:
 ## Project structure
 
 ```
-frontend/
-  src/
-    api/          # API client + mock adapters (backend handoff seam)
-    context/      # React state providers
-    pages/        # Public + role dashboards
-    data/         # Seed data (loaded into mock store)
+frontend/src/
+  app/            # AppProviders (context wrapping)
+  api/            # One module per domain + mock adapters
+  components/
+    common/       # Shared UI (cards, logo, role gate)
+    layout/       # Navbar, Footer, PublicLayout, AuthLayout
+    dashboard/    # Dashboard chrome and widgets
+    documents/    # Invoice / print
+    rent/         # Rent map
+  context/        # React providers
+  data/           # Seed data + static copy
+  hooks/
+  pages/          # Public screens (Home, Rent, ...)
+    dashboard/
+      tenant/     # TenantOverview.jsx, TenantPayments.jsx, ...
+      landlord/   # LandlordOverview.jsx, ...
+      admin/      # AdminOverview.jsx, ...
+  utils/
 ```
+
+Quick lookup map: `AGENTS.md` and `.cursor/skills/organize-code/STRUCTURE.md`.
 
 ## Docs for backend developer
 

@@ -18,8 +18,18 @@ export const PAYMENT_HISTORY = [
 ]
 
 export const RENTAL_REQUESTS = [
-  { id: 1, propertyId: 3, status: 'pending', requestedDate: '2026-07-28' },
-  { id: 2, propertyId: 6, status: 'accepted', requestedDate: '2026-07-10' },
+  { id: 1, propertyId: 3, kind: 'rent', status: 'pending', requestedDate: '2026-07-28' },
+  { id: 2, propertyId: 6, kind: 'rent', status: 'accepted', requestedDate: '2026-07-10' },
+  {
+    id: 3,
+    propertyId: 1,
+    kind: 'viewing',
+    status: 'pending',
+    requestedDate: '2026-08-15',
+    viewingDate: '2026-08-22',
+    viewingTime: '10:00',
+    note: 'Weekday morning preferred',
+  },
 ]
 
 export const SAVED_PROPERTY_IDS = [1, 2]
