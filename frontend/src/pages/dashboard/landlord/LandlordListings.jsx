@@ -6,6 +6,8 @@ import { isLandlordListing } from '@/utils/dashboard'
 import PageHeader from '@/components/dashboard/PageHeader'
 import StatusPill from '@/components/dashboard/StatusPill'
 import PropertyFormModal from '@/components/dashboard/PropertyFormModal'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 
 export default function LandlordListings() {
   const { user } = useAuth()
@@ -46,98 +48,109 @@ export default function LandlordListings() {
         title="Listings"
         subtitle="Manage your rental properties"
         actions={
-          <button
-            onClick={openAddModal}
-            className="flex items-center gap-1.5 rounded-full bg-forest px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-forest-dark"
-          >
-            <Plus className="h-4 w-4" />
-            Add Listing
-          </button>
+          <Button type="button" size="lg" className="px-5" onClick={openAddModal}>
+            <Plus />
+            Add listing
+          </Button>
         }
       />
 
       <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {listings.map((p) => (
-          <div key={p.id} className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
+          <Card key={p.id} className="py-0">
             <div className="relative h-40 w-full">
               <img src={p.image} alt={p.title} className="h-full w-full object-cover" />
               <span className="absolute left-3 top-3">
-                <StatusPill label={p.available ? 'Available' : 'Rented'} tone={p.available ? 'positive' : 'neutral'} />
+                <StatusPill
+                  label={p.available ? 'Available' : 'Rented'}
+                  tone={p.available ? 'positive' : 'neutral'}
+                />
               </span>
             </div>
 
-            <div className="p-4">
+            <CardContent className="pb-4">
               <div className="flex items-center justify-between gap-2">
-                <p className="truncate font-semibold text-gray-900">{p.title}</p>
-                <p className="shrink-0 font-semibold text-gray-900">${p.price}<span className="text-xs font-medium text-gray-500">/mo</span></p>
+                <p className="truncate font-semibold text-foreground">{p.title}</p>
+                <p className="shrink-0 font-semibold text-foreground">
+                  ${p.price}
+                  <span className="text-xs font-medium text-muted-foreground">/mo</span>
+                </p>
               </div>
-              <p className="mt-0.5 truncate text-sm text-gray-500">
+              <p className="mt-0.5 truncate text-sm text-muted-foreground">
                 {p.neighbourhood ? `${p.neighbourhood} · ` : ''}
                 {p.city}
               </p>
-              <p className="mt-0.5 text-sm text-gray-500">
+              <p className="mt-0.5 text-sm text-muted-foreground">
                 {p.type}
                 {p.bedrooms ? ` · ${p.bedrooms} bed` : ''}
                 {p.area ? ` · ${p.area} m²` : ''}
               </p>
 
               {confirmDeleteId === p.id ? (
-                <div className="mt-3 flex items-center justify-center gap-2 rounded-full bg-gray-50 py-2">
-                  <span className="text-xs text-gray-500">Delete this listing?</span>
-                  <button
+                <div className="mt-3 flex items-center justify-center gap-2 rounded-full bg-muted py-2">
+                  <span className="text-xs text-muted-foreground">Delete this listing?</span>
+                  <Button
+                    type="button"
+                    size="icon-xs"
+                    variant="destructive"
                     onClick={() => handleConfirmDelete(p.id)}
                     aria-label="Confirm delete"
-                    className="flex h-6 w-6 items-center justify-center rounded-full bg-red-100 text-red-600 hover:bg-red-200"
                   >
-                    <Check className="h-3.5 w-3.5" />
-                  </button>
-                  <button
+                    <Check />
+                  </Button>
+                  <Button
+                    type="button"
+                    size="icon-xs"
+                    variant="outline"
                     onClick={() => setConfirmDeleteId(null)}
                     aria-label="Cancel delete"
-                    className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200"
                   >
-                    <X className="h-3.5 w-3.5" />
-                  </button>
+                    <X />
+                  </Button>
                 </div>
               ) : (
                 <div className="mt-3 flex items-center gap-2">
-                  <button
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="flex-1"
                     onClick={() => openEditModal(p)}
-                    className="flex flex-1 items-center justify-center gap-1.5 rounded-full border border-gray-300 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50"
                   >
-                    <Pencil className="h-3.5 w-3.5" />
+                    <Pencil />
                     Edit
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 hover:border-destructive/30 hover:bg-destructive/10 hover:text-destructive"
                     onClick={() => setConfirmDeleteId(p.id)}
-                    className="flex flex-1 items-center justify-center gap-1.5 rounded-full border border-gray-300 py-2 text-xs font-semibold text-gray-700 hover:border-red-200 hover:bg-red-50 hover:text-red-600"
                   >
-                    <Trash2 className="h-3.5 w-3.5" />
+                    <Trash2 />
                     Delete
-                  </button>
+                  </Button>
                 </div>
               )}
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         ))}
 
         {listings.length === 0 && (
           <div className="col-span-full py-10 text-center">
-            <p className="text-sm text-gray-500">No listings yet. Add your first property to start receiving requests.</p>
-            <button
-              type="button"
-              onClick={openAddModal}
-              className="mt-3 text-sm font-semibold text-forest hover:underline"
-            >
+            <p className="text-sm text-muted-foreground">
+              No listings yet. Add your first property to start receiving requests.
+            </p>
+            <Button type="button" variant="link" className="mt-1" onClick={openAddModal}>
               Add a listing
-            </button>
+            </Button>
           </div>
         )}
       </div>
 
       <PropertyFormModal
         open={modalOpen}
-        title={editingProperty ? 'Edit Listing' : 'Add New Listing'}
+        title={editingProperty ? 'Edit listing' : 'Add listing'}
         initialValues={editingProperty}
         onClose={() => setModalOpen(false)}
         onSubmit={handleSubmit}

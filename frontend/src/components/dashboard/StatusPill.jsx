@@ -1,11 +1,19 @@
-const TONE_CLASSES = {
-  positive: 'bg-sage/60 text-forest',
-  warning: 'bg-amber-100 text-amber-700',
-  neutral: 'bg-gray-100 text-gray-600',
+import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
+
+const TONE_CLASS = {
+  positive: 'border-transparent bg-secondary text-primary',
+  warning: 'border-transparent bg-amber-100 text-amber-800',
+  neutral: '',
 }
 
 export default function StatusPill({ label, tone = 'neutral' }) {
   return (
-    <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${TONE_CLASSES[tone]}`}>{label}</span>
+    <Badge
+      variant={tone === 'neutral' ? 'outline' : 'secondary'}
+      className={cn(TONE_CLASS[tone])}
+    >
+      {label}
+    </Badge>
   )
 }

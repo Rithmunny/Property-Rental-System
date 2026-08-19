@@ -4,12 +4,18 @@ import { Menu, X, Search, User } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import RentMegaMenu, { RentNavTrigger, RentMobileAccordion } from './RentMegaMenu'
 import BrandLogo from '@/components/common/BrandLogo'
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
 const TICKER_TEXT = 'Verified rental homes across Cambodia — find your next place today'
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
   const [rentOpen, setRentOpen] = useState(false)
   const { user, logout } = useAuth()
   const location = useLocation()
@@ -19,7 +25,6 @@ export default function Navbar() {
   useEffect(() => {
     setRentOpen(false)
     setOpen(false)
-    setMenuOpen(false)
   }, [location.pathname, location.search])
 
   useEffect(() => {
@@ -76,55 +81,35 @@ export default function Navbar() {
           </div>
 
           <div className="hidden items-center gap-3 md:flex">
-            <Link
-              to="/rent"
-              aria-label="Search rentals"
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-600 hover:border-forest hover:text-forest"
-            >
-              <Search className="h-4 w-4" />
-            </Link>
+            <Button asChild variant="outline" size="icon" aria-label="Search rentals">
+              <Link to="/rent">
+                <Search />
+              </Link>
+            </Button>
 
             {user ? (
-              <div className="relative">
-                <button
-                  onClick={() => setMenuOpen(!menuOpen)}
-                  className="flex items-center gap-2 rounded-full bg-forest py-2 pl-3 pr-4 text-sm font-medium text-white hover:bg-forest-dark"
-                >
-                  <User className="h-4 w-4" />
-                  {user.name}
-                </button>
-                {menuOpen && (
-                  <div className="absolute right-0 mt-2 w-44 overflow-hidden rounded-xl border border-gray-200 bg-white py-2 shadow-xl">
-                    <Link
-                      to="/dashboard"
-                      onClick={() => setMenuOpen(false)}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                    >
-                      Dashboard
-                    </Link>
-                    <button
-                      onClick={() => {
-                        logout()
-                        setMenuOpen(false)
-                      }}
-                      className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
-                    >
-                      Log out
-                    </button>
-                  </div>
-                )}
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button size="lg" className="px-4">
+                    <User />
+                    {user.name}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-44">
+                  <DropdownMenuItem asChild>
+                    <Link to="/dashboard">Dashboard</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={logout}>Log out</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <>
-                <Link to="/login" className="text-sm font-medium text-gray-700 hover:text-forest">
-                  Log in
-                </Link>
-                <Link
-                  to="/register"
-                  className="rounded-full bg-forest px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-forest-dark"
-                >
-                  Sign up
-                </Link>
+                <Button asChild variant="ghost">
+                  <Link to="/login">Log in</Link>
+                </Button>
+                <Button asChild size="lg" className="px-5">
+                  <Link to="/register">Sign up</Link>
+                </Button>
               </>
             )}
           </div>
