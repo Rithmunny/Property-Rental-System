@@ -3,6 +3,7 @@ import { useAuth } from '@/context/AuthContext'
 import { useToast } from '@/context/ToastContext'
 import * as settingsApi from '@/api/settings'
 import PageHeader from '@/components/dashboard/PageHeader'
+import AbaQrCard from '@/components/dashboard/AbaQrCard'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -222,6 +223,8 @@ export default function Settings() {
               </CardContent>
             </Card>
           </form>
+
+          {user?.role === 'landlord' && <AbaQrCard />}
 
           <form onSubmit={handlePassword} className="lg:col-span-2">
             <Card>

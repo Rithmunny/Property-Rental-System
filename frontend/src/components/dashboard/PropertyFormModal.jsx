@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { ImagePlus, X } from 'lucide-react'
 import { CITIES, PROPERTY_TYPES } from '@/data/properties'
 import { areasForCity } from '@/data/areas'
 import {
@@ -7,6 +8,8 @@ import {
   LEASE_TERM_OPTIONS,
   PROPERTY_DEFAULTS,
 } from '@/utils/listing'
+import { readImageFile } from '@/utils/image'
+import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -253,34 +256,34 @@ export default function PropertyFormModal({ open, title, initialValues, onClose,
             </FormSection>
 
             <FormSection title="Photos">
-              <Field
-                label="Cover photo URL"
-                name="image"
+              <PhotoSlot
+                id="image"
+                label="Cover photo"
                 value={form.image}
-                onChange={handleChange}
-                placeholder="Leave blank for a placeholder"
+                onChange={(value) => setField('image', value)}
+                className="aspect-video"
               />
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <Field
+              <div className="grid grid-cols-3 gap-3">
+                <PhotoSlot
+                  id="image2"
                   label="Photo 2"
-                  name="image2"
                   value={form.image2}
-                  onChange={handleChange}
-                  placeholder="Optional"
+                  onChange={(value) => setField('image2', value)}
+                  optional
                 />
-                <Field
+                <PhotoSlot
+                  id="image3"
                   label="Photo 3"
-                  name="image3"
                   value={form.image3}
-                  onChange={handleChange}
-                  placeholder="Optional"
+                  onChange={(value) => setField('image3', value)}
+                  optional
                 />
-                <Field
+                <PhotoSlot
+                  id="image4"
                   label="Photo 4"
-                  name="image4"
                   value={form.image4}
-                  onChange={handleChange}
-                  placeholder="Optional"
+                  onChange={(value) => setField('image4', value)}
+                  optional
                 />
               </div>
             </FormSection>
@@ -350,6 +353,82 @@ function FormSection({ title, children }) {
       <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{title}</h3>
       {children}
     </section>
+  )
+}
+
+function PhotoSlot({ id, label, value, onChange, optional = false, className }) {
+  const inputRef = useRef(null)
+  const [busy, setBusy] = useState(false)
+
+  const openPicker = () => inputRef.current?.click()
+
+  const handleFile = async (event) => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file || !file.type.startsWith('image/')) return
+    setBusy(true)
+    try {
+      onChange(await readImageFile(file))
+    } catch {
+      // Keep the previous photo if the file cannot be read.
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="flex flex-col gap-1.5">
+      <Label htmlFor={id}>{label}</Label>
+      <div
+        className={cn(
+          'relative overflow-hidden rounded-xl border border-dashed border-input bg-muted/30',
+          value && 'border-solid',
+          className || 'aspect-[4/3]',
+        )}
+      >
+        {value ? (
+          <>
+            <img src={value} alt="" className="size-full object-cover" />
+            <button
+              type="button"
+              className="absolute inset-0"
+              onClick={openPicker}
+              aria-label={`Replace ${label}`}
+            />
+            <Button
+              type="button"
+              variant="secondary"
+              size="icon-xs"
+              className="absolute top-1.5 right-1.5 z-10"
+              onClick={() => onChange('')}
+              aria-label={`Remove ${label}`}
+            >
+              <X />
+            </Button>
+          </>
+        ) : (
+          <button
+            type="button"
+            onClick={openPicker}
+            disabled={busy}
+            className="flex size-full flex-col items-center justify-center gap-1 px-2 text-center text-muted-foreground hover:bg-muted/50"
+          >
+            <ImagePlus className="size-5" />
+            <span className="text-[11px] leading-tight">
+              {busy ? 'Loading…' : optional ? 'Optional' : 'Upload photo'}
+            </span>
+          </button>
+        )}
+        <input
+          ref={inputRef}
+          id={id}
+          type="file"
+          accept="image/*"
+          className="sr-only"
+          onChange={handleFile}
+        />
+      </div>
+    </div>
   )
 }
 

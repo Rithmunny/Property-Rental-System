@@ -1,9 +1,8 @@
 import { useMemo, useState, useEffect, useRef } from 'react'
 import { Link, useSearchParams, useNavigate } from 'react-router-dom'
-import { Search, Building2, Heart, Map as MapIcon, LayoutGrid, BellPlus } from 'lucide-react'
-import { CITIES, PROPERTY_TYPES } from '@/data/properties'
+import { Building2, Heart, Map as MapIcon, LayoutGrid, BellPlus } from 'lucide-react'
 import { areasForCity } from '@/data/areas'
-import { FURNISHED_OPTIONS, PRICE_MAX, matchesPropertyFilters, normalizeFilter } from '@/utils/listing'
+import { PRICE_MAX, matchesPropertyFilters, normalizeFilter } from '@/utils/listing'
 import { useProperties } from '@/context/PropertiesContext'
 import { useAuth } from '@/context/AuthContext'
 import { useAlerts } from '@/context/AlertsContext'
@@ -11,9 +10,7 @@ import { useToast } from '@/context/ToastContext'
 import RentalCard from '@/components/common/RentalCard'
 import SkeletonCard from '@/components/common/SkeletonCard'
 import RentMap from '@/components/rent/RentMap'
-
-const SELECT_CLASS =
-  'rounded-full border border-gray-300 px-4 py-2.5 text-sm text-gray-700 outline-none focus:border-forest'
+import RentFilters from '@/components/rent/RentFilters'
 
 export default function Rent() {
   const { properties, loading, error, refresh } = useProperties()
@@ -134,94 +131,24 @@ export default function Rent() {
   return (
     <div className="bg-cream/40 min-h-[70vh]">
       <div className="sticky top-[104px] z-30 border-b border-gray-200 bg-white/95 backdrop-blur">
-        <form
+        <RentFilters
+          query={query}
+          onQueryChange={setQuery}
+          city={city}
+          onCityChange={handleCityChange}
+          areaFilter={areaFilter}
+          onAreaChange={setAreaFilter}
+          areaOptions={areaOptions}
+          type={type}
+          onTypeChange={setType}
+          beds={beds}
+          onBedsChange={setBeds}
+          furnished={furnished}
+          onFurnishedChange={setFurnished}
+          maxPrice={maxPrice}
+          onMaxPriceChange={setMaxPrice}
           onSubmit={applySearch}
-          className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:px-6 lg:flex-row lg:flex-wrap lg:items-center lg:gap-3 lg:px-10"
-        >
-          <div className="flex flex-1 items-center gap-2 rounded-full border border-gray-300 px-4 py-2.5">
-            <Search className="h-4 w-4 shrink-0 text-gray-400" />
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search by title, street, or area"
-              className="w-full border-none bg-transparent text-sm outline-none placeholder:text-gray-400"
-            />
-          </div>
-          <select
-            value={city}
-            onChange={(e) => handleCityChange(e.target.value)}
-            className={SELECT_CLASS}
-          >
-            <option value="All">All cities</option>
-            {CITIES.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
-          <select
-            value={areaFilter}
-            onChange={(e) => setAreaFilter(e.target.value)}
-            className={SELECT_CLASS}
-          >
-            <option value="All">All areas</option>
-            {areaOptions.map((a) => (
-              <option key={a.id} value={a.name}>
-                {a.name}
-              </option>
-            ))}
-          </select>
-          <select
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-            className={SELECT_CLASS}
-          >
-            <option value="All">All types</option>
-            {PROPERTY_TYPES.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
-          <select value={beds} onChange={(e) => setBeds(e.target.value)} className={SELECT_CLASS}>
-            <option value="All">Any beds</option>
-            <option value="1">1+</option>
-            <option value="2">2+</option>
-            <option value="3">3+</option>
-          </select>
-          <select
-            value={furnished}
-            onChange={(e) => setFurnished(e.target.value)}
-            className={SELECT_CLASS}
-          >
-            <option value="All">Any furnishing</option>
-            {FURNISHED_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value}>
-                {o.label}
-              </option>
-            ))}
-          </select>
-          <label className="flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2.5 text-sm text-gray-700">
-            Max ${maxPrice}
-            <input
-              type="range"
-              min="50"
-              max={PRICE_MAX}
-              step="50"
-              value={maxPrice}
-              onChange={(e) => setMaxPrice(Number(e.target.value))}
-              className="w-24 accent-forest"
-            />
-          </label>
-          <button
-            type="submit"
-            className="flex items-center justify-center gap-2 rounded-full bg-forest px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-forest-dark"
-          >
-            <Search className="h-4 w-4" />
-            Update Search
-          </button>
-        </form>
+        />
       </div>
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-10">

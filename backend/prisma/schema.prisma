@@ -1,0 +1,182 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id               Int      @id @default(autoincrement())
+  name             String
+  email            String   @unique
+  passwordHash     String
+  role             String
+  status           String   @default("active")
+  phone            String   @default("")
+  telegram         String   @default("")
+  notifyListings   Boolean  @default(true)
+  notifyRequests   Boolean  @default(true)
+  notifyPayments   Boolean  @default(true)
+  preferredContact String   @default("telegram")
+  abaQrImage       String   @default("")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  properties      Property[]
+  requests        RentalRequest[]
+  contracts       Contract[]
+  savedProperties SavedProperty[]
+  savedSearches   SavedSearch[]
+  reviews         Review[]
+  threads         MessageThread[]
+  sentMessages    Message[]
+}
+
+model Property {
+  id              Int      @id @default(autoincrement())
+  landlordId      Int
+  landlordUser    User     @relation(fields: [landlordId], references: [id], onDelete: Cascade)
+  title           String
+  type            String
+  city            String
+  neighbourhood   String   @default("")
+  address         String   @default("")
+  price           Float
+  bedrooms        Int      @default(1)
+  bathrooms       Int      @default(1)
+  area            Int      @default(0)
+  lat             Float?
+  lng             Float?
+  image           String   @default("")
+  images          Json     @default("[]")
+  description     String   @default("")
+  amenities       Json     @default("[]")
+  available       Boolean  @default(true)
+  furnished       String   @default("furnished")
+  leaseTermMonths Int      @default(12)
+  depositMonths   Int      @default(2)
+  electricityRate Float?
+  parkingFee      Float    @default(0)
+  telegram        String   @default("")
+  whatsapp        String   @default("")
+  phone           String   @default("")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  requests  RentalRequest[]
+  contracts Contract[]
+  reviews   Review[]
+  threads   MessageThread[]
+  savedBy   SavedProperty[]
+}
+
+model RentalRequest {
+  id            Int       @id @default(autoincrement())
+  propertyId    Int
+  property      Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  tenantId      Int
+  tenant        User      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  kind          String
+  status        String    @default("pending")
+  requestedDate DateTime  @db.Date
+  viewingDate   DateTime? @db.Date
+  viewingTime   String?
+  note          String    @default("")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([tenantId])
+  @@index([propertyId])
+}
+
+model Contract {
+  id            Int      @id @default(autoincrement())
+  propertyId    Int
+  property      Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  tenantId      Int
+  tenant        User     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  startDate     DateTime @db.Date
+  endDate       DateTime @db.Date
+  rent          Float
+  deposit       Float
+  status        String   @default("active")
+  paymentMethod String   @default("aba")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  payments      Payment[]
+
+  @@index([tenantId])
+  @@index([propertyId])
+}
+
+model Payment {
+  id         Int      @id @default(autoincrement())
+  contractId Int
+  contract   Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  amount     Float
+  method     String   @default("aba")
+  status     String   @default("paid")
+  month      String
+  date       DateTime @db.Date
+  createdAt  DateTime @default(now())
+}
+
+model SavedProperty {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  propertyId Int
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, propertyId])
+}
+
+model SavedSearch {
+  id            Int      @id @default(autoincrement())
+  userId        Int
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  filters       Json
+  lastSeenMaxId Int      @default(0)
+  createdAt     DateTime @default(now())
+}
+
+model Review {
+  id          Int      @id @default(autoincrement())
+  propertyId  Int
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  tenantId    Int
+  tenant      User     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenantEmail String
+  tenantName  String
+  rating      Int
+  comment     String   @default("")
+  createdAt   DateTime @default(now()) @db.Date
+
+  @@unique([propertyId, tenantId])
+}
+
+model MessageThread {
+  id         Int       @id @default(autoincrement())
+  propertyId Int
+  property   Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  tenantId   Int
+  tenant     User      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  createdAt  DateTime  @default(now())
+  messages   Message[]
+
+  @@unique([propertyId, tenantId])
+}
+
+model Message {
+  id         Int           @id @default(autoincrement())
+  threadId   Int
+  thread     MessageThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  fromUserId Int
+  fromUser   User          @relation(fields: [fromUserId], references: [id], onDelete: Cascade)
+  text       String
+  createdAt  DateTime      @default(now())
+}

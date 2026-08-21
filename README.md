@@ -2,7 +2,46 @@
 
 A web app for browsing rental homes and managing them as a **tenant**, **landlord**, or **admin**.
 
-The frontend is built and runnable today. Data lives in the browser (mock API + `localStorage`) so you can demo every role without a backend.
+The React frontend talks to an Express + PostgreSQL API in `backend/`. Mock mode (`VITE_USE_MOCK=true`) still works for frontend-only demos.
+
+## Run it
+
+You need Node.js 18+ and Docker (for PostgreSQL). The database is published on host port **5433** so it does not clash with a local Postgres on 5432.
+
+```bash
+# 1. Start Postgres
+docker compose up -d
+
+# 2. API
+cd backend
+copy .env.example .env   # Windows; on macOS/Linux: cp .env.example .env
+npm install
+npx prisma migrate dev --name init
+npx prisma db seed
+npm run dev              # http://localhost:5000
+
+# 3. Frontend (separate terminal)
+cd frontend
+copy .env.example .env   # set VITE_USE_MOCK=false to use the API
+npm install
+npm run dev              # http://localhost:5173
+```
+
+Open http://localhost:5173
+
+## Demo accounts
+
+Password for every seeded user: `password123`
+
+| Role | Email | Dashboard |
+|------|-------|-----------|
+| Tenant | `demo@tenant.com` | `/dashboard/tenant` |
+| Landlord | `sokdara@prs.demo` | `/dashboard/landlord` |
+| Admin | `admin@prs.local` | `/dashboard/admin` |
+
+Other landlords: `chan.sopheak@prs.demo`, `ly.vannak@prs.demo`, `kim.sreymom@prs.demo`, `heng.bopha@prs.demo`, `pich.rathanak@prs.demo` (pending). On the live API, login uses the account’s stored role (the role dropdown is ignored).
+
+Frontend-only mock: set `VITE_USE_MOCK=true`. Any email/password works; pick a role on the login form.
 
 ## What is done
 
@@ -11,7 +50,7 @@ The frontend is built and runnable today. Data lives in the browser (mock API + 
 - Rent listings with filters (city, area, type, beds, furnished, price), sort, and a map view
 - Property detail with photos, amenities, contact links, reviews, save-to-favorites, and rent / viewing requests
 - Discover and About pages
-- Login and register (pick a role; any email/password works in mock mode)
+- Login and register (tenant or landlord)
 
 ### Tenant dashboard
 - Overview, current rental, payments (including invoice print)
@@ -32,34 +71,10 @@ The frontend is built and runnable today. Data lives in the browser (mock API + 
 ### App foundation
 - Role-based routes and layouts
 - Shared UI (buttons, dialogs, forms) with a common theme
-- API modules ready to point at a real server (`VITE_USE_MOCK=false`)
-
-## Run it
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Open http://localhost:5173
-
-Copy `frontend/.env.example` to `frontend/.env` if you need to change the API URL. Mock mode is on by default (`VITE_USE_MOCK=true`).
-
-## Try the roles
-
-On Login, use any email and password, then choose a role:
-
-| Role | Dashboard |
-|------|-----------|
-| Tenant | `/dashboard/tenant` |
-| Landlord | `/dashboard/landlord` |
-| Admin | `/dashboard/admin` |
+- REST API in `backend/` (`VITE_USE_MOCK=false`)
 
 ## Stack
 
-React, Vite, Tailwind CSS, React Router, Leaflet (map), jsPDF (invoices). No backend is required for the current demo.
+Frontend: React, Vite, Tailwind CSS, React Router, Leaflet (map), jsPDF (invoices).
 
-## Not done yet
-
-A real backend (auth, database, payments) is not connected. The app is set up to switch off mock mode and call `VITE_API_URL` when that work starts.
+Backend: Node.js, Express, PostgreSQL, Prisma, JWT auth. Payments are recorded ABA/cash rows (no payment gateway). Property photos are URL strings.
