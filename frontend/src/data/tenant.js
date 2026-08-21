@@ -7,6 +7,7 @@ export const CURRENT_RENTAL = {
   rent: 900,
   deposit: 1800,
   paymentMethod: 'aba',
+  abaQrImage: '',
 }
 
 export const NEXT_PAYMENT = { dueDate: 'Aug 1', amount: 900 }

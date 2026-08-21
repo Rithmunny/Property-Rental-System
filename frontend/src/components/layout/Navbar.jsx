@@ -19,7 +19,8 @@ export default function Navbar() {
   const [rentOpen, setRentOpen] = useState(false)
   const { user, logout } = useAuth()
   const location = useLocation()
-  const rentRef = useRef(null)
+  const rentTriggerRef = useRef(null)
+  const rentMenuRef = useRef(null)
   const rentActive = location.pathname.startsWith('/rent') || location.pathname.startsWith('/listings')
 
   useEffect(() => {
@@ -30,10 +31,19 @@ export default function Navbar() {
   useEffect(() => {
     if (!rentOpen) return
     const onPointer = (e) => {
-      if (rentRef.current && !rentRef.current.contains(e.target)) setRentOpen(false)
+      if (rentTriggerRef.current?.contains(e.target)) return
+      if (rentMenuRef.current?.contains(e.target)) return
+      setRentOpen(false)
+    }
+    const onKey = (e) => {
+      if (e.key === 'Escape') setRentOpen(false)
     }
     document.addEventListener('mousedown', onPointer)
-    return () => document.removeEventListener('mousedown', onPointer)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onPointer)
+      document.removeEventListener('keydown', onKey)
+    }
   }, [rentOpen])
 
   const linkClass = ({ isActive }) =>
@@ -54,7 +64,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      <header className="border-b border-gray-200 bg-white">
+      <header className="relative border-b border-gray-200 bg-white">
         <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-10">
           <Link to="/" className="flex items-center text-lg font-bold text-gray-900">
             <BrandLogo className="h-9 w-auto" />
@@ -64,13 +74,12 @@ export default function Navbar() {
             <NavLink to="/" className={linkClass} end>
               Home
             </NavLink>
-            <div className="relative" ref={rentRef}>
+            <div ref={rentTriggerRef}>
               <RentNavTrigger
                 open={rentOpen}
                 isActive={rentActive}
                 onToggle={() => setRentOpen((v) => !v)}
               />
-              {rentOpen && <RentMegaMenu onNavigate={() => setRentOpen(false)} />}
             </div>
             <NavLink to="/about" className={linkClass}>
               About
@@ -118,6 +127,17 @@ export default function Navbar() {
             {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </nav>
+
+        {rentOpen && (
+          <div
+            ref={rentMenuRef}
+            className="absolute inset-x-0 top-full z-50 hidden md:block"
+          >
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
+              <RentMegaMenu onNavigate={() => setRentOpen(false)} />
+            </div>
+          </div>
+        )}
 
         {open && (
           <div className="flex flex-col gap-4 border-t border-gray-200 px-4 py-4 md:hidden">

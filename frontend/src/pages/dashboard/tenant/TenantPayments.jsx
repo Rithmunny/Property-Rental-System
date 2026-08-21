@@ -192,16 +192,31 @@ export default function TenantPayments() {
             </div>
 
             <p className="mt-2 text-sm text-gray-500">
-              Scan this mock QR in the ABA app, then confirm below.
+              {currentRental.abaQrImage
+                ? 'Scan your landlord\'s ABA QR in the ABA app, then confirm below.'
+                : 'Your landlord has not uploaded an ABA QR yet. Contact them, or mark as paid after you transfer.'}
             </p>
 
-            <div className="mx-auto mt-6 flex h-48 w-48 flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50">
-              <QrCode className="h-16 w-16 text-forest" strokeWidth={1.25} />
-              <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                ABA QR Placeholder
-              </p>
-              <p className="mt-1 text-sm font-semibold text-gray-900">${nextPayment.amount}</p>
-            </div>
+            {currentRental.abaQrImage ? (
+              <div className="mx-auto mt-6 w-full max-w-[220px]">
+                <img
+                  src={currentRental.abaQrImage}
+                  alt={`${currentRental.landlord || 'Landlord'} ABA QR`}
+                  className="aspect-square w-full rounded-2xl border border-gray-200 bg-white object-contain p-2"
+                />
+                <p className="mt-2 text-center text-sm font-semibold text-gray-900">
+                  ${nextPayment.amount}
+                </p>
+              </div>
+            ) : (
+              <div className="mx-auto mt-6 flex h-48 w-48 flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50">
+                <QrCode className="h-16 w-16 text-forest" strokeWidth={1.25} />
+                <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                  Waiting for QR
+                </p>
+                <p className="mt-1 text-sm font-semibold text-gray-900">${nextPayment.amount}</p>
+              </div>
+            )}
 
             <button
               type="button"

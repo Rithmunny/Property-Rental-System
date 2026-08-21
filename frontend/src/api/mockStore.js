@@ -86,11 +86,24 @@ export function setContracts(contracts) {
 }
 
 export function getTenantPayments() {
-  return read(STORAGE_KEYS.payments, {
+  const data = read(STORAGE_KEYS.payments, {
     currentRental: CURRENT_RENTAL,
     nextPayment: { dueDate: 'Aug 1', amount: CURRENT_RENTAL.rent },
     history: PAYMENT_HISTORY,
   })
+  return {
+    ...data,
+    currentRental: {
+      ...CURRENT_RENTAL,
+      ...data.currentRental,
+      abaQrImage: landlordAbaQr() || data.currentRental?.abaQrImage || '',
+    },
+  }
+}
+
+function landlordAbaQr() {
+  const all = read(STORAGE_KEYS.settings, {})
+  return Object.values(all).find((settings) => settings?.abaQrImage)?.abaQrImage || ''
 }
 
 export function setTenantPayments(data) {
@@ -202,6 +215,7 @@ export const DEFAULT_SETTINGS = {
   notifyRequests: true,
   notifyPayments: true,
   preferredContact: 'telegram',
+  abaQrImage: '',
 }
 
 export function getSettingsByEmail(email) {

@@ -6,6 +6,7 @@ import { useAuth } from '@/context/AuthContext'
 import { useProperties } from '@/context/PropertiesContext'
 import PageHeader from '@/components/dashboard/PageHeader'
 import PaymentDonut from '@/components/dashboard/PaymentDonut'
+import AbaQrCard from '@/components/dashboard/AbaQrCard'
 import SkeletonRow from '@/components/common/SkeletonRow'
 import PrintDocumentModal from '@/components/documents/PrintDocumentModal'
 import RentalInvoice from '@/components/documents/RentalInvoice'
@@ -141,10 +142,13 @@ export default function LandlordPayments() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 lg:col-span-1">
-          <h3 className="font-semibold text-gray-900">Payment Methods</h3>
-          <p className="text-sm text-gray-500">How tenants are paying</p>
-          <PaymentDonut aba={abaCount} cash={cashCount} />
+        <div className="flex flex-col gap-6 lg:col-span-1">
+          <div className="rounded-2xl border border-gray-200 bg-white p-5">
+            <h3 className="font-semibold text-gray-900">Payment Methods</h3>
+            <p className="text-sm text-gray-500">How tenants are paying</p>
+            <PaymentDonut aba={abaCount} cash={cashCount} />
+          </div>
+          <AbaQrCard />
         </div>
       </div>
 

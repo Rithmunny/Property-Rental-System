@@ -70,7 +70,8 @@ export default function Login() {
             </SelectContent>
           </Select>
           <p className="text-xs text-muted-foreground">
-            Demo tip: pick a role (Tenant, Landlord, or Admin) to open that dashboard in mock mode.
+            Mock mode: pick a role to open that dashboard. Live API: the account&apos;s stored
+            role is used (see README for demo emails).
           </p>
         </div>
 

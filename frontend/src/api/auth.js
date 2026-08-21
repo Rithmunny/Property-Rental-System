@@ -48,17 +48,31 @@ async function mockMe() {
 
 export async function login(credentials) {
   if (USE_MOCK) return mockLogin(credentials)
-  return request('/api/auth/login', { method: 'POST', body: JSON.stringify(credentials) })
+  const session = await request('/api/auth/login', {
+    method: 'POST',
+    body: JSON.stringify(credentials),
+  })
+  setSession(session)
+  return session
 }
 
 export async function register(data) {
   if (USE_MOCK) return mockRegister(data)
-  return request('/api/auth/register', { method: 'POST', body: JSON.stringify(data) })
+  const session = await request('/api/auth/register', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+  setSession(session)
+  return session
 }
 
 export async function logout() {
   if (USE_MOCK) return mockLogout()
-  return request('/api/auth/logout', { method: 'POST' })
+  try {
+    await request('/api/auth/logout', { method: 'POST' })
+  } finally {
+    setSession(null)
+  }
 }
 
 export async function me() {

@@ -39,28 +39,30 @@ function buildRentHref({ type, city }) {
 
 export default function RentMegaMenu({ onNavigate }) {
   return (
-    <div className="absolute left-1/2 top-full z-50 mt-2 w-[min(100vw-2rem,720px)] -translate-x-1/2 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl">
-      <div className="grid grid-cols-1 gap-6 p-6 sm:grid-cols-3">
-        {RENT_MENU_COLUMNS.map((col) => (
-          <div key={col.title}>
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">{col.title}</p>
-            <ul className="mt-3 flex flex-col gap-2">
-              {col.items.map((item) => (
-                <li key={item.label}>
-                  <Link
-                    to={buildRentHref(item)}
-                    onClick={onNavigate}
-                    className="text-sm text-gray-700 transition-colors hover:text-forest"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+    <div className="mt-2 flex max-h-[min(70vh,32rem)] flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl">
+      <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden">
+        <div className="grid grid-cols-1 gap-6 p-4 sm:grid-cols-2 sm:p-6 lg:grid-cols-3">
+          {RENT_MENU_COLUMNS.map((col) => (
+            <div key={col.title} className="min-w-0">
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">{col.title}</p>
+              <ul className="mt-3 flex flex-col gap-2">
+                {col.items.map((item) => (
+                  <li key={item.label}>
+                    <Link
+                      to={buildRentHref(item)}
+                      onClick={onNavigate}
+                      className="text-sm text-gray-700 transition-colors hover:text-forest"
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
       </div>
-      <div className="border-t border-gray-100 bg-cream/60 px-6 py-3">
+      <div className="shrink-0 border-t border-gray-100 bg-cream/60 px-4 py-3 sm:px-6">
         <Link
           to="/rent"
           onClick={onNavigate}
