@@ -17,5 +17,8 @@ Thumbs.db
 .vscode/
 .idea/
 
+# Local Cursor agent skills
+.cursor/skills/
+
 # Course review package (kept local, not part of this repo)
 docs/
