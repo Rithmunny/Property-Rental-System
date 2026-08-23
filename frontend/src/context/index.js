@@ -1,3 +1,4 @@
+export { ThemeProvider, useTheme } from './ThemeContext'
 export { AuthProvider, useAuth } from './AuthContext'
 export { PropertiesProvider, useProperties } from './PropertiesContext'
 export { RequestsProvider, useRequests } from './RequestsContext'

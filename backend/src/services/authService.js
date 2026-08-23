@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs'
 import { prisma } from '../config/prisma.js'
 import { HttpError } from '../utils/httpError.js'
 import { toSession, toSettingsDto, toUserDto } from '../dto/user.js'
+import { isAdmin } from '../utils/roles.js'
 
 const SETTINGS_FIELDS = [
   'phone',
@@ -25,7 +26,7 @@ function pickSettings(body = {}) {
 
 function pickAbaQr(user, body = {}) {
   if (body.abaQrImage == null) return {}
-  if (user.role !== 'landlord' && user.role !== 'admin') return {}
+  if (user.role !== 'landlord' && !isAdmin(user.role)) return {}
   return { abaQrImage: String(body.abaQrImage) }
 }
 

@@ -36,13 +36,16 @@ async function upsertUser(passwordHash, data) {
 
 async function main() {
   const passwordHash = await bcrypt.hash('password123', 10)
+  const superAdminHash = await bcrypt.hash('super-admin1234', 10)
 
-  const admin = await upsertUser(passwordHash, {
-    name: 'PRS Admin',
-    email: 'admin@prs.local',
-    role: 'admin',
+  await prisma.user.deleteMany({ where: { email: 'admin@prs.local' } })
+
+  const admin = await upsertUser(superAdminHash, {
+    name: 'Rithmony',
+    email: 'rithmunnysopheak@gmail.com',
+    role: 'super_admin',
     status: 'active',
-    telegram: '@prs_admin',
+    telegram: '@rithmony',
   })
 
   const landlordByEmail = {}
@@ -301,7 +304,7 @@ async function main() {
   })
 
   console.log(
-    `Seeded ${createdProperties.length} Cambodia listings and ${Object.keys(landlordByEmail).length} landlords. Admin id ${admin.id}. Password for all demo users: password123`,
+    `Seeded ${createdProperties.length} Cambodia listings and ${Object.keys(landlordByEmail).length} landlords. Super admin id ${admin.id} (rithmunnysopheak@gmail.com). Demo user password: password123`,
   )
 }
 

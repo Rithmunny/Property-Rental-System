@@ -1,6 +1,7 @@
 import { prisma } from '../config/prisma.js'
 import { HttpError } from '../utils/httpError.js'
 import { assertNotSuspended } from '../middleware/auth.js'
+import { isAdmin } from '../utils/roles.js'
 import { toRequestDto, requestInclude } from '../dto/rental.js'
 import { parseDate, parseId, todayUtc } from '../utils/dates.js'
 
@@ -106,7 +107,7 @@ export async function updateRequestStatus(user, id, status) {
     include: requestInclude,
   })
   if (!request) throw new HttpError(404, 'Request not found')
-  if (user.role !== 'admin' && request.property.landlordId !== user.id) {
+  if (!isAdmin(user.role) && request.property.landlordId !== user.id) {
     throw new HttpError(403, 'You cannot update this request')
   }
   if (user.role === 'landlord') assertNotSuspended(user)

@@ -30,7 +30,7 @@ export default function AuthLayout({ eyebrow, title, subtitle, children, footer 
             <h2 className="mt-3 max-w-sm text-3xl font-semibold leading-tight text-white">
               Find a place you'll love to come home to.
             </h2>
-            <p className="mt-4 max-w-sm text-sm leading-relaxed text-gray-200">
+            <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/80">
               Verified listings, direct messaging with landlords, and no hidden fees — all in
               one place.
             </p>
@@ -45,9 +45,9 @@ export default function AuthLayout({ eyebrow, title, subtitle, children, footer 
           transition={{ duration: 0.4, ease: 'easeOut' }}
           className="w-full max-w-sm"
         >
-          <p className="text-xs font-semibold uppercase tracking-wider text-forest">{eyebrow}</p>
-          <h1 className="mt-2 text-2xl font-bold text-gray-900 sm:text-3xl">{title}</h1>
-          <p className="mt-1 text-sm text-gray-600">{subtitle}</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-primary">{eyebrow}</p>
+          <h1 className="mt-2 text-2xl font-bold text-foreground sm:text-3xl">{title}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>
 
           {children}
 

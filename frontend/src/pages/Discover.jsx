@@ -75,8 +75,8 @@ export default function Discover() {
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-10">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">Neighbourhoods</h2>
-            <p className="mt-1 text-sm text-gray-500">
+            <h2 className="text-xl font-semibold text-foreground">Neighbourhoods</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
               Tap an area to browse matching rentals
             </p>
           </div>
@@ -93,7 +93,7 @@ export default function Discover() {
             <motion.div key={area.id} variants={fadeUp}>
               <Link
                 to={areaHref(area)}
-                className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white transition-shadow hover:shadow-lg"
+                className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card transition-shadow hover:shadow-lg"
               >
                 <div className="relative aspect-[16/10] overflow-hidden">
                   <img
@@ -108,22 +108,22 @@ export default function Discover() {
                 <div className="flex flex-1 flex-col p-5">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 group-hover:text-forest">
+                      <h3 className="text-lg font-semibold text-foreground group-hover:text-primary">
                         {area.name}
                       </h3>
-                      <p className="mt-0.5 flex items-center gap-1 text-xs text-gray-500">
+                      <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
                         <MapPin className="h-3.5 w-3.5" />
                         {area.fullName}
                       </p>
                     </div>
-                    <span className="shrink-0 text-xs font-medium text-gray-500">
+                    <span className="shrink-0 text-xs font-medium text-muted-foreground">
                       {area.avgRent}
                       <span className="block text-[10px] font-normal uppercase tracking-wide">
                         /mo guide
                       </span>
                     </span>
                   </div>
-                  <p className="mt-3 flex-1 text-sm leading-relaxed text-gray-600">{area.blurb}</p>
+                  <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">{area.blurb}</p>
                   <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-forest">
                     Browse rentals
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
@@ -134,22 +134,22 @@ export default function Discover() {
           ))}
         </motion.div>
 
-        <div className="mt-12 rounded-2xl border border-gray-200 bg-white p-6 sm:p-8">
-          <h2 className="text-lg font-semibold text-gray-900">Not sure where to start?</h2>
-          <p className="mt-2 max-w-2xl text-sm text-gray-600">
+        <div className="mt-12 rounded-2xl border border-border bg-card p-6 sm:p-8">
+          <h2 className="text-lg font-semibold text-foreground">Not sure where to start?</h2>
+          <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
             BKK1 and Riverside suit first-timers who want cafes and nightlife nearby. Toul Kork and
             BKK3 are calmer for families. Diamond Island is best if you want condo amenities.
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
             <Link
               to="/rent?city=Phnom+Penh"
-              className="rounded-full bg-forest px-5 py-2.5 text-sm font-semibold text-white hover:bg-forest-dark"
+              className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
             >
               Search Phnom Penh
             </Link>
             <Link
               to="/about#how-it-works"
-              className="rounded-full border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 hover:border-forest hover:text-forest"
+              className="rounded-full border border-border px-5 py-2.5 text-sm font-semibold text-muted-foreground hover:border-primary hover:text-primary"
             >
               How renting on PRS works
             </Link>

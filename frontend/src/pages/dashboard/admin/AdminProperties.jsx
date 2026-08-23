@@ -39,13 +39,13 @@ export default function AdminProperties() {
     <div>
       <PageHeader title="Properties" subtitle={subtitle} />
 
-      <div className="mt-6 overflow-hidden rounded-2xl border border-gray-200 bg-white">
+      <div className="mt-6 overflow-hidden rounded-2xl border border-border bg-card">
         {properties.length === 0 ? (
           <div className="px-5 py-10 text-center">
-            <p className="text-sm text-gray-500">No properties listed on the platform yet.</p>
+            <p className="text-sm text-muted-foreground">No properties listed on the platform yet.</p>
             <Link
               to="/dashboard/admin/landlords"
-              className="mt-3 inline-block text-sm font-semibold text-forest hover:underline"
+              className="mt-3 inline-block text-sm font-semibold text-primary hover:underline"
             >
               Review landlords
             </Link>
@@ -58,24 +58,24 @@ export default function AdminProperties() {
                 className="flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
               >
                 <div className="min-w-0">
-                  <p className="truncate font-medium text-gray-900">{p.title}</p>
-                  <p className="mt-0.5 text-sm text-gray-500 sm:hidden">
+                  <p className="truncate font-medium text-foreground">{p.title}</p>
+                  <p className="mt-0.5 text-sm text-muted-foreground sm:hidden">
                     {p.city} · {p.landlord}
                   </p>
                 </div>
 
-                <div className="flex flex-col gap-3 text-sm text-gray-600 sm:flex-row sm:items-center sm:gap-6">
+                <div className="flex flex-col gap-3 text-sm text-muted-foreground sm:flex-row sm:items-center sm:gap-6">
                   <div className="hidden sm:block">
-                    <p className="text-gray-400">City</p>
-                    <p className="font-medium text-gray-900">{p.city}</p>
+                    <p className="text-muted-foreground">City</p>
+                    <p className="font-medium text-foreground">{p.city}</p>
                   </div>
                   <div className="hidden sm:block">
-                    <p className="text-gray-400">Landlord</p>
-                    <p className="font-medium text-gray-900">{p.landlord}</p>
+                    <p className="text-muted-foreground">Landlord</p>
+                    <p className="font-medium text-foreground">{p.landlord}</p>
                   </div>
                   <div>
-                    <p className="text-gray-400">Price</p>
-                    <p className="font-medium text-gray-900">${p.price}/mo</p>
+                    <p className="text-muted-foreground">Price</p>
+                    <p className="font-medium text-foreground">${p.price}/mo</p>
                   </div>
                   <StatusPill
                     label={p.available ? 'Available' : 'Rented'}
@@ -85,7 +85,7 @@ export default function AdminProperties() {
                     type="button"
                     disabled={updatingId === p.id}
                     onClick={() => handleToggleAvailable(p)}
-                    className="min-h-9 rounded-full border border-gray-300 px-3.5 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+                    className="min-h-9 rounded-full border border-border px-3.5 py-1.5 text-xs font-semibold text-muted-foreground hover:bg-muted disabled:opacity-60"
                   >
                     {p.available ? 'Mark rented' : 'Mark available'}
                   </button>

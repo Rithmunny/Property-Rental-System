@@ -1,6 +1,7 @@
 import { prisma } from '../config/prisma.js'
 import { HttpError } from '../utils/httpError.js'
 import { assertNotSuspended } from '../middleware/auth.js'
+import { isAdmin } from '../utils/roles.js'
 import { toPropertyDto, propertyInclude } from '../dto/property.js'
 import { asNumber, asStringArray, parseId } from '../utils/dates.js'
 
@@ -56,7 +57,7 @@ async function loadProperty(id) {
 
 function canManage(user, property) {
   if (!user) return false
-  if (user.role === 'admin') return true
+  if (isAdmin(user.role)) return true
   return user.role === 'landlord' && user.id === property.landlordId
 }
 

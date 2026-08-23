@@ -1,5 +1,6 @@
 import { prisma } from '../config/prisma.js'
 import { HttpError } from '../utils/httpError.js'
+import { isAdmin } from '../utils/roles.js'
 import { getCurrentRental } from './rentalService.js'
 import { toCurrentRentalDto, contractInclude } from '../dto/rental.js'
 import { toPaymentHistoryDto } from '../dto/misc.js'
@@ -106,12 +107,12 @@ async function adminPayments() {
 
 export async function getPayments(user, roleQuery) {
   const role = roleQuery || user.role
-  if (role === 'admin') {
-    if (user.role !== 'admin') throw new HttpError(403, 'Admin only')
+  if (role === 'admin' || role === 'super_admin') {
+    if (!isAdmin(user.role)) throw new HttpError(403, 'Admin only')
     return adminPayments()
   }
   if (role === 'landlord') {
-    if (user.role !== 'landlord' && user.role !== 'admin') throw new HttpError(403, 'Landlord only')
+    if (user.role !== 'landlord' && !isAdmin(user.role)) throw new HttpError(403, 'Landlord only')
     return landlordPayments(user)
   }
   return tenantPayments(user)

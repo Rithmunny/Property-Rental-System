@@ -32,10 +32,10 @@ export default function TenantSavedHomes() {
 
           {savedProperties.length === 0 && (
             <div className="col-span-full py-10 text-center">
-              <p className="text-sm text-gray-500">No saved homes yet.</p>
+              <p className="text-sm text-muted-foreground">No saved homes yet.</p>
               <Link
                 to="/rent"
-                className="mt-3 inline-block text-sm font-semibold text-forest hover:underline"
+                className="mt-3 inline-block text-sm font-semibold text-primary hover:underline"
               >
                 Browse listings
               </Link>

@@ -10,10 +10,10 @@
   --color-forest-dark: #14201a;
   --color-sage: #ccd6bd;
   --color-sage-dark: #b9c6a5;
-  --color-cream: #f6f5f0;
 }
 
 @theme inline {
+  --color-cream: var(--cream);
   --font-heading: var(--font-sans);
   --font-sans: 'Poppins', system-ui, 'Segoe UI', Roboto, sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
@@ -57,6 +57,7 @@
 }
 
 :root {
+  --cream: #f6f5f0;
   --background: #ffffff;
   --foreground: #1f2e24;
   --card: #ffffff;
@@ -92,37 +93,38 @@
 }
 
 .dark {
-  --background: #14201a;
-  --foreground: #f6f5f0;
-  --card: #1f2e24;
-  --card-foreground: #f6f5f0;
-  --popover: #1f2e24;
-  --popover-foreground: #f6f5f0;
-  --primary: #ccd6bd;
-  --primary-foreground: #14201a;
-  --secondary: #1f2e24;
-  --secondary-foreground: #f6f5f0;
-  --muted: #1f2e24;
-  --muted-foreground: #b9c6a5;
-  --accent: #1f2e24;
-  --accent-foreground: #f6f5f0;
+  --cream: #171717;
+  --background: #0a0a0a;
+  --foreground: #f5f5f5;
+  --card: #141414;
+  --card-foreground: #f5f5f5;
+  --popover: #141414;
+  --popover-foreground: #f5f5f5;
+  --primary: #f5f5f5;
+  --primary-foreground: #0a0a0a;
+  --secondary: #262626;
+  --secondary-foreground: #f5f5f5;
+  --muted: #171717;
+  --muted-foreground: #a3a3a3;
+  --accent: #262626;
+  --accent-foreground: #f5f5f5;
   --destructive: #f97066;
-  --border: #2d3d32;
-  --input: #2d3d32;
-  --ring: #ccd6bd;
-  --chart-1: #ccd6bd;
-  --chart-2: #b9c6a5;
-  --chart-3: #f6f5f0;
-  --chart-4: #5c6b62;
-  --chart-5: #ffffff;
-  --sidebar: #1f2e24;
-  --sidebar-foreground: #f6f5f0;
-  --sidebar-primary: #ccd6bd;
-  --sidebar-primary-foreground: #14201a;
-  --sidebar-accent: #14201a;
-  --sidebar-accent-foreground: #f6f5f0;
-  --sidebar-border: #2d3d32;
-  --sidebar-ring: #ccd6bd;
+  --border: #2a2a2a;
+  --input: #2a2a2a;
+  --ring: #d4d4d4;
+  --chart-1: #f5f5f5;
+  --chart-2: #a3a3a3;
+  --chart-3: #737373;
+  --chart-4: #525252;
+  --chart-5: #262626;
+  --sidebar: #141414;
+  --sidebar-foreground: #f5f5f5;
+  --sidebar-primary: #f5f5f5;
+  --sidebar-primary-foreground: #0a0a0a;
+  --sidebar-accent: #262626;
+  --sidebar-accent-foreground: #f5f5f5;
+  --sidebar-border: #2a2a2a;
+  --sidebar-ring: #d4d4d4;
 }
 
 @layer base {
@@ -134,6 +136,10 @@
   }
   html {
     @apply font-sans;
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
   }
 }
 

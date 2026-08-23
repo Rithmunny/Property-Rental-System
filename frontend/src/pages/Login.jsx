@@ -66,13 +66,9 @@ export default function Login() {
             <SelectContent position="popper">
               <SelectItem value="tenant">Tenant</SelectItem>
               <SelectItem value="landlord">Landlord</SelectItem>
-              <SelectItem value="admin">Admin</SelectItem>
+              <SelectItem value="super_admin">Super Admin</SelectItem>
             </SelectContent>
           </Select>
-          <p className="text-xs text-muted-foreground">
-            Mock mode: pick a role to open that dashboard. Live API: the account&apos;s stored
-            role is used (see README for demo emails).
-          </p>
         </div>
 
         <Button type="submit" disabled={loading} size="lg" className="mt-2 w-full">

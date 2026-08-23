@@ -30,7 +30,7 @@ export default function Home() {
   }
 
   return (
-    <div className="bg-white">
+    <div className="bg-background">
       {/* Hero */}
       <section className="mx-auto max-w-7xl px-4 pt-8 sm:px-6 lg:px-10">
         <motion.div
@@ -52,7 +52,7 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.2 }}
-                className="text-4xl font-semibold text-white sm:text-6xl"
+                className="text-4xl font-semibold text-white drop-shadow-sm sm:text-6xl"
               >
                 Find Your Dream
                 <br />
@@ -66,14 +66,14 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}
             onSubmit={handleSearch}
-            className="absolute inset-x-4 -bottom-8 mx-auto flex max-w-3xl flex-col gap-3 rounded-2xl bg-white p-3 shadow-xl sm:flex-row sm:items-center sm:gap-0 sm:rounded-full sm:py-2 sm:pl-6"
+            className="absolute inset-x-4 -bottom-8 mx-auto flex max-w-3xl flex-col gap-3 rounded-2xl bg-card p-3 shadow-xl sm:flex-row sm:items-center sm:gap-0 sm:rounded-full sm:py-2 sm:pl-6"
           >
             <SearchField label="Property Type" value={type} onChange={setType} options={['Any', ...PROPERTY_TYPES]} />
             <div className="hidden h-8 w-px bg-gray-200 sm:block" />
             <SearchField label="Location" value={city} onChange={setCity} options={['Any', ...CITIES]} />
             <button
               type="submit"
-              className="flex items-center justify-center gap-2 rounded-full bg-forest px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-forest-dark sm:ml-3"
+              className="flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 sm:ml-3"
             >
               <Search className="h-4 w-4" />
               Find Property
@@ -91,10 +91,10 @@ export default function Home() {
           variants={stagger}
           className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-end"
         >
-          <motion.h2 variants={fadeUp} className="text-3xl font-semibold text-gray-900 sm:text-4xl">
+          <motion.h2 variants={fadeUp} className="text-3xl font-semibold text-foreground sm:text-4xl">
             Best Residence From Us For You
           </motion.h2>
-          <motion.p variants={fadeUp} className="text-sm leading-relaxed text-gray-600">
+          <motion.p variants={fadeUp} className="text-sm leading-relaxed text-muted-foreground">
             Browse verified rental homes across the country — from cozy studios to spacious
             family houses — and find the place that fits your life and your budget.
           </motion.p>
@@ -117,7 +117,7 @@ export default function Home() {
                     className="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                 </div>
-                <p className="mt-3 text-center text-sm font-medium text-gray-800 group-hover:text-forest">
+                <p className="mt-3 text-center text-sm font-medium text-foreground group-hover:text-primary">
                   {item.label}
                 </p>
               </Link>
@@ -161,7 +161,7 @@ export default function Home() {
             </div>
             <Link
               to="/rent"
-              className="flex w-fit items-center gap-2 rounded-full bg-forest px-4 py-2 text-xs font-medium text-white hover:bg-forest-dark"
+              className="flex w-fit items-center gap-2 rounded-full bg-primary px-4 py-2 text-xs font-medium text-primary-foreground hover:bg-primary/90"
             >
               See All
               <ArrowUpRight className="h-3.5 w-3.5" />
@@ -185,21 +185,21 @@ export default function Home() {
             viewport={{ once: true, margin: '-100px' }}
             variants={stagger}
           >
-            <motion.h2 variants={fadeUp} className="text-3xl font-semibold text-gray-900 sm:text-4xl">
+            <motion.h2 variants={fadeUp} className="text-3xl font-semibold text-foreground sm:text-4xl">
               How We Can Help You
             </motion.h2>
 
-            <div className="mt-8 divide-y divide-gray-200">
+            <div className="mt-8 divide-y divide-border">
               {HELP_ITEMS.map((item, i) => (
                 <motion.div key={item.title} variants={fadeUp} className="flex items-start gap-4 py-5">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-forest text-xs font-semibold text-white">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
                     {String(i + 1).padStart(2, '0')}
                   </span>
                   <div className="flex-1">
-                    <h3 className="text-sm font-semibold text-gray-900">{item.title}</h3>
-                    <p className="mt-1 text-sm text-gray-600">{item.text}</p>
+                    <h3 className="text-sm font-semibold text-foreground">{item.title}</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">{item.text}</p>
                   </div>
-                  <ArrowRight className="mt-1 h-4 w-4 shrink-0 text-gray-400" />
+                  <ArrowRight className="mt-1 h-4 w-4 shrink-0 text-muted-foreground" />
                 </motion.div>
               ))}
             </div>
@@ -237,13 +237,13 @@ export default function Home() {
             <h2 className="mt-3 text-3xl font-semibold text-white sm:text-4xl">
               Building a Lucrative Portfolio
             </h2>
-            <p className="mt-4 max-w-md text-sm leading-relaxed text-gray-300">
+            <p className="mt-4 max-w-md text-sm leading-relaxed text-white/70">
               Real estate is property consisting of land and buildings, along with natural
               resources. Join thousands of tenants and landlords already using PRS.
             </p>
             <Link
               to="/register"
-              className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-medium text-forest hover:bg-gray-100"
+              className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-medium text-forest hover:bg-cream"
             >
               Get Started
               <ArrowUpRight className="h-4 w-4" />
@@ -265,11 +265,11 @@ export default function Home() {
 function SearchField({ label, value, onChange, options }) {
   return (
     <label className="flex flex-1 flex-col px-3 py-1 text-left">
-      <span className="text-[11px] font-medium text-gray-500">{label}</span>
+      <span className="text-[11px] font-medium text-muted-foreground">{label}</span>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="border-none bg-transparent p-0 text-sm font-medium text-gray-900 outline-none"
+        className="border-none bg-transparent p-0 text-sm font-medium text-foreground outline-none"
       >
         {options.map((o) => (
           <option key={o} value={o}>
@@ -285,11 +285,11 @@ function StatItem({ stat }) {
   const { ref, value } = useCountUp(stat.value)
   return (
     <div ref={ref} className="text-center sm:text-left">
-      <p className="text-3xl font-semibold text-forest sm:text-4xl">
+      <p className="text-3xl font-semibold text-foreground sm:text-4xl">
         {value.toLocaleString()}
         {stat.suffix}
       </p>
-      <p className="mt-1 text-sm text-gray-600">{stat.label}</p>
+      <p className="mt-1 text-sm text-muted-foreground">{stat.label}</p>
     </div>
   )
 }

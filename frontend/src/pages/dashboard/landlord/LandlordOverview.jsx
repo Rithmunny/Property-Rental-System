@@ -58,7 +58,7 @@ export default function LandlordOverview() {
         actions={
           <Link
             to="/dashboard/landlord/listings"
-            className="flex items-center gap-1.5 rounded-full bg-forest px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-forest-dark"
+            className="flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
           >
             <Plus className="h-4 w-4" />
             Add Listing
@@ -69,7 +69,7 @@ export default function LandlordOverview() {
       {loading ? (
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="animate-pulse rounded-2xl border border-gray-200 bg-white p-5">
+            <div key={i} className="animate-pulse rounded-2xl border border-border bg-card p-5">
               <div className="h-4 w-20 rounded bg-gray-200" />
               <div className="mt-3 h-8 w-16 rounded bg-gray-200" />
             </div>
@@ -85,14 +85,14 @@ export default function LandlordOverview() {
       )}
 
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 lg:col-span-1">
+        <div className="rounded-2xl border border-border bg-card p-5 lg:col-span-1">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-gray-900">My Listings</h3>
-            <Link to="/dashboard/landlord/listings" className="text-xs font-semibold text-forest hover:underline">
+            <h3 className="font-semibold text-foreground">My Listings</h3>
+            <Link to="/dashboard/landlord/listings" className="text-xs font-semibold text-primary hover:underline">
               View all
             </Link>
           </div>
-          <p className="text-sm text-gray-500">Monthly rent across your listings</p>
+          <p className="text-sm text-muted-foreground">Monthly rent across your listings</p>
 
           {loading ? (
             <div className="mt-5 space-y-4">
@@ -108,10 +108,10 @@ export default function LandlordOverview() {
               {listings.slice(0, 3).map((p) => (
                 <div key={p.id}>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="truncate font-medium text-gray-700">{p.title}</span>
-                    <span className="shrink-0 font-semibold text-gray-900">${p.price}</span>
+                    <span className="truncate font-medium text-muted-foreground">{p.title}</span>
+                    <span className="shrink-0 font-semibold text-foreground">${p.price}</span>
                   </div>
-                  <div className="mt-1.5 h-2 rounded-full bg-gray-100">
+                  <div className="mt-1.5 h-2 rounded-full bg-muted">
                     <div
                       className="h-2 rounded-full bg-forest"
                       style={{ width: `${(p.price / maxPrice) * 100}%` }}
@@ -123,9 +123,9 @@ export default function LandlordOverview() {
           )}
         </div>
 
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 lg:col-span-1">
-          <h3 className="font-semibold text-gray-900">Payment Reminders</h3>
-          <p className="text-sm text-gray-500">Upcoming rent due dates</p>
+        <div className="rounded-2xl border border-border bg-card p-5 lg:col-span-1">
+          <h3 className="font-semibold text-foreground">Payment Reminders</h3>
+          <p className="text-sm text-muted-foreground">Upcoming rent due dates</p>
 
           {loading ? (
             <div className="mt-4 space-y-3">
@@ -136,28 +136,28 @@ export default function LandlordOverview() {
           ) : (
             <div className="mt-4 flex flex-col gap-3">
               {reminders.map((r) => (
-                <div key={r.id} className="flex items-center justify-between rounded-xl bg-gray-50 px-3.5 py-3">
+                <div key={r.id} className="flex items-center justify-between rounded-xl bg-muted px-3.5 py-3">
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{r.tenant}</p>
-                    <p className="text-xs text-gray-500">{r.property}</p>
+                    <p className="text-sm font-medium text-foreground">{r.tenant}</p>
+                    <p className="text-xs text-muted-foreground">{r.property}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-semibold text-gray-900">${r.amount}</p>
+                    <p className="text-sm font-semibold text-foreground">${r.amount}</p>
                     <p className="text-xs text-amber-600">Due {r.dueDate}</p>
                   </div>
                 </div>
               ))}
               {reminders.length === 0 && (
-                <p className="py-4 text-center text-sm text-gray-500">No upcoming payments due.</p>
+                <p className="py-4 text-center text-sm text-muted-foreground">No upcoming payments due.</p>
               )}
             </div>
           )}
         </div>
 
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 lg:col-span-1">
+        <div className="rounded-2xl border border-border bg-card p-5 lg:col-span-1">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-gray-900">Contracts</h3>
-            <Link to="/dashboard/landlord/contracts" className="text-xs font-semibold text-forest hover:underline">
+            <h3 className="font-semibold text-foreground">Contracts</h3>
+            <Link to="/dashboard/landlord/contracts" className="text-xs font-semibold text-primary hover:underline">
               View all
             </Link>
           </div>
@@ -180,8 +180,8 @@ export default function LandlordOverview() {
                         <FileText className="h-4 w-4" />
                       </span>
                       <div className="min-w-0">
-                        <p className="truncate text-sm font-medium text-gray-900">{property?.title}</p>
-                        <p className="truncate text-xs text-gray-500">
+                        <p className="truncate text-sm font-medium text-foreground">{property?.title}</p>
+                        <p className="truncate text-xs text-muted-foreground">
                           {c.tenant} &middot; ends {c.endDate}
                         </p>
                       </div>
@@ -196,14 +196,14 @@ export default function LandlordOverview() {
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 lg:col-span-2">
+        <div className="rounded-2xl border border-border bg-card p-5 lg:col-span-2">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-gray-900">Tenants</h3>
-            <Link to="/dashboard/landlord/tenants" className="text-xs font-semibold text-forest hover:underline">
+            <h3 className="font-semibold text-foreground">Tenants</h3>
+            <Link to="/dashboard/landlord/tenants" className="text-xs font-semibold text-primary hover:underline">
               View all
             </Link>
           </div>
-          <p className="text-sm text-gray-500">Contact and payment status for each renter</p>
+          <p className="text-sm text-muted-foreground">Contact and payment status for each renter</p>
 
           {loading ? (
             <div className="mt-3">
@@ -223,8 +223,8 @@ export default function LandlordOverview() {
                         {t.name.charAt(0)}
                       </span>
                       <div className="min-w-0">
-                        <p className="truncate text-sm font-medium text-gray-900">{t.name}</p>
-                        <p className="truncate text-xs text-gray-500">{property?.title}</p>
+                        <p className="truncate text-sm font-medium text-foreground">{t.name}</p>
+                        <p className="truncate text-xs text-muted-foreground">{property?.title}</p>
                       </div>
                     </div>
 
@@ -239,9 +239,9 @@ export default function LandlordOverview() {
           )}
         </div>
 
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 lg:col-span-1">
-          <h3 className="font-semibold text-gray-900">Payment Methods</h3>
-          <p className="text-sm text-gray-500">How tenants are paying</p>
+        <div className="rounded-2xl border border-border bg-card p-5 lg:col-span-1">
+          <h3 className="font-semibold text-foreground">Payment Methods</h3>
+          <p className="text-sm text-muted-foreground">How tenants are paying</p>
           {loading ? (
             <div className="mt-4 flex justify-center">
               <div className="h-40 w-40 animate-pulse rounded-full bg-gray-200" />

@@ -1,6 +1,7 @@
 import { prisma } from '../config/prisma.js'
 import { HttpError } from '../utils/httpError.js'
 import { assertNotSuspended } from '../middleware/auth.js'
+import { isAdmin } from '../utils/roles.js'
 import { toContractDto, toCurrentRentalDto, contractInclude } from '../dto/rental.js'
 import { computeContractStatus, parseDate, parseId, asNumber } from '../utils/dates.js'
 
@@ -25,7 +26,7 @@ export async function getCurrentRental(user) {
 }
 
 export async function listContracts(user) {
-  const where = user.role === 'admin' ? {} : { property: { landlordId: user.id } }
+  const where = isAdmin(user.role) ? {} : { property: { landlordId: user.id } }
   const contracts = await prisma.contract.findMany({
     where,
     include: contractInclude,
@@ -35,7 +36,7 @@ export async function listContracts(user) {
 }
 
 export async function createContract(user, body) {
-  if (user.role !== 'landlord' && user.role !== 'admin') {
+  if (user.role !== 'landlord' && !isAdmin(user.role)) {
     throw new HttpError(403, 'Only landlords can create contracts')
   }
   if (user.role === 'landlord') assertNotSuspended(user)

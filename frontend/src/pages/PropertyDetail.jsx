@@ -60,7 +60,7 @@ export default function PropertyDetail() {
 
   if (propertiesLoading) {
     return (
-      <div className="mx-auto max-w-5xl px-4 py-16 text-center text-sm text-gray-500">
+      <div className="mx-auto max-w-5xl px-4 py-16 text-center text-sm text-muted-foreground">
         Loading property…
       </div>
     )
@@ -136,34 +136,34 @@ export default function PropertyDetail() {
       transition={{ duration: 0.4, ease: 'easeOut' }}
       className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-10"
     >
-      <Link to="/rent" className="text-sm text-gray-600 hover:underline">
+      <Link to="/rent" className="text-sm text-muted-foreground hover:underline">
         &larr; Back to rentals
       </Link>
 
       <div className="mt-4 flex items-start justify-between gap-4">
-        <h1 className="text-2xl font-semibold text-gray-900">{property.title}</h1>
+        <h1 className="text-2xl font-semibold text-foreground">{property.title}</h1>
         {user ? (
           <button
             onClick={handleSave}
             disabled={savePending}
-            className="flex shrink-0 items-center gap-1.5 rounded-full border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+            className="flex shrink-0 items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-muted disabled:opacity-60"
           >
-            <Heart className={`h-4 w-4 ${liked ? 'fill-forest text-forest' : 'text-gray-700'}`} />
+            <Heart className={`h-4 w-4 ${liked ? 'fill-primary text-primary' : 'text-muted-foreground'}`} />
             {savePending ? 'Saving…' : liked ? 'Saved' : 'Save'}
           </button>
         ) : (
           <Link
             to="/login"
-            className="flex shrink-0 items-center gap-1.5 rounded-full border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className="flex shrink-0 items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-muted"
           >
-            <Heart className="h-4 w-4 text-gray-700" />
+            <Heart className="h-4 w-4 text-muted-foreground" />
             Save
           </Link>
         )}
       </div>
-      <p className="mt-1 flex flex-wrap items-center gap-3 text-sm text-gray-600">
+      <p className="mt-1 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
         <span className="flex items-center gap-1">
-          <Star className="h-3.5 w-3.5 fill-gray-900" />
+          <Star className="h-3.5 w-3.5 fill-foreground" />
           {displayRating} &middot; {displayCount} review{displayCount === 1 ? '' : 's'}
         </span>
         <span className="flex items-center gap-1">
@@ -176,12 +176,12 @@ export default function PropertyDetail() {
 
       <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <div className="flex items-center justify-between border-b border-gray-200 pb-6">
+          <div className="flex items-center justify-between border-b border-border pb-6">
             <div>
-              <h2 className="font-semibold text-gray-900">
+              <h2 className="font-semibold text-foreground">
                 {property.type} hosted by {property.landlord}
               </h2>
-              <p className="mt-1 text-sm text-gray-600">
+              <p className="mt-1 text-sm text-muted-foreground">
                 {property.bedrooms} bedrooms &middot; {property.bathrooms} bathrooms &middot;{' '}
                 {property.area}m&sup2; &middot; {furnishedLabel(property.furnished)}
               </p>
@@ -191,28 +191,28 @@ export default function PropertyDetail() {
             </span>
           </div>
 
-          <div className="flex flex-wrap gap-6 border-b border-gray-200 py-6 text-sm text-gray-700">
+          <div className="flex flex-wrap gap-6 border-b border-border py-6 text-sm text-muted-foreground">
             <span className="flex items-center gap-2">
-              <BedDouble className="h-5 w-5 text-gray-900" /> {property.bedrooms} Bedrooms
+              <BedDouble className="h-5 w-5 text-foreground" /> {property.bedrooms} Bedrooms
             </span>
             <span className="flex items-center gap-2">
-              <Bath className="h-5 w-5 text-gray-900" /> {property.bathrooms} Bathrooms
+              <Bath className="h-5 w-5 text-foreground" /> {property.bathrooms} Bathrooms
             </span>
             <span className="flex items-center gap-2">
-              <Ruler className="h-5 w-5 text-gray-900" /> {property.area}m&sup2;
+              <Ruler className="h-5 w-5 text-foreground" /> {property.area}m&sup2;
             </span>
           </div>
 
-          <div className="border-b border-gray-200 py-6">
-            <p className="text-sm leading-relaxed text-gray-600">{property.description}</p>
+          <div className="border-b border-border py-6">
+            <p className="text-sm leading-relaxed text-muted-foreground">{property.description}</p>
           </div>
 
-          <div className="border-b border-gray-200 py-6">
-            <h2 className="font-semibold text-gray-900">What this place offers</h2>
+          <div className="border-b border-border py-6">
+            <h2 className="font-semibold text-foreground">What this place offers</h2>
             <ul className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
               {property.amenities.map((a) => (
-                <li key={a} className="flex items-center gap-2 text-sm text-gray-700">
-                  <CheckCircle2 className="h-4 w-4 text-gray-900" />
+                <li key={a} className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <CheckCircle2 className="h-4 w-4 text-foreground" />
                   {a}
                 </li>
               ))}
@@ -220,31 +220,31 @@ export default function PropertyDetail() {
           </div>
 
           <div className="py-6">
-            <h2 className="font-semibold text-gray-900">Reviews</h2>
+            <h2 className="font-semibold text-foreground">Reviews</h2>
             <div className="mt-4 flex flex-col gap-4">
               {reviews.map((review) => (
-                <article key={review.id} className="rounded-2xl border border-gray-200 bg-white p-4">
+                <article key={review.id} className="rounded-2xl border border-border bg-card p-4">
                   <div className="flex items-center justify-between gap-2">
-                    <p className="text-sm font-semibold text-gray-900">{review.tenantName}</p>
-                    <span className="flex items-center gap-1 text-sm text-gray-700">
-                      <Star className="h-3.5 w-3.5 fill-gray-900" />
+                    <p className="text-sm font-semibold text-foreground">{review.tenantName}</p>
+                    <span className="flex items-center gap-1 text-sm text-muted-foreground">
+                      <Star className="h-3.5 w-3.5 fill-foreground" />
                       {review.rating}
                     </span>
                   </div>
-                  <p className="mt-1 text-xs text-gray-400">{review.createdAt}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{review.createdAt}</p>
                   {review.comment && (
-                    <p className="mt-2 text-sm leading-relaxed text-gray-600">{review.comment}</p>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{review.comment}</p>
                   )}
                 </article>
               ))}
               {reviews.length === 0 && (
-                <p className="text-sm text-gray-500">No reviews yet.</p>
+                <p className="text-sm text-muted-foreground">No reviews yet.</p>
               )}
             </div>
 
             {canReview && (
-              <form onSubmit={handleReview} className="mt-6 rounded-2xl border border-gray-200 bg-cream/60 p-4">
-                <p className="text-sm font-semibold text-gray-900">Write a review</p>
+              <form onSubmit={handleReview} className="mt-6 rounded-2xl border border-border bg-cream/60 p-4">
+                <p className="text-sm font-semibold text-foreground">Write a review</p>
                 <div className="mt-3 flex gap-1">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
@@ -255,7 +255,7 @@ export default function PropertyDetail() {
                     >
                       <Star
                         className={`h-5 w-5 ${
-                          star <= reviewRating ? 'fill-gray-900 text-gray-900' : 'text-gray-300'
+                          star <= reviewRating ? 'fill-foreground text-foreground' : 'text-gray-300'
                         }`}
                       />
                     </button>
@@ -267,12 +267,12 @@ export default function PropertyDetail() {
                   required
                   rows={3}
                   placeholder="How was your stay?"
-                  className="mt-3 w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm outline-none focus:border-forest"
+                  className="mt-3 w-full rounded-xl border border-border px-3.5 py-2.5 text-sm outline-none focus:border-ring"
                 />
                 <button
                   type="submit"
                   disabled={reviewPending}
-                  className="mt-3 rounded-full bg-forest px-4 py-2 text-sm font-semibold text-white hover:bg-forest-dark disabled:opacity-60"
+                  className="mt-3 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-60"
                 >
                   {reviewPending ? 'Posting…' : 'Post review'}
                 </button>
@@ -281,13 +281,13 @@ export default function PropertyDetail() {
           </div>
         </div>
 
-        <aside className="h-fit rounded-2xl border border-gray-300 p-6 shadow-lg">
+        <aside className="h-fit rounded-2xl border border-border p-6 shadow-lg">
           <div className="flex items-baseline justify-between">
-            <p className="text-xl font-semibold text-gray-900">
-              ${property.price} <span className="text-sm font-normal text-gray-500">month</span>
+            <p className="text-xl font-semibold text-foreground">
+              ${property.price} <span className="text-sm font-normal text-muted-foreground">month</span>
             </p>
-            <span className="flex items-center gap-1 text-sm text-gray-700">
-              <Star className="h-3.5 w-3.5 fill-gray-900" />
+            <span className="flex items-center gap-1 text-sm text-muted-foreground">
+              <Star className="h-3.5 w-3.5 fill-foreground" />
               {displayRating}
             </span>
           </div>
@@ -310,14 +310,14 @@ export default function PropertyDetail() {
             />
           </dl>
 
-          <div className="mt-4 border-t border-gray-200 pt-4">
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Contact</p>
+          <div className="mt-4 border-t border-border pt-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Contact</p>
             <div className="mt-2 flex flex-col gap-2">
               {user?.role === 'tenant' ? (
                 <button
                   type="button"
                   onClick={() => navigate(messageHref)}
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-forest px-4 py-2 text-sm font-medium text-white hover:bg-forest-dark"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
                 >
                   <MessageCircle className="h-4 w-4" />
                   Message landlord
@@ -325,7 +325,7 @@ export default function PropertyDetail() {
               ) : !user ? (
                 <Link
                   to="/login"
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-forest px-4 py-2 text-sm font-medium text-white hover:bg-forest-dark"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
                 >
                   <MessageCircle className="h-4 w-4" />
                   Log in to message
@@ -336,7 +336,7 @@ export default function PropertyDetail() {
                   href={tg}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center justify-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-800 hover:bg-gray-50"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
                 >
                   <TelegramIcon className="h-4 w-4" />
                   Telegram
@@ -347,7 +347,7 @@ export default function PropertyDetail() {
                   href={wa}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center justify-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-800 hover:bg-gray-50"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
                 >
                   <WhatsAppIcon className="h-4 w-4" />
                   WhatsApp
@@ -356,7 +356,7 @@ export default function PropertyDetail() {
               {tel && (
                 <a
                   href={tel}
-                  className="inline-flex items-center justify-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-800 hover:bg-gray-50"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
                 >
                   <Phone className="h-4 w-4" />
                   Call
@@ -366,7 +366,7 @@ export default function PropertyDetail() {
           </div>
 
           {property.available ? (
-            <div className="mt-4 border-t border-gray-200 pt-4">
+            <div className="mt-4 border-t border-border pt-4">
               {requestError && (
                 <p className="mb-3 rounded-full bg-red-50 px-3 py-2 text-center text-sm text-red-700">
                   {requestError}
@@ -395,7 +395,7 @@ export default function PropertyDetail() {
                     <button
                       onClick={() => handleRequest('rent')}
                       disabled={pendingKind != null}
-                      className="w-full rounded-full bg-forest px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-forest-dark disabled:opacity-60"
+                      className="w-full rounded-full bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
                     >
                       {pendingKind === 'rent' ? 'Sending…' : 'Request to Rent'}
                     </button>
@@ -404,14 +404,14 @@ export default function PropertyDetail() {
               ) : (
                 <Link
                   to="/login"
-                  className="block w-full rounded-full bg-forest px-4 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-forest-dark"
+                  className="block w-full rounded-full bg-primary px-4 py-3 text-center text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
                 >
                   Log in to Request
                 </Link>
               )}
             </div>
           ) : (
-            <p className="mt-4 rounded-full bg-gray-100 px-3 py-2.5 text-center text-sm text-gray-600">
+            <p className="mt-4 rounded-full bg-muted px-3 py-2.5 text-center text-sm text-muted-foreground">
               Currently unavailable
             </p>
           )}
@@ -431,8 +431,8 @@ export default function PropertyDetail() {
 function Fact({ label, value }) {
   return (
     <div>
-      <dt className="text-xs text-gray-400">{label}</dt>
-      <dd className="font-medium text-gray-900">{value}</dd>
+      <dt className="text-xs text-muted-foreground">{label}</dt>
+      <dd className="font-medium text-foreground">{value}</dd>
     </div>
   )
 }
