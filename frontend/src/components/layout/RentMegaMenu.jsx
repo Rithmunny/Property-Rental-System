@@ -7,6 +7,7 @@ export const RENT_MENU_COLUMNS = [
     title: 'Homes for Rent',
     items: [
       { label: 'House', type: 'House' },
+      { label: 'Villa', type: 'Villa' },
       { label: 'Apartment', type: 'Apartment' },
       { label: 'Room', type: 'Room' },
     ],
@@ -25,6 +26,8 @@ export const RENT_MENU_COLUMNS = [
       { label: 'Siem Reap', city: 'Siem Reap' },
       { label: 'Sihanoukville', city: 'Sihanoukville' },
       { label: 'Battambang', city: 'Battambang' },
+      { label: 'Kampot', city: 'Kampot' },
+      { label: 'Kep', city: 'Kep' },
     ],
   },
 ]

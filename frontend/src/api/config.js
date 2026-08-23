@@ -3,7 +3,7 @@ export const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false'
 
 export const STORAGE_KEYS = {
   session: 'prs-session',
-  properties: 'prs-properties-v3',
+  properties: 'prs-properties-v4',
   requests: 'prs-requests',
   saved: 'prs-saved',
   contracts: 'prs-contracts',
