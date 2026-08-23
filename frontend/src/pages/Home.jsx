@@ -5,6 +5,13 @@ import { Search, ArrowUpRight, ArrowRight } from 'lucide-react'
 import { PROPERTY_TYPES, CITIES } from '@/data/properties'
 import { HERO_IMAGE, SHOWCASE, STATS, HELP_ITEMS } from '@/data/content'
 import { useCountUp } from '@/hooks/useCountUp'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 28 },
@@ -69,7 +76,7 @@ export default function Home() {
             className="absolute inset-x-4 -bottom-8 mx-auto flex max-w-3xl flex-col gap-3 rounded-2xl bg-card p-3 shadow-xl sm:flex-row sm:items-center sm:gap-0 sm:rounded-full sm:py-2 sm:pl-6"
           >
             <SearchField label="Property Type" value={type} onChange={setType} options={['Any', ...PROPERTY_TYPES]} />
-            <div className="hidden h-8 w-px bg-gray-200 sm:block" />
+            <div className="hidden h-8 w-px bg-border sm:block" />
             <SearchField label="Location" value={city} onChange={setCity} options={['Any', ...CITIES]} />
             <button
               type="submit"
@@ -263,21 +270,30 @@ export default function Home() {
 }
 
 function SearchField({ label, value, onChange, options }) {
+  const id = label.toLowerCase().replace(/\s+/g, '-')
+
   return (
-    <label className="flex flex-1 flex-col px-3 py-1 text-left">
-      <span className="text-[11px] font-medium text-muted-foreground">{label}</span>
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="border-none bg-transparent p-0 text-sm font-medium text-foreground outline-none"
-      >
-        {options.map((o) => (
-          <option key={o} value={o}>
-            {o}
-          </option>
-        ))}
-      </select>
-    </label>
+    <div className="flex min-w-0 flex-1 flex-col px-3 py-1 text-left">
+      <label htmlFor={id} className="text-[11px] font-medium text-muted-foreground">
+        {label}
+      </label>
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger
+          id={id}
+          size="sm"
+          className="h-auto w-full min-w-0 border-none bg-transparent p-0 text-sm font-medium text-foreground shadow-none focus-visible:border-none focus-visible:ring-0 dark:bg-transparent dark:hover:bg-transparent"
+        >
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent position="popper" align="start" className="min-w-48">
+          {options.map((option) => (
+            <SelectItem key={option} value={option}>
+              {option}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
   )
 }
 
