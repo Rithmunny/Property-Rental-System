@@ -1,5 +1,9 @@
+export function isAdmin(role) {
+  return role === 'admin' || role === 'super_admin'
+}
+
 export function dashboardPath(role) {
-  if (role === 'admin') return '/dashboard/admin'
+  if (isAdmin(role)) return '/dashboard/admin'
   if (role === 'landlord') return '/dashboard/landlord'
   return '/dashboard/tenant'
 }

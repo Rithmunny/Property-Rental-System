@@ -31,7 +31,7 @@ export default function LandlordPayments() {
     return (
       <div>
         <PageHeader title="Payments" subtitle="Rent collection and payment methods" />
-        <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-2 sm:p-3">
+        <div className="mt-6 rounded-2xl border border-border bg-card p-2 sm:p-3">
           {Array.from({ length: 3 }).map((_, i) => (
             <SkeletonRow key={i} />
           ))}
@@ -84,7 +84,7 @@ export default function LandlordPayments() {
         actions={
           <Link
             to="/dashboard/landlord/sheet"
-            className="inline-flex items-center gap-1.5 rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted"
           >
             <Table2 className="h-4 w-4" />
             Landlord sheet
@@ -93,33 +93,33 @@ export default function LandlordPayments() {
       />
 
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 lg:col-span-2">
+        <div className="rounded-2xl border border-border bg-card p-5 lg:col-span-2">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-semibold text-gray-900">Payment Reminders</h3>
-              <p className="text-sm text-gray-500">Upcoming rent due dates</p>
+              <h3 className="font-semibold text-foreground">Payment Reminders</h3>
+              <p className="text-sm text-muted-foreground">Upcoming rent due dates</p>
             </div>
-            <p className="text-sm text-gray-500">
-              Monthly revenue: <span className="font-semibold text-gray-900">${monthlyRevenue}</span>
+            <p className="text-sm text-muted-foreground">
+              Monthly revenue: <span className="font-semibold text-foreground">${monthlyRevenue}</span>
             </p>
           </div>
 
           <div className="mt-4 flex flex-col gap-3">
             {reminders.map((r) => (
-              <div key={r.id} className="flex items-center justify-between rounded-xl bg-gray-50 px-3.5 py-3">
+              <div key={r.id} className="flex items-center justify-between rounded-xl bg-muted px-3.5 py-3">
                 <div>
-                  <p className="text-sm font-medium text-gray-900">{r.tenant}</p>
-                  <p className="text-xs text-gray-500">{r.property}</p>
+                  <p className="text-sm font-medium text-foreground">{r.tenant}</p>
+                  <p className="text-xs text-muted-foreground">{r.property}</p>
                 </div>
                 <div className="flex items-center gap-3 text-right">
                   <div>
-                    <p className="text-sm font-semibold text-gray-900">${r.amount}</p>
+                    <p className="text-sm font-semibold text-foreground">${r.amount}</p>
                     <p className="text-xs text-amber-600">Due {r.dueDate}</p>
                   </div>
                   <button
                     type="button"
                     onClick={() => openInvoice(r)}
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-forest hover:underline"
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
                   >
                     <FileText className="h-3.5 w-3.5" />
                     Invoice
@@ -130,10 +130,10 @@ export default function LandlordPayments() {
 
             {reminders.length === 0 && (
               <div className="px-3 py-8 text-center">
-                <p className="text-sm text-gray-500">No upcoming payments due.</p>
+                <p className="text-sm text-muted-foreground">No upcoming payments due.</p>
                 <Link
                   to="/dashboard/landlord/contracts"
-                  className="mt-3 inline-block text-sm font-semibold text-forest hover:underline"
+                  className="mt-3 inline-block text-sm font-semibold text-primary hover:underline"
                 >
                   View contracts
                 </Link>
@@ -143,9 +143,9 @@ export default function LandlordPayments() {
         </div>
 
         <div className="flex flex-col gap-6 lg:col-span-1">
-          <div className="rounded-2xl border border-gray-200 bg-white p-5">
-            <h3 className="font-semibold text-gray-900">Payment Methods</h3>
-            <p className="text-sm text-gray-500">How tenants are paying</p>
+          <div className="rounded-2xl border border-border bg-card p-5">
+            <h3 className="font-semibold text-foreground">Payment Methods</h3>
+            <p className="text-sm text-muted-foreground">How tenants are paying</p>
             <PaymentDonut aba={abaCount} cash={cashCount} />
           </div>
           <AbaQrCard />

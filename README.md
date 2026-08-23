@@ -31,13 +31,15 @@ Open http://localhost:5173
 
 ## Demo accounts
 
-Password for every seeded user: `password123`
+Password for seeded tenant and landlord users: `password123`
 
 | Role | Email | Dashboard |
 |------|-------|-----------|
 | Tenant | `demo@tenant.com` | `/dashboard/tenant` |
 | Landlord | `sokdara@prs.demo` | `/dashboard/landlord` |
-| Admin | `admin@prs.local` | `/dashboard/admin` |
+| Super Admin | `rithmunnysopheak@gmail.com` | `/dashboard/admin` |
+
+Super Admin password: `super-admin1234`. This is the only admin account.
 
 Other landlords: `chan.sopheak@prs.demo`, `ly.vannak@prs.demo`, `kim.sreymom@prs.demo`, `heng.bopha@prs.demo`, `pich.rathanak@prs.demo` (pending). On the live API, login uses the account’s stored role (the role dropdown is ignored).
 

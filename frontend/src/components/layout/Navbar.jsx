@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { Menu, X, Search, User } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import RentMegaMenu, { RentNavTrigger, RentMobileAccordion } from './RentMegaMenu'
 import BrandLogo from '@/components/common/BrandLogo'
+import ThemeToggle from '@/components/common/ThemeToggle'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -14,9 +16,22 @@ import {
 
 const TICKER_TEXT = 'Verified rental homes across Cambodia — find your next place today'
 
+const panelEase = [0.22, 1, 0.36, 1]
+
+const menuStagger = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.045, delayChildren: 0.04 } },
+}
+
+const menuItem = {
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.22, ease: panelEase } },
+}
+
 export default function Navbar() {
   const [open, setOpen] = useState(false)
   const [rentOpen, setRentOpen] = useState(false)
+  const reduceMotion = useReducedMotion()
   const { user, logout } = useAuth()
   const location = useLocation()
   const rentTriggerRef = useRef(null)
@@ -48,7 +63,7 @@ export default function Navbar() {
 
   const linkClass = ({ isActive }) =>
     `text-sm font-medium transition-colors ${
-      isActive ? 'text-forest' : 'text-gray-600 hover:text-forest'
+      isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
     }`
 
   return (
@@ -64,13 +79,13 @@ export default function Navbar() {
         </div>
       </div>
 
-      <header className="relative border-b border-gray-200 bg-white">
-        <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-10">
-          <Link to="/" className="flex items-center text-lg font-bold text-gray-900">
+      <header className="relative border-b border-border bg-background">
+        <nav className="mx-auto grid max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 py-4 sm:px-6 lg:px-10">
+          <Link to="/" className="col-start-1 justify-self-start text-lg font-bold text-foreground">
             <BrandLogo className="h-9 w-auto" />
           </Link>
 
-          <div className="hidden items-center gap-8 md:flex">
+          <div className="col-start-2 hidden items-center justify-center gap-8 md:flex">
             <NavLink to="/" className={linkClass} end>
               Home
             </NavLink>
@@ -89,99 +104,157 @@ export default function Navbar() {
             </NavLink>
           </div>
 
-          <div className="hidden items-center gap-3 md:flex">
-            <Button asChild variant="outline" size="icon" aria-label="Search rentals">
-              <Link to="/rent">
-                <Search />
-              </Link>
-            </Button>
+          <div className="col-start-3 flex items-center justify-end justify-self-end gap-3">
+            <ThemeToggle />
+            <div className="hidden items-center gap-3 md:flex">
+              <Button asChild variant="outline" size="icon" aria-label="Search rentals">
+                <Link to="/rent">
+                  <Search />
+                </Link>
+              </Button>
 
-            {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button size="lg" className="px-4">
-                    <User />
-                    {user.name}
+              {user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button size="lg" className="px-4">
+                      <User />
+                      {user.name}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-44">
+                    <DropdownMenuItem asChild>
+                      <Link to="/dashboard">Dashboard</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={logout}>Log out</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <>
+                  <Button asChild variant="ghost">
+                    <Link to="/login">Log in</Link>
                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-44">
-                  <DropdownMenuItem asChild>
-                    <Link to="/dashboard">Dashboard</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={logout}>Log out</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <>
-                <Button asChild variant="ghost">
-                  <Link to="/login">Log in</Link>
-                </Button>
-                <Button asChild size="lg" className="px-5">
-                  <Link to="/register">Sign up</Link>
-                </Button>
-              </>
-            )}
-          </div>
+                  <Button asChild size="lg" className="px-5">
+                    <Link to="/register">Sign up</Link>
+                  </Button>
+                </>
+              )}
+            </div>
 
-          <button className="md:hidden" onClick={() => setOpen(!open)} aria-label="Toggle menu">
-            {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
+            <button
+              className="relative flex h-9 w-9 items-center justify-center text-foreground md:hidden"
+              onClick={() => setOpen(!open)}
+              aria-label="Toggle menu"
+              aria-expanded={open}
+            >
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.span
+                  key={open ? 'close' : 'open'}
+                  initial={reduceMotion ? false : { opacity: 0, rotate: -90, scale: 0.7 }}
+                  animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                  exit={reduceMotion ? { opacity: 0 } : { opacity: 0, rotate: 90, scale: 0.7 }}
+                  transition={{ duration: 0.18, ease: panelEase }}
+                  className="absolute"
+                >
+                  {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                </motion.span>
+              </AnimatePresence>
+            </button>
+          </div>
         </nav>
 
-        {rentOpen && (
-          <div
-            ref={rentMenuRef}
-            className="absolute inset-x-0 top-full z-50 hidden md:block"
-          >
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
-              <RentMegaMenu onNavigate={() => setRentOpen(false)} />
-            </div>
-          </div>
-        )}
+        <AnimatePresence>
+          {rentOpen && (
+            <motion.div
+              ref={rentMenuRef}
+              initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}
+              transition={{ duration: 0.22, ease: panelEase }}
+              className="absolute inset-x-0 top-full z-50 hidden md:block"
+            >
+              <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
+                <RentMegaMenu onNavigate={() => setRentOpen(false)} />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        {open && (
-          <div className="flex flex-col gap-4 border-t border-gray-200 px-4 py-4 md:hidden">
-            <NavLink to="/" className={linkClass} end onClick={() => setOpen(false)}>
-              Home
-            </NavLink>
-            <Link to="/rent" className="text-sm font-medium text-forest" onClick={() => setOpen(false)}>
-              Rent
-            </Link>
-            <RentMobileAccordion onNavigate={() => setOpen(false)} />
-            <NavLink to="/about" className={linkClass} onClick={() => setOpen(false)}>
-              About
-            </NavLink>
-            <NavLink to="/discover" className={linkClass} onClick={() => setOpen(false)}>
-              Discover
-            </NavLink>
-            <hr className="border-gray-200" />
-            {user ? (
-              <>
-                <Link to="/dashboard" className="text-sm font-medium text-gray-700" onClick={() => setOpen(false)}>
-                  Dashboard
-                </Link>
-                <button
-                  onClick={() => {
-                    logout()
-                    setOpen(false)
-                  }}
-                  className="text-left text-sm font-medium text-gray-700"
-                >
-                  Log out
-                </button>
-              </>
-            ) : (
-              <>
-                <Link to="/login" className="text-sm font-medium text-gray-700" onClick={() => setOpen(false)}>
-                  Log in
-                </Link>
-                <Link to="/register" className="text-sm font-medium text-forest" onClick={() => setOpen(false)}>
-                  Sign up
-                </Link>
-              </>
-            )}
-          </div>
-        )}
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              initial={reduceMotion ? { opacity: 0 } : { height: 0, opacity: 0 }}
+              animate={reduceMotion ? { opacity: 1 } : { height: 'auto', opacity: 1 }}
+              exit={reduceMotion ? { opacity: 0 } : { height: 0, opacity: 0 }}
+              transition={{ duration: 0.28, ease: panelEase }}
+              className="overflow-hidden md:hidden"
+            >
+              <motion.div
+                variants={menuStagger}
+                initial="hidden"
+                animate="show"
+                className="flex flex-col gap-4 border-t border-border bg-background px-4 py-4"
+              >
+                <motion.div variants={menuItem}>
+                  <NavLink to="/" className={linkClass} end onClick={() => setOpen(false)}>
+                    Home
+                  </NavLink>
+                </motion.div>
+                <motion.div variants={menuItem}>
+                  <Link to="/rent" className="text-sm font-medium text-foreground" onClick={() => setOpen(false)}>
+                    Rent
+                  </Link>
+                </motion.div>
+                <motion.div variants={menuItem}>
+                  <RentMobileAccordion onNavigate={() => setOpen(false)} />
+                </motion.div>
+                <motion.div variants={menuItem}>
+                  <NavLink to="/about" className={linkClass} onClick={() => setOpen(false)}>
+                    About
+                  </NavLink>
+                </motion.div>
+                <motion.div variants={menuItem}>
+                  <NavLink to="/discover" className={linkClass} onClick={() => setOpen(false)}>
+                    Discover
+                  </NavLink>
+                </motion.div>
+                <motion.hr variants={menuItem} className="border-border" />
+                {user ? (
+                  <>
+                    <motion.div variants={menuItem}>
+                      <Link to="/dashboard" className="text-sm font-medium text-foreground" onClick={() => setOpen(false)}>
+                        Dashboard
+                      </Link>
+                    </motion.div>
+                    <motion.div variants={menuItem}>
+                      <button
+                        onClick={() => {
+                          logout()
+                          setOpen(false)
+                        }}
+                        className="text-left text-sm font-medium text-foreground"
+                      >
+                        Log out
+                      </button>
+                    </motion.div>
+                  </>
+                ) : (
+                  <>
+                    <motion.div variants={menuItem}>
+                      <Link to="/login" className="text-sm font-medium text-foreground" onClick={() => setOpen(false)}>
+                        Log in
+                      </Link>
+                    </motion.div>
+                    <motion.div variants={menuItem}>
+                      <Link to="/register" className="text-sm font-medium text-foreground" onClick={() => setOpen(false)}>
+                        Sign up
+                      </Link>
+                    </motion.div>
+                  </>
+                )}
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
     </div>
   )

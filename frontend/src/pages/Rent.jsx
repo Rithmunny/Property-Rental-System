@@ -130,7 +130,7 @@ export default function Rent() {
 
   return (
     <div className="bg-cream/40 min-h-[70vh]">
-      <div className="sticky top-[104px] z-30 border-b border-gray-200 bg-white/95 backdrop-blur">
+      <div className="sticky top-[104px] z-30 border-b border-border bg-background/95 backdrop-blur">
         <RentFilters
           query={query}
           onQueryChange={setQuery}
@@ -154,8 +154,8 @@ export default function Rent() {
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-10">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-semibold text-gray-900">Properties for Rent</h1>
-            <p className="mt-1 text-sm text-gray-500">
+            <h1 className="text-2xl font-semibold text-foreground">Properties for Rent</h1>
+            <p className="mt-1 text-sm text-muted-foreground">
               {loading ? 'Loading…' : `${filtered.length} rental${filtered.length === 1 ? '' : 's'} found`}
             </p>
           </div>
@@ -164,7 +164,7 @@ export default function Rent() {
               type="button"
               onClick={handleSaveSearch}
               disabled={savingSearch || searchAlreadySaved}
-              className="inline-flex items-center gap-1.5 rounded-full border border-gray-300 px-3.5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border px-3.5 py-2 text-sm font-medium text-muted-foreground hover:bg-muted disabled:opacity-60"
             >
               <BellPlus className="h-4 w-4" />
               {searchAlreadySaved ? 'Search saved' : savingSearch ? 'Saving…' : 'Save this search'}
@@ -172,18 +172,18 @@ export default function Rent() {
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value)}
-              className="rounded-full border border-gray-300 px-4 py-2 text-sm text-gray-700 outline-none focus:border-forest"
+              className="rounded-full border border-border px-4 py-2 text-sm text-muted-foreground outline-none focus:border-ring"
             >
               <option value="newest">Newest</option>
               <option value="price-asc">Price: low to high</option>
               <option value="price-desc">Price: high to low</option>
             </select>
-            <div className="flex rounded-full border border-gray-300 p-0.5 lg:hidden">
+            <div className="flex rounded-full border border-border p-0.5 lg:hidden">
               <button
                 type="button"
                 onClick={() => setMobileView('list')}
                 className={`rounded-full px-3 py-1.5 text-xs font-semibold ${
-                  mobileView === 'list' ? 'bg-forest text-white' : 'text-gray-600'
+                  mobileView === 'list' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'
                 }`}
               >
                 <LayoutGrid className="h-3.5 w-3.5" />
@@ -192,7 +192,7 @@ export default function Rent() {
                 type="button"
                 onClick={() => setMobileView('map')}
                 className={`rounded-full px-3 py-1.5 text-xs font-semibold ${
-                  mobileView === 'map' ? 'bg-forest text-white' : 'text-gray-600'
+                  mobileView === 'map' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'
                 }`}
               >
                 <MapIcon className="h-3.5 w-3.5" />
@@ -204,7 +204,7 @@ export default function Rent() {
         <div className="mb-6 flex flex-wrap gap-2">
           <Link
             to={landlordCta}
-            className="inline-flex items-center gap-1.5 rounded-full bg-forest px-4 py-2 text-xs font-semibold text-white hover:bg-forest-dark"
+            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
           >
             <Building2 className="h-3.5 w-3.5" />
             Post a property
@@ -212,7 +212,7 @@ export default function Rent() {
           <button
             type="button"
             onClick={() => navigate(tenantCta)}
-            className="inline-flex items-center gap-1.5 rounded-full border border-forest px-4 py-2 text-xs font-semibold text-forest hover:bg-sage/40"
+            className="inline-flex items-center gap-1.5 rounded-full border border-primary px-4 py-2 text-xs font-semibold text-primary hover:bg-accent"
           >
             <Heart className="h-3.5 w-3.5" />
             {user?.role === 'tenant' ? 'My saved homes' : 'Save homes'}
@@ -224,7 +224,7 @@ export default function Rent() {
             <p className="text-sm text-red-700">{error}</p>
             <button
               onClick={refresh}
-              className="mt-2 text-sm font-semibold text-forest hover:underline"
+              className="mt-2 text-sm font-semibold text-primary hover:underline"
             >
               Retry
             </button>
@@ -240,11 +240,11 @@ export default function Rent() {
                 ))}
               </div>
             ) : filtered.length === 0 ? (
-              <div className="rounded-2xl border border-gray-200 bg-white px-6 py-16 text-center">
-                <p className="text-gray-500">No rentals match your filters.</p>
+              <div className="rounded-2xl border border-border bg-card px-6 py-16 text-center">
+                <p className="text-muted-foreground">No rentals match your filters.</p>
                 <button
                   onClick={clearFilters}
-                  className="mt-4 rounded-full bg-forest px-5 py-2.5 text-sm font-semibold text-white hover:bg-forest-dark"
+                  className="mt-4 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
                 >
                   Clear filters
                 </button>

@@ -28,11 +28,11 @@ export default function RentalCard({ property, highlighted, onHover }) {
       to={`/listings/${property.id}`}
       onMouseEnter={() => onHover?.(property.id)}
       onMouseLeave={() => onHover?.(null)}
-      className={`group flex flex-col overflow-hidden rounded-2xl border bg-white transition-shadow hover:shadow-md ${
-        highlighted ? 'border-forest shadow-md ring-2 ring-forest/30' : 'border-gray-200'
+      className={`group flex flex-col overflow-hidden rounded-2xl border bg-card transition-shadow hover:shadow-md ${
+        highlighted ? 'border-primary shadow-md ring-2 ring-primary/30' : 'border-border'
       }`}
     >
-      <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
+      <div className="relative aspect-[4/3] overflow-hidden bg-muted">
         <img
           src={property.image}
           alt={property.title}
@@ -44,14 +44,14 @@ export default function RentalCard({ property, highlighted, onHover }) {
           className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 shadow transition-transform hover:scale-110"
         >
           <Heart
-            className={`h-4 w-4 ${saved ? 'fill-forest text-forest' : 'text-gray-600'}`}
+            className={`h-4 w-4 ${saved ? 'fill-primary text-primary' : 'text-muted-foreground'}`}
           />
         </button>
         <span
           className={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-xs font-semibold shadow ${
             property.available
-              ? 'bg-forest text-white'
-              : 'bg-white text-gray-800'
+              ? 'bg-primary text-primary-foreground'
+              : 'bg-card text-foreground'
           }`}
         >
           {property.available ? 'Available' : 'Rented'}
@@ -59,11 +59,11 @@ export default function RentalCard({ property, highlighted, onHover }) {
       </div>
 
       <div className="flex flex-1 flex-col p-4">
-        <p className="line-clamp-2 text-sm font-semibold text-gray-900 group-hover:text-forest">
+        <p className="line-clamp-2 text-sm font-semibold text-foreground group-hover:text-primary">
           {property.title}
         </p>
 
-        <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-gray-500">
+        <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
           <span className="inline-flex items-center gap-1">
             <Ruler className="h-3.5 w-3.5" />
             {property.area}m²
@@ -78,16 +78,16 @@ export default function RentalCard({ property, highlighted, onHover }) {
           </span>
         </div>
 
-        <p className="mt-2 flex items-center gap-1 truncate text-xs text-gray-500">
+        <p className="mt-2 flex items-center gap-1 truncate text-xs text-muted-foreground">
           <MapPin className="h-3.5 w-3.5 shrink-0" />
           {property.neighbourhood
             ? `${property.neighbourhood} · ${furnishedLabel(property.furnished)}`
             : `${property.address}, ${property.city}`}
         </p>
 
-        <p className="mt-auto pt-3 text-base font-bold text-forest">
+        <p className="mt-auto pt-3 text-base font-bold text-foreground">
           ${property.price}
-          <span className="text-sm font-medium text-gray-500">/Month</span>
+          <span className="text-sm font-medium text-muted-foreground">/Month</span>
         </p>
       </div>
     </Link>

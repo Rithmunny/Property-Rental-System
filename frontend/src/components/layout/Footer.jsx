@@ -31,14 +31,14 @@ const ACCOUNT_LINKS = [
 
 export default function Footer() {
   return (
-    <footer className="bg-forest text-gray-300">
+    <footer className="bg-forest text-white/70">
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-10">
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <Link to="/" className="flex w-fit items-center text-lg font-bold text-white">
               <BrandLogo className="h-9 w-auto" />
             </Link>
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-gray-400">
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/60">
               Verified rental homes across Cambodia — find a place that fits your life and your
               budget, with no hidden fees.
             </p>
@@ -48,7 +48,7 @@ export default function Footer() {
                   key={label}
                   href="#"
                   aria-label={label}
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-gray-300 transition-colors hover:border-sage hover:text-sage"
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 text-white/70 transition-colors hover:border-sage hover:text-sage"
                 >
                   <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current">
                     <path d={path} />
@@ -63,7 +63,7 @@ export default function Footer() {
 
           <div>
             <p className="text-sm font-semibold text-white">Contact</p>
-            <ul className="mt-4 flex flex-col gap-3 text-sm text-gray-400">
+            <ul className="mt-4 flex flex-col gap-3 text-sm text-white/60">
               <li>Street 210, Phnom Penh, Cambodia</li>
               <li>hello@prs.com</li>
               <li>+855 12 345 678</li>
@@ -73,7 +73,7 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-white/10">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-6 text-sm text-gray-400 sm:flex-row sm:px-6 lg:px-10">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-6 text-sm text-white/60 sm:flex-row sm:px-6 lg:px-10">
           <p>&copy; {new Date().getFullYear()} PRS, Inc. All rights reserved.</p>
           <div className="flex items-center gap-6">
             <a href="#" className="hover:text-sage hover:underline">Privacy</a>
@@ -93,7 +93,7 @@ function FooterColumn({ title, links }) {
       <ul className="mt-4 flex flex-col gap-3 text-sm">
         {links.map((link) => (
           <li key={link.to}>
-            <Link to={link.to} className="text-gray-400 transition-colors hover:text-sage">
+            <Link to={link.to} className="text-white/60 transition-colors hover:text-sage">
               {link.label}
             </Link>
           </li>

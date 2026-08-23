@@ -9,9 +9,9 @@ export default function NotFound() {
       transition={{ duration: 0.4, ease: 'easeOut' }}
       className="mx-auto flex max-w-md flex-col items-center px-4 py-24 text-center sm:px-6"
     >
-      <h1 className="text-4xl font-bold text-gray-900">404</h1>
-      <p className="mt-2 text-sm text-gray-600">Page not found.</p>
-      <Link to="/" className="mt-6 rounded-full bg-forest px-4 py-2.5 text-sm font-semibold text-white hover:bg-forest-dark">
+      <h1 className="text-4xl font-bold text-foreground">404</h1>
+      <p className="mt-2 text-sm text-muted-foreground">Page not found.</p>
+      <Link to="/" className="mt-6 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90">
         Back to Home
       </Link>
     </motion.div>

@@ -28,7 +28,7 @@ export default function TenantRequests() {
         <p className="mt-4 rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
       )}
 
-      <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-2 sm:p-3">
+      <div className="mt-6 rounded-2xl border border-border bg-card p-2 sm:p-3">
         {loading ? (
           <div>
             {Array.from({ length: 3 }).map((_, i) => (
@@ -43,8 +43,8 @@ export default function TenantRequests() {
               return (
                 <div key={r.id} className="flex flex-wrap items-center justify-between gap-3 p-3">
                   <div>
-                    <p className="font-medium text-gray-900">{property?.title ?? 'Unknown property'}</p>
-                    <p className="text-sm text-gray-500">
+                    <p className="font-medium text-foreground">{property?.title ?? 'Unknown property'}</p>
+                    <p className="text-sm text-muted-foreground">
                       {REQUEST_KIND[r.kind] ?? 'Rent'} &middot;{' '}
                       {r.kind === 'viewing' && r.viewingDate
                         ? `Viewing ${r.viewingDate} at ${r.viewingTime}`
@@ -55,7 +55,7 @@ export default function TenantRequests() {
                   <div className="flex items-center gap-2">
                     <Link
                       to={`/dashboard/tenant/messages?propertyId=${r.propertyId}`}
-                      className="rounded-full border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+                      className="rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:bg-muted"
                     >
                       Message
                     </Link>
@@ -67,12 +67,12 @@ export default function TenantRequests() {
 
             {requests.length === 0 && (
               <div className="px-3 py-10 text-center">
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   No requests yet. Find a home, request a viewing, or send a rent request.
                 </p>
                 <Link
                   to="/rent"
-                  className="mt-3 inline-block text-sm font-semibold text-forest hover:underline"
+                  className="mt-3 inline-block text-sm font-semibold text-primary hover:underline"
                 >
                   Browse listings
                 </Link>

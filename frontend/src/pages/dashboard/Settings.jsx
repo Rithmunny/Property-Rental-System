@@ -4,6 +4,7 @@ import { useToast } from '@/context/ToastContext'
 import * as settingsApi from '@/api/settings'
 import PageHeader from '@/components/dashboard/PageHeader'
 import AbaQrCard from '@/components/dashboard/AbaQrCard'
+import ThemeToggle from '@/components/common/ThemeToggle'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -121,16 +122,33 @@ export default function Settings() {
     }
   }
 
-  const roleLabel = user?.role === 'landlord' ? 'Landlord' : user?.role === 'admin' ? 'Admin' : 'Tenant'
+  const roleLabel =
+    user?.role === 'landlord'
+      ? 'Landlord'
+      : user?.role === 'super_admin'
+        ? 'Super Admin'
+        : user?.role === 'admin'
+          ? 'Admin'
+          : 'Tenant'
 
   return (
     <div>
       <PageHeader title="Settings" subtitle="Manage your PRS account and notifications" />
 
       {loading ? (
-        <p className="mt-6 text-sm text-gray-500">Loading settings…</p>
+        <p className="mt-6 text-sm text-muted-foreground">Loading settings…</p>
       ) : (
         <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>Appearance</CardTitle>
+              <CardDescription>Light, dark, or match this device. Saved on this browser.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ThemeToggle variant="panel" />
+            </CardContent>
+          </Card>
+
           <form onSubmit={handleSaveProfile}>
             <Card>
               <CardHeader>

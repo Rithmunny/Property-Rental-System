@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken'
 import { env } from '../config/env.js'
 import { prisma } from '../config/prisma.js'
 import { HttpError } from '../utils/httpError.js'
+import { isAdmin } from '../utils/roles.js'
 
 export function signToken(user) {
   return jwt.sign({ sub: String(user.id), role: user.role }, env.jwtSecret, {
@@ -55,7 +56,8 @@ export function optionalAuth(req, res, next) {
 export function requireRole(...roles) {
   return (req, res, next) => {
     if (!req.user) return next(new HttpError(401, 'Not authenticated'))
-    if (!roles.includes(req.user.role)) {
+    const allowed = roles.includes(req.user.role) || (roles.includes('admin') && isAdmin(req.user.role))
+    if (!allowed) {
       return next(new HttpError(403, 'You do not have permission to do that'))
     }
     next()

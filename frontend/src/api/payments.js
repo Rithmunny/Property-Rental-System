@@ -5,7 +5,7 @@ import { getTenantPayments, getLandlordPayments, appendTenantPayment } from './m
 
 async function mockGetPayments(role) {
   if (role === 'landlord') return getLandlordPayments()
-  if (role === 'admin') {
+  if (role === 'admin' || role === 'super_admin') {
     return {
       totalCollected: 12450,
       pendingCount: 3,

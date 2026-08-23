@@ -42,7 +42,7 @@ export default function RentMap({ properties, activeId, onSelect }) {
   )
 
   return (
-    <div className="rent-map relative z-0 h-full min-h-[360px] overflow-hidden rounded-2xl border border-gray-200">
+    <div className="rent-map relative z-0 h-full min-h-[360px] overflow-hidden rounded-2xl border border-border">
       <MapContainer
         center={[PHNOM_PENH_CENTER.lat, PHNOM_PENH_CENTER.lng]}
         zoom={12}
@@ -65,13 +65,13 @@ export default function RentMap({ properties, activeId, onSelect }) {
           >
             <Popup>
               <div className="min-w-[140px]">
-                <p className="text-sm font-semibold text-gray-900">{p.title}</p>
-                <p className="mt-0.5 text-xs text-gray-500">
+                <p className="text-sm font-semibold text-foreground">{p.title}</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">
                   {p.neighbourhood || p.city} · ${p.price}/mo
                 </p>
                 <Link
                   to={`/listings/${p.id}`}
-                  className="mt-2 inline-block text-xs font-semibold text-forest hover:underline"
+                  className="mt-2 inline-block text-xs font-semibold text-primary hover:underline"
                 >
                   View listing
                 </Link>

@@ -54,7 +54,7 @@ export default function AdminOverview() {
       {loading ? (
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="animate-pulse rounded-2xl border border-gray-200 bg-white p-5">
+            <div key={i} className="animate-pulse rounded-2xl border border-border bg-card p-5">
               <div className="h-4 w-20 rounded bg-gray-200" />
               <div className="mt-3 h-8 w-16 rounded bg-gray-200" />
             </div>
@@ -70,14 +70,14 @@ export default function AdminOverview() {
       )}
 
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 lg:col-span-2">
+        <div className="rounded-2xl border border-border bg-card p-5 lg:col-span-2">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-gray-900">Landlords</h3>
-            <Link to="/dashboard/admin/landlords" className="text-xs font-semibold text-forest hover:underline">
+            <h3 className="font-semibold text-foreground">Landlords</h3>
+            <Link to="/dashboard/admin/landlords" className="text-xs font-semibold text-primary hover:underline">
               View all
             </Link>
           </div>
-          <p className="text-sm text-gray-500">Property owners on the platform</p>
+          <p className="text-sm text-muted-foreground">Property owners on the platform</p>
 
           {loading ? (
             <div className="mt-3">
@@ -92,10 +92,10 @@ export default function AdminOverview() {
                 return (
                   <div key={l.id} className="flex items-center justify-between py-3">
                     <div className="flex min-w-0 items-center gap-3">
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sage/60 text-sm font-semibold text-forest">
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-semibold text-foreground">
                         {l.name.charAt(0)}
                       </span>
-                      <p className="truncate text-sm font-medium text-gray-900">{l.name}</p>
+                      <p className="truncate text-sm font-medium text-foreground">{l.name}</p>
                     </div>
                     <StatusPill label={status.label} tone={status.tone} />
                   </div>
@@ -105,9 +105,9 @@ export default function AdminOverview() {
           )}
         </div>
 
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 lg:col-span-1">
-          <h3 className="font-semibold text-gray-900">Payment Methods</h3>
-          <p className="text-sm text-gray-500">Platform-wide, across all tenants</p>
+        <div className="rounded-2xl border border-border bg-card p-5 lg:col-span-1">
+          <h3 className="font-semibold text-foreground">Payment Methods</h3>
+          <p className="text-sm text-muted-foreground">Platform-wide, across all tenants</p>
           {loading ? (
             <div className="mt-4 flex justify-center">
               <div className="h-40 w-40 animate-pulse rounded-full bg-gray-200" />
@@ -119,14 +119,14 @@ export default function AdminOverview() {
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 lg:col-span-1">
+        <div className="rounded-2xl border border-border bg-card p-5 lg:col-span-1">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-gray-900">Tenants</h3>
-            <Link to="/dashboard/admin/tenants" className="text-xs font-semibold text-forest hover:underline">
+            <h3 className="font-semibold text-foreground">Tenants</h3>
+            <Link to="/dashboard/admin/tenants" className="text-xs font-semibold text-primary hover:underline">
               View all
             </Link>
           </div>
-          <p className="text-sm text-gray-500">Renters on the platform</p>
+          <p className="text-sm text-muted-foreground">Renters on the platform</p>
 
           {loading ? (
             <div className="mt-3">
@@ -141,10 +141,10 @@ export default function AdminOverview() {
                 return (
                   <div key={t.id} className="flex items-center justify-between py-3">
                     <div className="flex min-w-0 items-center gap-3">
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sage/60 text-sm font-semibold text-forest">
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-semibold text-foreground">
                         {t.name.charAt(0)}
                       </span>
-                      <p className="truncate text-sm font-medium text-gray-900">{t.name}</p>
+                      <p className="truncate text-sm font-medium text-foreground">{t.name}</p>
                     </div>
                     <StatusPill label={status.label} tone={status.tone} />
                   </div>
@@ -154,14 +154,14 @@ export default function AdminOverview() {
           )}
         </div>
 
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 lg:col-span-2">
+        <div className="rounded-2xl border border-border bg-card p-5 lg:col-span-2">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-gray-900">All Properties</h3>
-            <Link to="/dashboard/admin/properties" className="text-xs font-semibold text-forest hover:underline">
+            <h3 className="font-semibold text-foreground">All Properties</h3>
+            <Link to="/dashboard/admin/properties" className="text-xs font-semibold text-primary hover:underline">
               View all
             </Link>
           </div>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             {properties.length} listings from {landlords.length} landlords
           </p>
 
@@ -175,8 +175,8 @@ export default function AdminOverview() {
             <div className="mt-3 flex flex-col divide-y divide-gray-100">
               {properties.slice(0, 4).map((p) => (
                 <div key={p.id} className="flex items-center justify-between py-2.5 text-sm">
-                  <p className="truncate font-medium text-gray-900">{p.title}</p>
-                  <p className="shrink-0 text-gray-500">${p.price}/mo</p>
+                  <p className="truncate font-medium text-foreground">{p.title}</p>
+                  <p className="shrink-0 text-muted-foreground">${p.price}/mo</p>
                 </div>
               ))}
             </div>

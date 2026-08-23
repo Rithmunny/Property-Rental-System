@@ -38,7 +38,7 @@ export default function AdminLayout() {
   }
 
   return (
-    <DashboardShell roleLabel="Admin" menuItems={MENU_ITEMS} promoCard={promoCard}>
+    <DashboardShell menuItems={MENU_ITEMS} promoCard={promoCard}>
       <Outlet />
     </DashboardShell>
   )

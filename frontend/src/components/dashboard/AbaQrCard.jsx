@@ -47,14 +47,14 @@ export default function AbaQrCard() {
   }
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-5">
-      <h3 className="font-semibold text-gray-900">ABA QR</h3>
-      <p className="text-sm text-gray-500">
+    <div className="rounded-2xl border border-border bg-card p-5">
+      <h3 className="font-semibold text-foreground">ABA QR</h3>
+      <p className="text-sm text-muted-foreground">
         Upload your ABA KhQR. Tenants see this when they pay rent.
       </p>
 
       {loading ? (
-        <p className="mt-4 text-sm text-gray-500">Loading…</p>
+        <p className="mt-4 text-sm text-muted-foreground">Loading…</p>
       ) : (
         <div className="mt-4">
           {qr ? (
@@ -62,7 +62,7 @@ export default function AbaQrCard() {
               <img
                 src={qr}
                 alt="Your ABA QR code"
-                className="aspect-square w-full rounded-2xl border border-gray-200 bg-white object-contain p-2"
+                className="aspect-square w-full rounded-2xl border border-border bg-card object-contain p-2"
               />
               <Button
                 type="button"
@@ -81,7 +81,7 @@ export default function AbaQrCard() {
               type="button"
               disabled={busy}
               onClick={() => inputRef.current?.click()}
-              className="flex h-40 w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 text-gray-500 hover:bg-gray-100 disabled:opacity-60"
+              className="flex h-40 w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-border bg-muted text-muted-foreground hover:bg-muted disabled:opacity-60"
             >
               <QrCode className="h-8 w-8 text-forest" strokeWidth={1.25} />
               <span className="inline-flex items-center gap-1 text-sm font-medium">

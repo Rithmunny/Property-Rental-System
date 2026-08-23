@@ -76,19 +76,19 @@ export default function MessagesInbox({ role }) {
       <PageHeader title={title} subtitle={subtitle} />
       {error && <p className="mt-4 rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
 
-      <div className="mt-6 grid grid-cols-1 overflow-hidden rounded-2xl border border-gray-200 bg-white lg:grid-cols-[280px_1fr]">
-        <aside className="border-b border-gray-100 lg:border-b-0 lg:border-r">
+      <div className="mt-6 grid grid-cols-1 overflow-hidden rounded-2xl border border-border bg-card lg:grid-cols-[280px_1fr]">
+        <aside className="border-b border-border lg:border-b-0 lg:border-r">
           {loading ? (
             <div className="p-3">
               <SkeletonRow />
               <SkeletonRow />
             </div>
           ) : threads.length === 0 && !propertyId ? (
-            <p className="p-6 text-sm text-gray-500">No messages yet.</p>
+            <p className="p-6 text-sm text-muted-foreground">No messages yet.</p>
           ) : (
             <div className="flex flex-col">
               {propertyId && !threads.some((t) => t.propertyId === propertyId) && (
-                <div className="border-b border-gray-100 bg-sage/30 px-4 py-3 text-sm font-medium text-forest">
+                <div className="border-b border-border bg-sage/30 px-4 py-3 text-sm font-medium text-forest">
                   New conversation
                 </div>
               )}
@@ -108,17 +108,17 @@ export default function MessagesInbox({ role }) {
                       if (role === 'landlord') params.tenant = thread.tenantEmail
                       setSearchParams(params)
                     }}
-                    className={`border-b border-gray-100 px-4 py-3 text-left hover:bg-gray-50 ${
+                    className={`border-b border-border px-4 py-3 text-left hover:bg-muted ${
                       active ? 'bg-sage/40' : ''
                     }`}
                   >
-                    <p className="truncate text-sm font-semibold text-gray-900">
+                    <p className="truncate text-sm font-semibold text-foreground">
                       {listing?.title ?? 'Listing'}
                     </p>
-                    <p className="truncate text-xs text-gray-500">
+                    <p className="truncate text-xs text-muted-foreground">
                       {role === 'landlord' ? thread.tenantName : thread.landlord}
                     </p>
-                    {last && <p className="mt-1 truncate text-xs text-gray-400">{last.text}</p>}
+                    {last && <p className="mt-1 truncate text-xs text-muted-foreground">{last.text}</p>}
                   </button>
                 )
               })}
@@ -128,20 +128,20 @@ export default function MessagesInbox({ role }) {
 
         <section className="flex min-h-[420px] flex-col">
           {!property && !selected ? (
-            <div className="flex flex-1 items-center justify-center p-6 text-sm text-gray-500">
+            <div className="flex flex-1 items-center justify-center p-6 text-sm text-muted-foreground">
               Select a conversation or message a landlord from a listing.
             </div>
           ) : (
             <>
-              <div className="border-b border-gray-100 px-4 py-3">
-                <p className="font-semibold text-gray-900">{property?.title ?? 'Property'}</p>
-                <p className="text-xs text-gray-500">
+              <div className="border-b border-border px-4 py-3">
+                <p className="font-semibold text-foreground">{property?.title ?? 'Property'}</p>
+                <p className="text-xs text-muted-foreground">
                   {role === 'landlord'
                     ? selected?.tenantName || draftTenantEmail
                     : property?.landlord}
                 </p>
                 {property && (
-                  <Link to={`/listings/${property.id}`} className="text-xs font-semibold text-forest hover:underline">
+                  <Link to={`/listings/${property.id}`} className="text-xs font-semibold text-primary hover:underline">
                     View listing
                   </Link>
                 )}
@@ -153,11 +153,11 @@ export default function MessagesInbox({ role }) {
                     <div key={message.id} className={`flex ${mine ? 'justify-end' : 'justify-start'}`}>
                       <div
                         className={`max-w-[80%] rounded-2xl px-3.5 py-2 text-sm ${
-                          mine ? 'bg-forest text-white' : 'bg-gray-100 text-gray-800'
+                          mine ? 'bg-forest text-white' : 'bg-muted text-foreground'
                         }`}
                       >
                         <p>{message.text}</p>
-                        <p className={`mt-1 text-[10px] ${mine ? 'text-white/70' : 'text-gray-400'}`}>
+                        <p className={`mt-1 text-[10px] ${mine ? 'text-white/70' : 'text-muted-foreground'}`}>
                           {new Date(message.createdAt).toLocaleString()}
                         </p>
                       </div>
@@ -165,20 +165,20 @@ export default function MessagesInbox({ role }) {
                   )
                 })}
                 {!selected?.messages?.length && (
-                  <p className="text-sm text-gray-500">Send the first message.</p>
+                  <p className="text-sm text-muted-foreground">Send the first message.</p>
                 )}
               </div>
-              <form onSubmit={handleSend} className="flex gap-2 border-t border-gray-100 p-3">
+              <form onSubmit={handleSend} className="flex gap-2 border-t border-border p-3">
                 <input
                   value={text}
                   onChange={(e) => setText(e.target.value)}
                   placeholder="Write a message"
-                  className="flex-1 rounded-full border border-gray-300 px-4 py-2 text-sm outline-none focus:border-forest"
+                  className="flex-1 rounded-full border border-border px-4 py-2 text-sm outline-none focus:border-ring"
                 />
                 <button
                   type="submit"
                   disabled={sending || !text.trim() || !(selected?.propertyId || propertyId)}
-                  className="rounded-full bg-forest px-4 py-2 text-sm font-semibold text-white hover:bg-forest-dark disabled:opacity-60"
+                  className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-60"
                 >
                   Send
                 </button>

@@ -1,207 +1,26 @@
 import bcrypt from 'bcryptjs'
 import { PrismaClient } from '@prisma/client'
+import { PROPERTIES as FRONTEND_PROPERTIES } from '../../frontend/src/data/properties.js'
 
 const prisma = new PrismaClient()
 
-const PROPERTIES = [
-  {
-    title: 'Modern Downtown Apartment',
-    type: 'Apartment',
-    city: 'Phnom Penh',
-    neighbourhood: 'BKK1',
-    address: 'Street 240, BKK1',
-    price: 450,
-    bedrooms: 2,
-    bathrooms: 1,
-    area: 65,
-    lat: 11.5521,
-    lng: 104.9284,
-    image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&auto=format&fit=crop',
-    images: [
-      'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&auto=format&fit=crop',
-    ],
-    description:
-      'A bright, modern 2-bedroom apartment in the heart of BKK1, walking distance to cafes, gyms, and coworking spaces. Fully furnished with high-speed internet included.',
-    amenities: ['Wi-Fi', 'Air Conditioning', 'Parking', 'Swimming Pool', 'Security'],
-    landlordEmail: 'sokdara@prs.demo',
-    available: true,
-    furnished: 'furnished',
-    leaseTermMonths: 12,
-    depositMonths: 2,
-    electricityRate: 0.25,
-    parkingFee: 0,
-    telegram: '@sokdara',
-    whatsapp: '+85512900111',
-    phone: '+855 12 900 111',
-  },
-  {
-    title: 'Cozy Studio Near River',
-    type: 'Studio',
-    city: 'Phnom Penh',
-    neighbourhood: 'Riverside',
-    address: 'Sisowath Quay',
-    price: 280,
-    bedrooms: 1,
-    bathrooms: 1,
-    area: 32,
-    lat: 11.5698,
-    lng: 104.9312,
-    image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&auto=format&fit=crop',
-    images: [
-      'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1536376072261-38c75010e6c9?w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=800&auto=format&fit=crop',
-    ],
-    description:
-      'Compact studio with a river view, perfect for a single tenant or student. Close to public transport and the night market.',
-    amenities: ['Wi-Fi', 'Air Conditioning', 'Balcony'],
-    landlordEmail: 'chan.sopheak@prs.demo',
-    available: true,
-    furnished: 'furnished',
-    leaseTermMonths: 6,
-    depositMonths: 1,
-    electricityRate: 0.28,
-    parkingFee: 20,
-    telegram: '@chan_sopheak',
-    whatsapp: '+85512900222',
-    phone: '+855 12 900 222',
-  },
-  {
-    title: 'Family House with Garden',
-    type: 'House',
-    city: 'Siem Reap',
-    neighbourhood: 'Wat Bo',
-    address: 'Wat Bo Village',
-    price: 600,
-    bedrooms: 4,
-    bathrooms: 3,
-    area: 180,
-    lat: 13.3541,
-    lng: 103.8604,
-    image: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&auto=format&fit=crop',
-    images: [
-      'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&auto=format&fit=crop',
-    ],
-    description:
-      'Spacious family home with a private garden and off-street parking, located in a quiet village close to the city center.',
-    amenities: ['Garden', 'Parking', 'Air Conditioning', 'Security', 'Pet Friendly'],
-    landlordEmail: 'ly.vannak@prs.demo',
-    available: true,
-    furnished: 'semi',
-    leaseTermMonths: 12,
-    depositMonths: 2,
-    electricityRate: 0.22,
-    parkingFee: 0,
-    telegram: '@ly_vannak',
-    whatsapp: '+85512900333',
-    phone: '+855 12 900 333',
-  },
-  {
-    title: 'Luxury Condo with Pool View',
-    type: 'Condo',
-    city: 'Phnom Penh',
-    neighbourhood: 'Diamond Island',
-    address: 'Diamond Island',
-    price: 900,
-    bedrooms: 3,
-    bathrooms: 2,
-    area: 110,
-    lat: 11.5454,
-    lng: 104.9381,
-    image: 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&auto=format&fit=crop',
-    images: [
-      'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1560448204-6032e3052892?w=800&auto=format&fit=crop',
-    ],
-    description:
-      'High-rise luxury condo with panoramic river views, rooftop pool access, gym, and 24/7 concierge service.',
-    amenities: ['Wi-Fi', 'Gym', 'Swimming Pool', 'Security', 'Elevator', 'Parking'],
-    landlordEmail: 'kim.sreymom@prs.demo',
-    available: false,
-    furnished: 'furnished',
-    leaseTermMonths: 12,
-    depositMonths: 2,
-    electricityRate: 0.25,
-    parkingFee: 50,
-    telegram: '@kim_sreymom',
-    whatsapp: '+85512900444',
-    phone: '+855 12 900 444',
-  },
-  {
-    title: 'Budget Room for Students',
-    type: 'Room',
-    city: 'Battambang',
-    neighbourhood: 'Near University',
-    address: 'Near University',
-    price: 90,
-    bedrooms: 1,
-    bathrooms: 1,
-    area: 18,
-    lat: 13.1028,
-    lng: 103.1991,
-    image: 'https://images.unsplash.com/photo-1554995207-c18c203602cb?w=800&auto=format&fit=crop',
-    images: [
-      'https://images.unsplash.com/photo-1554995207-c18c203602cb?w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800&auto=format&fit=crop',
-    ],
-    description:
-      'Affordable private room ideal for students, shared kitchen and common area, five-minute walk to campus.',
-    amenities: ['Wi-Fi', 'Shared Kitchen'],
-    landlordEmail: 'pich.rathanak@prs.demo',
-    available: true,
-    furnished: 'unfurnished',
-    leaseTermMonths: 6,
-    depositMonths: 1,
-    electricityRate: null,
-    parkingFee: 0,
-    telegram: '@pich_rathanak',
-    whatsapp: '',
-    phone: '+855 12 900 555',
-  },
-  {
-    title: 'Beachside Bungalow',
-    type: 'House',
-    city: 'Sihanoukville',
-    neighbourhood: 'Otres Beach',
-    address: 'Otres Beach',
-    price: 500,
-    bedrooms: 2,
-    bathrooms: 2,
-    area: 75,
-    lat: 10.5758,
-    lng: 103.5692,
-    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&auto=format&fit=crop',
-    images: [
-      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1505691938895-1758d7afb09d?w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=800&auto=format&fit=crop',
-    ],
-    description:
-      'Relaxed bungalow just steps from the beach, open-plan living space, and a private hammock terrace.',
-    amenities: ['Wi-Fi', 'Air Conditioning', 'Beach Access', 'Parking'],
-    landlordEmail: 'heng.bopha@prs.demo',
-    available: true,
-    furnished: 'furnished',
-    leaseTermMonths: 0,
-    depositMonths: 1,
-    electricityRate: 0.3,
-    parkingFee: 0,
-    telegram: '@heng_bopha',
-    whatsapp: '+85512900666',
-    phone: '+855 12 900 666',
-  },
-]
+const KNOWN_LANDLORD_EMAILS = {
+  'Sok Dara': { email: 'sokdara@prs.demo', status: 'active' },
+  'Chan Sopheak': { email: 'chan.sopheak@prs.demo', status: 'active' },
+  'Ly Vannak': { email: 'ly.vannak@prs.demo', status: 'active' },
+  'Kim Sreymom': { email: 'kim.sreymom@prs.demo', status: 'active' },
+  'Pich Rathanak': { email: 'pich.rathanak@prs.demo', status: 'pending' },
+  'Heng Bopha': { email: 'heng.bopha@prs.demo', status: 'active' },
+}
+
+function landlordEmailFor(name) {
+  return KNOWN_LANDLORD_EMAILS[name]?.email ?? `${name.toLowerCase().replace(/\s+/g, '.')}@prs.demo`
+}
+
+const PROPERTIES = FRONTEND_PROPERTIES.map(({ landlord, rating, reviews, id, ...listing }) => ({
+  ...listing,
+  landlordEmail: landlordEmailFor(landlord),
+}))
 
 function d(value) {
   return new Date(`${value}T00:00:00.000Z`)
@@ -217,64 +36,30 @@ async function upsertUser(passwordHash, data) {
 
 async function main() {
   const passwordHash = await bcrypt.hash('password123', 10)
+  const superAdminHash = await bcrypt.hash('super-admin1234', 10)
 
-  const admin = await upsertUser(passwordHash, {
-    name: 'PRS Admin',
-    email: 'admin@prs.local',
-    role: 'admin',
+  await prisma.user.deleteMany({ where: { email: 'admin@prs.local' } })
+
+  const admin = await upsertUser(superAdminHash, {
+    name: 'Rithmony',
+    email: 'rithmunnysopheak@gmail.com',
+    role: 'super_admin',
     status: 'active',
-    telegram: '@prs_admin',
+    telegram: '@rithmony',
   })
 
-  const landlords = {
-    sokdara: await upsertUser(passwordHash, {
-      name: 'Sok Dara',
-      email: 'sokdara@prs.demo',
+  const landlordByEmail = {}
+  for (const listing of FRONTEND_PROPERTIES) {
+    const email = landlordEmailFor(listing.landlord)
+    if (landlordByEmail[email]) continue
+    landlordByEmail[email] = await upsertUser(passwordHash, {
+      name: listing.landlord,
+      email,
       role: 'landlord',
-      status: 'active',
-      telegram: '@sokdara',
-      phone: '+855 12 900 111',
-    }),
-    chan: await upsertUser(passwordHash, {
-      name: 'Chan Sopheak',
-      email: 'chan.sopheak@prs.demo',
-      role: 'landlord',
-      status: 'active',
-      telegram: '@chan_sopheak',
-      phone: '+855 12 900 222',
-    }),
-    ly: await upsertUser(passwordHash, {
-      name: 'Ly Vannak',
-      email: 'ly.vannak@prs.demo',
-      role: 'landlord',
-      status: 'active',
-      telegram: '@ly_vannak',
-      phone: '+855 12 900 333',
-    }),
-    kim: await upsertUser(passwordHash, {
-      name: 'Kim Sreymom',
-      email: 'kim.sreymom@prs.demo',
-      role: 'landlord',
-      status: 'active',
-      telegram: '@kim_sreymom',
-      phone: '+855 12 900 444',
-    }),
-    pich: await upsertUser(passwordHash, {
-      name: 'Pich Rathanak',
-      email: 'pich.rathanak@prs.demo',
-      role: 'landlord',
-      status: 'pending',
-      telegram: '@pich_rathanak',
-      phone: '+855 12 900 555',
-    }),
-    heng: await upsertUser(passwordHash, {
-      name: 'Heng Bopha',
-      email: 'heng.bopha@prs.demo',
-      role: 'landlord',
-      status: 'active',
-      telegram: '@heng_bopha',
-      phone: '+855 12 900 666',
-    }),
+      status: KNOWN_LANDLORD_EMAILS[listing.landlord]?.status ?? 'active',
+      telegram: listing.telegram || '',
+      phone: listing.phone || '',
+    })
   }
 
   const demoTenant = await upsertUser(passwordHash, {
@@ -343,15 +128,6 @@ async function main() {
   await prisma.rentalRequest.deleteMany()
   await prisma.contract.deleteMany()
   await prisma.property.deleteMany()
-
-  const landlordByEmail = {
-    'sokdara@prs.demo': landlords.sokdara,
-    'chan.sopheak@prs.demo': landlords.chan,
-    'ly.vannak@prs.demo': landlords.ly,
-    'kim.sreymom@prs.demo': landlords.kim,
-    'pich.rathanak@prs.demo': landlords.pich,
-    'heng.bopha@prs.demo': landlords.heng,
-  }
 
   const createdProperties = []
   for (const listing of PROPERTIES) {
@@ -508,13 +284,13 @@ async function main() {
       },
       {
         threadId: thread1.id,
-        fromUserId: landlords.sokdara.id,
+        fromUserId: landlordByEmail['sokdara@prs.demo'].id,
         text: 'Yes it is. I can show you this week — weekday evenings work best.',
         createdAt: new Date('2026-08-10T09:40:00.000Z'),
       },
       {
         threadId: thread2.id,
-        fromUserId: landlords.heng.id,
+        fromUserId: landlordByEmail['heng.bopha@prs.demo'].id,
         text: 'Thanks for the viewing request. Otres is free Saturday at 10:00 if that still works.',
         createdAt: new Date('2026-08-12T03:20:00.000Z'),
       },
@@ -527,7 +303,9 @@ async function main() {
     ],
   })
 
-  console.log(`Seeded PRS demo data. Admin id ${admin.id}. Password for all demo users: password123`)
+  console.log(
+    `Seeded ${createdProperties.length} Cambodia listings and ${Object.keys(landlordByEmail).length} landlords. Super admin id ${admin.id} (rithmunnysopheak@gmail.com). Demo user password: password123`,
+  )
 }
 
 main()

@@ -119,7 +119,7 @@ export default function LandlordContracts() {
           <button
             type="button"
             onClick={openModal}
-            className="flex min-h-11 items-center gap-1.5 rounded-full bg-forest px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-forest-dark"
+            className="flex min-h-11 items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
           >
             <Plus className="h-4 w-4" />
             New Contract
@@ -131,7 +131,7 @@ export default function LandlordContracts() {
         <p className="mt-4 rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
       )}
 
-      <div className="mt-6 overflow-hidden rounded-2xl border border-gray-200 bg-white">
+      <div className="mt-6 overflow-hidden rounded-2xl border border-border bg-card">
         {loading ? (
           <div className="p-2 sm:p-3">
             {Array.from({ length: 3 }).map((_, i) => (
@@ -153,27 +153,27 @@ export default function LandlordContracts() {
                       <FileText className="h-5 w-5" />
                     </span>
                     <div className="min-w-0">
-                      <p className="truncate font-medium text-gray-900">{property?.title}</p>
-                      <p className="truncate text-sm text-gray-500">Tenant: {c.tenant}</p>
+                      <p className="truncate font-medium text-foreground">{property?.title}</p>
+                      <p className="truncate text-sm text-muted-foreground">Tenant: {c.tenant}</p>
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-600 sm:flex-nowrap">
+                  <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground sm:flex-nowrap">
                     <div>
-                      <p className="text-gray-400">Rent</p>
-                      <p className="font-medium text-gray-900">${c.rent}/mo</p>
+                      <p className="text-muted-foreground">Rent</p>
+                      <p className="font-medium text-foreground">${c.rent}/mo</p>
                     </div>
                     <div>
-                      <p className="text-gray-400">Deposit</p>
-                      <p className="font-medium text-gray-900">${c.deposit}</p>
+                      <p className="text-muted-foreground">Deposit</p>
+                      <p className="font-medium text-foreground">${c.deposit}</p>
                     </div>
                     <div>
-                      <p className="text-gray-400">Start</p>
-                      <p className="font-medium text-gray-900">{c.startDate}</p>
+                      <p className="text-muted-foreground">Start</p>
+                      <p className="font-medium text-foreground">{c.startDate}</p>
                     </div>
                     <div>
-                      <p className="text-gray-400">End</p>
-                      <p className="font-medium text-gray-900">{c.endDate}</p>
+                      <p className="text-muted-foreground">End</p>
+                      <p className="font-medium text-foreground">{c.endDate}</p>
                     </div>
                   </div>
 
@@ -184,10 +184,10 @@ export default function LandlordContracts() {
 
             {contracts.length === 0 && (
               <div className="px-3 py-10 text-center">
-                <p className="text-sm text-gray-500">No contracts on file yet.</p>
+                <p className="text-sm text-muted-foreground">No contracts on file yet.</p>
                 <Link
                   to="/dashboard/landlord/requests"
-                  className="mt-3 inline-block text-sm font-semibold text-forest hover:underline"
+                  className="mt-3 inline-block text-sm font-semibold text-primary hover:underline"
                 >
                   Review incoming requests
                 </Link>
@@ -199,28 +199,28 @@ export default function LandlordContracts() {
 
       {modalOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-4">
-          <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6">
+          <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-card p-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold text-gray-900">New Contract</h2>
+              <h2 className="text-lg font-bold text-foreground">New Contract</h2>
               <button
                 type="button"
                 onClick={() => setModalOpen(false)}
                 aria-label="Close"
-                className="text-gray-400 hover:text-gray-600"
+                className="text-muted-foreground hover:text-muted-foreground"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
             <form onSubmit={handleSubmit} className="mt-5 flex flex-col gap-4">
-              <label className="flex flex-col gap-1.5 text-sm font-medium text-gray-700">
+              <label className="flex flex-col gap-1.5 text-sm font-medium text-muted-foreground">
                 Property
                 <select
                   name="propertyId"
                   required
                   value={form.propertyId}
                   onChange={handleChange}
-                  className="rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none focus:border-forest focus:ring-2 focus:ring-forest/15"
+                  className="rounded-xl border border-border px-3.5 py-2.5 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/20"
                 >
                   {listings.length === 0 && <option value="">No listings available</option>}
                   {listings.map((p) => (
@@ -231,19 +231,19 @@ export default function LandlordContracts() {
                 </select>
               </label>
 
-              <label className="flex flex-col gap-1.5 text-sm font-medium text-gray-700">
+              <label className="flex flex-col gap-1.5 text-sm font-medium text-muted-foreground">
                 Tenant name
                 <input
                   name="tenant"
                   required
                   value={form.tenant}
                   onChange={handleChange}
-                  className="rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none focus:border-forest focus:ring-2 focus:ring-forest/15"
+                  className="rounded-xl border border-border px-3.5 py-2.5 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/20"
                 />
               </label>
 
               <div className="grid grid-cols-2 gap-4">
-                <label className="flex flex-col gap-1.5 text-sm font-medium text-gray-700">
+                <label className="flex flex-col gap-1.5 text-sm font-medium text-muted-foreground">
                   Rent ($/mo)
                   <input
                     name="rent"
@@ -251,10 +251,10 @@ export default function LandlordContracts() {
                     required
                     value={form.rent}
                     onChange={handleChange}
-                    className="rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none focus:border-forest focus:ring-2 focus:ring-forest/15"
+                    className="rounded-xl border border-border px-3.5 py-2.5 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/20"
                   />
                 </label>
-                <label className="flex flex-col gap-1.5 text-sm font-medium text-gray-700">
+                <label className="flex flex-col gap-1.5 text-sm font-medium text-muted-foreground">
                   Deposit ($)
                   <input
                     name="deposit"
@@ -262,13 +262,13 @@ export default function LandlordContracts() {
                     required
                     value={form.deposit}
                     onChange={handleChange}
-                    className="rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none focus:border-forest focus:ring-2 focus:ring-forest/15"
+                    className="rounded-xl border border-border px-3.5 py-2.5 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/20"
                   />
                 </label>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <label className="flex flex-col gap-1.5 text-sm font-medium text-gray-700">
+                <label className="flex flex-col gap-1.5 text-sm font-medium text-muted-foreground">
                   Start date
                   <input
                     name="startDate"
@@ -276,10 +276,10 @@ export default function LandlordContracts() {
                     required
                     value={form.startDate}
                     onChange={handleChange}
-                    className="rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none focus:border-forest focus:ring-2 focus:ring-forest/15"
+                    className="rounded-xl border border-border px-3.5 py-2.5 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/20"
                   />
                 </label>
-                <label className="flex flex-col gap-1.5 text-sm font-medium text-gray-700">
+                <label className="flex flex-col gap-1.5 text-sm font-medium text-muted-foreground">
                   End date
                   <input
                     name="endDate"
@@ -287,7 +287,7 @@ export default function LandlordContracts() {
                     required
                     value={form.endDate}
                     onChange={handleChange}
-                    className="rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none focus:border-forest focus:ring-2 focus:ring-forest/15"
+                    className="rounded-xl border border-border px-3.5 py-2.5 text-sm text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/20"
                   />
                 </label>
               </div>
@@ -296,14 +296,14 @@ export default function LandlordContracts() {
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                  className="rounded-full border border-border px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving || listings.length === 0}
-                  className="rounded-full bg-forest px-5 py-2 text-sm font-semibold text-white hover:bg-forest-dark disabled:opacity-60"
+                  className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-60"
                 >
                   {saving ? 'Creating…' : 'Create contract'}
                 </button>
