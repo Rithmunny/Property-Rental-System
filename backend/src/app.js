@@ -3,6 +3,7 @@ import cors from 'cors'
 import { env } from './config/env.js'
 import { errorHandler, notFound } from './middleware/error.js'
 import authRoutes from './routes/auth.js'
+import aiRoutes from './routes/ai.js'
 import propertyRoutes from './routes/properties.js'
 import {
   reviewRoutes,
@@ -34,6 +35,7 @@ app.get('/api/health', (req, res) => {
 })
 
 app.use('/api/auth', authRoutes)
+app.use('/api/ai', aiRoutes)
 app.use('/api/properties', propertyRoutes)
 app.use('/api/reviews', reviewRoutes)
 app.use('/api/requests', requestRoutes)

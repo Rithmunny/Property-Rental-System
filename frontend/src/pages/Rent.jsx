@@ -58,17 +58,41 @@ export default function Rent() {
     [searchParams],
   )
 
+  const buildParams = (filters = {}) => {
+    const params = new URLSearchParams()
+    const q = filters.q ?? query
+    const c = filters.city ?? city
+    const t = filters.type ?? type
+    const a = filters.area ?? areaFilter
+    const b = filters.beds ?? beds
+    const f = filters.furnished ?? furnished
+    const max = filters.maxPrice != null ? Number(filters.maxPrice) : maxPrice
+
+    if (String(q || '').trim()) params.set('q', String(q).trim())
+    if (c && c !== 'All') params.set('city', c)
+    if (t && t !== 'All') params.set('type', t)
+    if (a && a !== 'All') params.set('area', a)
+    if (b && b !== 'All') params.set('beds', String(b))
+    if (f && f !== 'All') params.set('furnished', f)
+    if (max < PRICE_MAX) params.set('maxPrice', String(max))
+    return params
+  }
+
   const applySearch = (e) => {
     e?.preventDefault()
-    const params = new URLSearchParams()
-    if (query.trim()) params.set('q', query.trim())
-    if (city !== 'All') params.set('city', city)
-    if (type !== 'All') params.set('type', type)
-    if (areaFilter !== 'All') params.set('area', areaFilter)
-    if (beds !== 'All') params.set('beds', beds)
-    if (furnished !== 'All') params.set('furnished', furnished)
-    if (maxPrice < PRICE_MAX) params.set('maxPrice', String(maxPrice))
-    setSearchParams(params)
+    setSearchParams(buildParams())
+  }
+
+  const handleAiParsed = (filters, summary) => {
+    if (filters.q != null) setQuery(filters.q)
+    if (filters.city) setCity(filters.city)
+    if (filters.type) setType(filters.type)
+    if (filters.area) setAreaFilter(filters.area)
+    if (filters.beds) setBeds(String(filters.beds))
+    if (filters.furnished) setFurnished(filters.furnished)
+    if (filters.maxPrice) setMaxPrice(Number(filters.maxPrice) || PRICE_MAX)
+    setSearchParams(buildParams(filters))
+    if (summary) showToast(summary)
   }
 
   const handleCityChange = (value) => {
@@ -148,6 +172,7 @@ export default function Rent() {
           maxPrice={maxPrice}
           onMaxPriceChange={setMaxPrice}
           onSubmit={applySearch}
+          onAiParsed={handleAiParsed}
         />
       </div>
 

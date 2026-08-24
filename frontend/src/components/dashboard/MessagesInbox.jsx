@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
+import { Sparkles } from 'lucide-react'
+import * as aiApi from '@/api/ai'
 import { useMessages } from '@/context/MessagesContext'
 import { useProperties } from '@/context/PropertiesContext'
 import { useAuth } from '@/context/AuthContext'
@@ -15,6 +17,7 @@ export default function MessagesInbox({ role }) {
   const [searchParams, setSearchParams] = useSearchParams()
   const [text, setText] = useState('')
   const [sending, setSending] = useState(false)
+  const [suggesting, setSuggesting] = useState(false)
 
   const propertyId = Number(searchParams.get('propertyId')) || null
   const tenantParam = searchParams.get('tenant') || ''
@@ -44,6 +47,25 @@ export default function MessagesInbox({ role }) {
   const property = properties.find((p) => p.id === (selected?.propertyId || propertyId))
   const draftTenantEmail =
     role === 'tenant' ? user?.email : tenantParam || selected?.tenantEmail || ''
+
+  const handleSuggestReply = async () => {
+    const targetPropertyId = selected?.propertyId || propertyId
+    if (!targetPropertyId) return
+    setSuggesting(true)
+    try {
+      const { suggestion } = await aiApi.suggestMessageReply({
+        role,
+        propertyTitle: property?.title,
+        messages: selected?.messages || [],
+      })
+      setText(suggestion)
+      showToast('Draft ready — edit before sending')
+    } catch (err) {
+      showToast(err.message || 'Could not suggest a reply')
+    } finally {
+      setSuggesting(false)
+    }
+  }
 
   const handleSend = async (e) => {
     e.preventDefault()
@@ -168,7 +190,19 @@ export default function MessagesInbox({ role }) {
                   <p className="text-sm text-muted-foreground">Send the first message.</p>
                 )}
               </div>
-              <form onSubmit={handleSend} className="flex gap-2 border-t border-border p-3">
+              <form onSubmit={handleSend} className="flex flex-col gap-2 border-t border-border p-3">
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    onClick={handleSuggestReply}
+                    disabled={suggesting || !(selected?.propertyId || propertyId)}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:bg-muted disabled:opacity-60"
+                  >
+                    <Sparkles className={`size-3.5 ${suggesting ? 'animate-pulse' : ''}`} />
+                    {suggesting ? 'Drafting…' : 'AI suggest reply'}
+                  </button>
+                </div>
+                <div className="flex gap-2">
                 <input
                   value={text}
                   onChange={(e) => setText(e.target.value)}
@@ -182,6 +216,7 @@ export default function MessagesInbox({ role }) {
                 >
                   Send
                 </button>
+                </div>
               </form>
             </>
           )}

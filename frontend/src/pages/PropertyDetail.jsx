@@ -18,6 +18,7 @@ import {
   telegramHref,
   whatsappHref,
 } from '@/utils/listing'
+import SimilarProperties from '@/components/common/SimilarProperties'
 
 export default function PropertyDetail() {
   const { id } = useParams()
@@ -417,6 +418,8 @@ export default function PropertyDetail() {
           )}
         </aside>
       </div>
+
+      <SimilarProperties propertyId={property.id} />
 
       <ViewingRequestModal
         open={viewingOpen}

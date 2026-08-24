@@ -15,6 +15,7 @@ import { useAlerts } from '@/context/AlertsContext'
 import BrandLogo from '@/components/common/BrandLogo'
 import ThemeToggle from '@/components/common/ThemeToggle'
 import { dashboardPath } from '@/utils/dashboard'
+import DashboardAiSearch from '@/components/dashboard/DashboardAiSearch'
 
 const ROLE_LABELS = {
   tenant: 'Tenant',
@@ -30,6 +31,7 @@ export default function DashboardShell({ roleLabel, title, subtitle, actions, me
   const navigate = useNavigate()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [alertsOpen, setAlertsOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
   const alertsRef = useRef(null)
   const [activeHref, setActiveHref] = useState(() => menuItems.find((item) => item.href)?.href)
 
@@ -71,6 +73,8 @@ export default function DashboardShell({ roleLabel, title, subtitle, actions, me
   }
 
   const comingSoon = () => showToast('Coming soon')
+
+  const openAiSearch = () => setSearchOpen(true)
 
   const navLinkClass = ({ isActive }) =>
     `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
@@ -198,11 +202,11 @@ export default function DashboardShell({ roleLabel, title, subtitle, actions, me
 
           <button
             type="button"
-            onClick={comingSoon}
+            onClick={openAiSearch}
             className="hidden max-w-xs flex-1 items-center gap-2 rounded-full border border-border px-4 py-2 text-left text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground sm:flex"
           >
             <Search className="h-4 w-4" />
-            Search
+            AI search
           </button>
 
           <div className="ml-auto flex items-center gap-3 sm:gap-4">
@@ -297,6 +301,7 @@ export default function DashboardShell({ roleLabel, title, subtitle, actions, me
           <div className={title ? 'mt-6' : ''}>{children}</div>
         </main>
       </div>
+      <DashboardAiSearch open={searchOpen} onOpenChange={setSearchOpen} />
     </div>
   )
 }

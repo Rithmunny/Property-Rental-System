@@ -1,5 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { ImagePlus, X } from 'lucide-react'
+import * as aiApi from '@/api/ai'
+import AiAssistButton from '@/components/common/AiAssistButton'
+import { useToast } from '@/context/ToastContext'
 import { CITIES, PROPERTY_TYPES } from '@/data/properties'
 import { areasForCity } from '@/data/areas'
 import {
@@ -59,6 +62,8 @@ const EMPTY_FORM = {
 
 export default function PropertyFormModal({ open, title, initialValues, onClose, onSubmit }) {
   const [form, setForm] = useState(EMPTY_FORM)
+  const [generatingDesc, setGeneratingDesc] = useState(false)
+  const { showToast } = useToast()
 
   useEffect(() => {
     if (!open) return
@@ -105,6 +110,35 @@ export default function PropertyFormModal({ open, title, initialValues, onClose,
   const handleChange = (e) => {
     const { name, value } = e.target
     setField(name, value)
+  }
+
+  const handleGenerateDescription = async () => {
+    setGeneratingDesc(true)
+    try {
+      const amenities = form.amenities
+        .split(',')
+        .map((a) => a.trim())
+        .filter(Boolean)
+      const { description } = await aiApi.generateDescription({
+        title: form.title,
+        type: form.type,
+        city: form.city,
+        neighbourhood: form.neighbourhood,
+        address: form.address,
+        bedrooms: Number(form.bedrooms) || 1,
+        bathrooms: Number(form.bathrooms) || 1,
+        area: Number(form.area) || 0,
+        price: Number(form.price) || 0,
+        furnished: form.furnished,
+        amenities,
+      })
+      setField('description', description)
+      showToast('Description generated — review before saving')
+    } catch (err) {
+      showToast(err.message || 'Could not generate description')
+    } finally {
+      setGeneratingDesc(false)
+    }
   }
 
   const handleSubmit = (e) => {
@@ -290,7 +324,15 @@ export default function PropertyFormModal({ open, title, initialValues, onClose,
 
             <FormSection title="Description">
               <div className="flex flex-col gap-1.5">
-                <Label htmlFor="description">About this listing</Label>
+                <div className="flex items-center justify-between gap-2">
+                  <Label htmlFor="description">About this listing</Label>
+                  <AiAssistButton
+                    onClick={handleGenerateDescription}
+                    loading={generatingDesc}
+                    disabled={!form.title.trim()}
+                    label="AI write"
+                  />
+                </div>
                 <Textarea
                   id="description"
                   name="description"

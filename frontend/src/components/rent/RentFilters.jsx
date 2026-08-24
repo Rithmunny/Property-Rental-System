@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
-import { Search, SlidersHorizontal } from 'lucide-react'
+import { SlidersHorizontal } from 'lucide-react'
+import AiSearchInput from '@/components/common/AiSearchInput'
 import { CITIES, PROPERTY_TYPES } from '@/data/properties'
 import { FURNISHED_OPTIONS, PRICE_MAX } from '@/utils/listing'
 import { cn } from '@/lib/utils'
@@ -13,7 +14,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
   Select,
@@ -178,6 +178,7 @@ export default function RentFilters({
   maxPrice,
   onMaxPriceChange,
   onSubmit,
+  onAiParsed,
 }) {
   const [open, setOpen] = useState(false)
 
@@ -216,16 +217,13 @@ export default function RentFilters({
       onSubmit={onSubmit}
       className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-3 sm:px-6 sm:py-4 lg:flex-row lg:flex-wrap lg:items-center lg:gap-3 lg:px-10"
     >
-      <div className="relative w-full min-w-0 lg:max-w-xs lg:flex-1">
-        <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          type="text"
-          value={query}
-          onChange={(e) => onQueryChange(e.target.value)}
-          placeholder="Search by title, street, or area"
-          className="h-10 rounded-full pl-9"
-        />
-      </div>
+      <AiSearchInput
+        value={query}
+        onChange={onQueryChange}
+        onParsed={onAiParsed}
+        className="w-full min-w-0 lg:max-w-md lg:flex-1"
+        placeholder="Search or try: 2 bed in BKK1 under $500"
+      />
 
       <div className="hidden min-w-0 lg:flex lg:flex-1 lg:flex-wrap lg:items-center lg:gap-2">
         <FilterFields idPrefix="rent-lg" labeled={false} {...fieldProps} />
@@ -244,7 +242,6 @@ export default function RentFilters({
           {activeCount > 0 ? <Badge>{activeCount}</Badge> : null}
         </Button>
         <Button type="submit" size="lg" className="h-10 flex-1 rounded-full lg:w-auto lg:flex-none lg:px-5">
-          <Search />
           Update Search
         </Button>
       </div>

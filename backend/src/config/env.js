@@ -11,4 +11,6 @@ export const env = {
   jwtSecret: process.env.JWT_SECRET || 'dev-secret-change-me',
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
   frontendOrigin: process.env.FRONTEND_ORIGIN || 'http://localhost:5173',
+  openaiApiKey: process.env.OPENAI_API_KEY || '',
+  aiModel: process.env.AI_MODEL || 'gpt-4o-mini',
 }

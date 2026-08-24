@@ -75,6 +75,15 @@ Frontend-only mock: set `VITE_USE_MOCK=true`. Any email/password works; pick a r
 - Shared UI (buttons, dialogs, forms) with a common theme
 - REST API in `backend/` (`VITE_USE_MOCK=false`)
 
+### AI features
+- **Natural-language search** on `/rent` and dashboard header — describe what you want (e.g. "2 bed in BKK1 under $500") and AI parses it into filters
+- **Floating rental assistant** on public pages — ask about areas, budgets, deposits, and viewings
+- **Listing description generator** for landlords in the add/edit listing form
+- **Similar homes** recommendations on property detail pages
+- **Message reply suggestions** in tenant/landlord inboxes
+
+Set `OPENAI_API_KEY` in `backend/.env` for OpenAI-powered responses; without it, smart rule-based fallbacks work for demos and mock mode.
+
 ## Stack
 
 Frontend: React, Vite, Tailwind CSS, React Router, Leaflet (map), jsPDF (invoices).
