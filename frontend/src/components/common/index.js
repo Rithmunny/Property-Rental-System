@@ -1,4 +1,5 @@
 export { default as BrandLogo } from './BrandLogo'
+export { default as ThemeToggle } from './ThemeToggle'
 export { default as PropertyCard } from './PropertyCard'
 export { default as PropertyGallery } from './PropertyGallery'
 export { default as RentalCard } from './RentalCard'

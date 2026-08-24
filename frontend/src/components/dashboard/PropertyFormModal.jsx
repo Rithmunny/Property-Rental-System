@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
-import { X } from 'lucide-react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { ImagePlus, X } from 'lucide-react'
 import { CITIES, PROPERTY_TYPES } from '@/data/properties'
 import { areasForCity } from '@/data/areas'
 import {
@@ -8,6 +8,27 @@ import {
   LEASE_TERM_OPTIONS,
   PROPERTY_DEFAULTS,
 } from '@/utils/listing'
+import { readImageFile } from '@/utils/image'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
 
 const EMPTY_FORM = {
   title: '',
@@ -68,12 +89,9 @@ export default function PropertyFormModal({ open, title, initialValues, onClose,
 
   const areaOptions = useMemo(() => areasForCity(form.city).map((a) => a.name), [form.city])
 
-  if (!open) return null
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target
+  const setField = (name, value) => {
     setForm((f) => {
-      const next = { ...f, [name]: type === 'checkbox' ? checked : value }
+      const next = { ...f, [name]: value }
       if (name === 'city') {
         const names = areasForCity(value).map((a) => a.name)
         if (!names.includes(f.neighbourhood)) {
@@ -82,6 +100,11 @@ export default function PropertyFormModal({ open, title, initialValues, onClose,
       }
       return next
     })
+  }
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setField(name, value)
   }
 
   const handleSubmit = (e) => {
@@ -110,183 +133,300 @@ export default function PropertyFormModal({ open, title, initialValues, onClose,
   }
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-4">
-      <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-gray-900">{title}</h2>
-          <button onClick={onClose} aria-label="Close" className="text-gray-400 hover:text-gray-600">
-            <X className="h-5 w-5" />
-          </button>
-        </div>
+    <Dialog open={open} onOpenChange={(next) => { if (!next) onClose() }}>
+      <DialogContent className="flex max-h-[90vh] max-w-lg flex-col gap-0 overflow-hidden p-0 sm:max-w-lg">
+        <DialogHeader className="shrink-0 border-b border-border px-6 py-4 pr-12">
+          <DialogTitle className="text-lg font-semibold">{title}</DialogTitle>
+        </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="mt-5 flex flex-col gap-4">
-          <Field label="Title" name="title" value={form.title} onChange={handleChange} required />
+        <form onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col overflow-hidden">
+          <div className="min-h-0 flex-1 space-y-7 overflow-y-auto px-6 py-5">
+            <FormSection title="Property">
+              <Field label="Title" name="title" value={form.title} onChange={handleChange} required />
+              <SelectField
+                label="Type"
+                value={form.type}
+                onValueChange={(value) => setField('type', value)}
+                options={PROPERTY_TYPES}
+              />
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="available"
+                  checked={form.available}
+                  onCheckedChange={(checked) => setField('available', !!checked)}
+                />
+                <Label htmlFor="available" className="font-normal">
+                  Available for rent
+                </Label>
+              </div>
+            </FormSection>
 
-          <div className="grid grid-cols-2 gap-4">
-            <SelectField label="Type" name="type" value={form.type} onChange={handleChange} options={PROPERTY_TYPES} />
-            <SelectField label="City" name="city" value={form.city} onChange={handleChange} options={CITIES} />
+            <FormSection title="Location">
+              <div className="grid grid-cols-2 gap-4">
+                <SelectField
+                  label="City"
+                  value={form.city}
+                  onValueChange={(value) => setField('city', value)}
+                  options={CITIES}
+                />
+                <SelectField
+                  label="Neighbourhood"
+                  value={form.neighbourhood}
+                  onValueChange={(value) => setField('neighbourhood', value)}
+                  options={areaOptions}
+                />
+              </div>
+              <Field label="Street address" name="address" value={form.address} onChange={handleChange} required />
+            </FormSection>
+
+            <FormSection title="Space">
+              <div className="grid grid-cols-3 gap-4">
+                <Field
+                  label="Bedrooms"
+                  name="bedrooms"
+                  type="number"
+                  value={form.bedrooms}
+                  onChange={handleChange}
+                />
+                <Field
+                  label="Bathrooms"
+                  name="bathrooms"
+                  type="number"
+                  value={form.bathrooms}
+                  onChange={handleChange}
+                />
+                <Field
+                  label="Floor area (m²)"
+                  name="area"
+                  type="number"
+                  value={form.area}
+                  onChange={handleChange}
+                />
+              </div>
+              <SelectField
+                label="Furnished"
+                value={form.furnished}
+                onValueChange={(value) => setField('furnished', value)}
+                options={FURNISHED_OPTIONS}
+              />
+            </FormSection>
+
+            <FormSection title="Rent & terms">
+              <div className="grid grid-cols-2 gap-4">
+                <Field
+                  label="Monthly rent ($)"
+                  name="price"
+                  type="number"
+                  value={form.price}
+                  onChange={handleChange}
+                  required
+                />
+                <SelectField
+                  label="Deposit"
+                  value={form.depositMonths}
+                  onValueChange={(value) => setField('depositMonths', value)}
+                  options={DEPOSIT_OPTIONS}
+                />
+              </div>
+              <SelectField
+                label="Lease term"
+                value={form.leaseTermMonths}
+                onValueChange={(value) => setField('leaseTermMonths', value)}
+                options={LEASE_TERM_OPTIONS}
+              />
+              <div className="grid grid-cols-2 gap-4">
+                <Field
+                  label="Parking ($/mo)"
+                  name="parkingFee"
+                  type="number"
+                  value={form.parkingFee}
+                  onChange={handleChange}
+                  placeholder="0 if none"
+                />
+                <Field
+                  label="Electricity ($/kWh)"
+                  name="electricityRate"
+                  type="number"
+                  value={form.electricityRate}
+                  onChange={handleChange}
+                  placeholder="Leave blank if unknown"
+                  step="0.01"
+                />
+              </div>
+            </FormSection>
+
+            <FormSection title="Photos">
+              <PhotoSlot
+                id="image"
+                label="Cover photo"
+                value={form.image}
+                onChange={(value) => setField('image', value)}
+                className="aspect-video"
+              />
+              <div className="grid grid-cols-3 gap-3">
+                <PhotoSlot
+                  id="image2"
+                  label="Photo 2"
+                  value={form.image2}
+                  onChange={(value) => setField('image2', value)}
+                  optional
+                />
+                <PhotoSlot
+                  id="image3"
+                  label="Photo 3"
+                  value={form.image3}
+                  onChange={(value) => setField('image3', value)}
+                  optional
+                />
+                <PhotoSlot
+                  id="image4"
+                  label="Photo 4"
+                  value={form.image4}
+                  onChange={(value) => setField('image4', value)}
+                  optional
+                />
+              </div>
+            </FormSection>
+
+            <FormSection title="Description">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="description">About this listing</Label>
+                <Textarea
+                  id="description"
+                  name="description"
+                  value={form.description}
+                  onChange={handleChange}
+                  rows={3}
+                />
+              </div>
+              <Field
+                label="Amenities"
+                name="amenities"
+                value={form.amenities}
+                onChange={handleChange}
+                placeholder="Wi-Fi, Parking, Air Conditioning"
+              />
+            </FormSection>
+
+            <FormSection title="Contact">
+              <div className="grid grid-cols-2 gap-4">
+                <Field
+                  label="Telegram"
+                  name="telegram"
+                  value={form.telegram}
+                  onChange={handleChange}
+                  placeholder="@username"
+                />
+                <Field
+                  label="WhatsApp"
+                  name="whatsapp"
+                  value={form.whatsapp}
+                  onChange={handleChange}
+                  placeholder="+85512..."
+                />
+              </div>
+              <Field
+                label="Phone"
+                name="phone"
+                value={form.phone}
+                onChange={handleChange}
+                placeholder="+855 12 000 000"
+              />
+            </FormSection>
           </div>
 
-          <SelectField
-            label="Neighbourhood"
-            name="neighbourhood"
-            value={form.neighbourhood}
-            onChange={handleChange}
-            options={areaOptions}
-          />
+          <DialogFooter className="mx-0 mb-0">
+            <Button type="button" variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button type="submit">Save listing</Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  )
+}
 
-          <Field label="Address" name="address" value={form.address} onChange={handleChange} required />
+function FormSection({ title, children }) {
+  return (
+    <section className="flex flex-col gap-3">
+      <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{title}</h3>
+      {children}
+    </section>
+  )
+}
 
-          <div className="grid grid-cols-3 gap-4">
-            <Field label="Price ($/mo)" name="price" type="number" value={form.price} onChange={handleChange} required />
-            <Field label="Bedrooms" name="bedrooms" type="number" value={form.bedrooms} onChange={handleChange} />
-            <Field label="Bathrooms" name="bathrooms" type="number" value={form.bathrooms} onChange={handleChange} />
-          </div>
+function PhotoSlot({ id, label, value, onChange, optional = false, className }) {
+  const inputRef = useRef(null)
+  const [busy, setBusy] = useState(false)
 
-          <Field label="Floor area (m²)" name="area" type="number" value={form.area} onChange={handleChange} />
+  const openPicker = () => inputRef.current?.click()
 
-          <div className="grid grid-cols-2 gap-4">
-            <SelectField
-              label="Furnished"
-              name="furnished"
-              value={form.furnished}
-              onChange={handleChange}
-              options={FURNISHED_OPTIONS}
-            />
-            <SelectField
-              label="Lease term"
-              name="leaseTermMonths"
-              value={form.leaseTermMonths}
-              onChange={handleChange}
-              options={LEASE_TERM_OPTIONS}
-            />
-          </div>
+  const handleFile = async (event) => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file || !file.type.startsWith('image/')) return
+    setBusy(true)
+    try {
+      onChange(await readImageFile(file))
+    } catch {
+      // Keep the previous photo if the file cannot be read.
+    } finally {
+      setBusy(false)
+    }
+  }
 
-          <div className="grid grid-cols-2 gap-4">
-            <SelectField
-              label="Deposit"
-              name="depositMonths"
-              value={form.depositMonths}
-              onChange={handleChange}
-              options={DEPOSIT_OPTIONS}
-            />
-            <Field
-              label="Parking ($/mo)"
-              name="parkingFee"
-              type="number"
-              value={form.parkingFee}
-              onChange={handleChange}
-              placeholder="0 if none"
-            />
-          </div>
-
-          <Field
-            label="Electricity ($/kWh)"
-            name="electricityRate"
-            type="number"
-            value={form.electricityRate}
-            onChange={handleChange}
-            placeholder="Leave blank if unknown"
-            step="0.01"
-          />
-
-          <Field
-            label="Cover image URL"
-            name="image"
-            value={form.image}
-            onChange={handleChange}
-            placeholder="https://... (leave blank for a placeholder photo)"
-          />
-          <Field
-            label="Photo 2 URL"
-            name="image2"
-            value={form.image2}
-            onChange={handleChange}
-            placeholder="Optional"
-          />
-          <Field
-            label="Photo 3 URL"
-            name="image3"
-            value={form.image3}
-            onChange={handleChange}
-            placeholder="Optional"
-          />
-          <Field
-            label="Photo 4 URL"
-            name="image4"
-            value={form.image4}
-            onChange={handleChange}
-            placeholder="Optional"
-          />
-
-          <label className="flex flex-col gap-1.5 text-sm font-medium text-gray-700">
-            Description
-            <textarea
-              name="description"
-              value={form.description}
-              onChange={handleChange}
-              rows={3}
-              className="rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none transition-colors focus:border-forest focus:ring-2 focus:ring-forest/15"
-            />
-          </label>
-
-          <Field
-            label="Amenities (comma-separated)"
-            name="amenities"
-            value={form.amenities}
-            onChange={handleChange}
-            placeholder="Wi-Fi, Parking, Air Conditioning"
-          />
-
-          <Field
-            label="Telegram"
-            name="telegram"
-            value={form.telegram}
-            onChange={handleChange}
-            placeholder="@username"
-          />
-          <Field
-            label="WhatsApp"
-            name="whatsapp"
-            value={form.whatsapp}
-            onChange={handleChange}
-            placeholder="+85512..."
-          />
-          <Field
-            label="Phone"
-            name="phone"
-            value={form.phone}
-            onChange={handleChange}
-            placeholder="+855 12 000 000"
-          />
-
-          <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-            <input
-              type="checkbox"
-              name="available"
-              checked={form.available}
-              onChange={handleChange}
-              className="h-4 w-4 rounded border-gray-300 accent-forest"
-            />
-            Available for rent
-          </label>
-
-          <div className="mt-2 flex justify-end gap-3">
+  return (
+    <div className="flex flex-col gap-1.5">
+      <Label htmlFor={id}>{label}</Label>
+      <div
+        className={cn(
+          'relative overflow-hidden rounded-xl border border-dashed border-input bg-muted/30',
+          value && 'border-solid',
+          className || 'aspect-[4/3]',
+        )}
+      >
+        {value ? (
+          <>
+            <img src={value} alt="" className="size-full object-cover" />
             <button
               type="button"
-              onClick={onClose}
-              className="rounded-full border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+              className="absolute inset-0"
+              onClick={openPicker}
+              aria-label={`Replace ${label}`}
+            />
+            <Button
+              type="button"
+              variant="secondary"
+              size="icon-xs"
+              className="absolute top-1.5 right-1.5 z-10"
+              onClick={() => onChange('')}
+              aria-label={`Remove ${label}`}
             >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="rounded-full bg-forest px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-forest-dark"
-            >
-              Save Listing
-            </button>
-          </div>
-        </form>
+              <X />
+            </Button>
+          </>
+        ) : (
+          <button
+            type="button"
+            onClick={openPicker}
+            disabled={busy}
+            className="flex size-full flex-col items-center justify-center gap-1 px-2 text-center text-muted-foreground hover:bg-muted/50"
+          >
+            <ImagePlus className="size-5" />
+            <span className="text-[11px] leading-tight">
+              {busy ? 'Loading…' : optional ? 'Optional' : 'Upload photo'}
+            </span>
+          </button>
+        )}
+        <input
+          ref={inputRef}
+          id={id}
+          type="file"
+          accept="image/*"
+          className="sr-only"
+          onChange={handleFile}
+        />
       </div>
     </div>
   )
@@ -294,9 +434,10 @@ export default function PropertyFormModal({ open, title, initialValues, onClose,
 
 function Field({ label, name, type = 'text', value, onChange, required, placeholder, step }) {
   return (
-    <label className="flex flex-col gap-1.5 text-sm font-medium text-gray-700">
-      {label}
-      <input
+    <div className="flex flex-col gap-1.5">
+      <Label htmlFor={name}>{label}</Label>
+      <Input
+        id={name}
         type={type}
         name={name}
         value={value}
@@ -304,32 +445,34 @@ function Field({ label, name, type = 'text', value, onChange, required, placehol
         required={required}
         placeholder={placeholder}
         step={step}
-        className="rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none transition-colors focus:border-forest focus:ring-2 focus:ring-forest/15"
       />
-    </label>
+    </div>
   )
 }
 
-function SelectField({ label, name, value, onChange, options }) {
+function SelectField({ label, value, onValueChange, options }) {
+  const stringValue = String(value ?? '')
+  if (!stringValue) return null
+
   return (
-    <label className="flex flex-col gap-1.5 text-sm font-medium text-gray-700">
-      {label}
-      <select
-        name={name}
-        value={value}
-        onChange={onChange}
-        className="rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 outline-none transition-colors focus:border-forest focus:ring-2 focus:ring-forest/15"
-      >
-        {options.map((o) => {
-          const optionValue = typeof o === 'object' ? String(o.value) : o
-          const optionLabel = typeof o === 'object' ? o.label : o
-          return (
-            <option key={optionValue} value={optionValue}>
-              {optionLabel}
-            </option>
-          )
-        })}
-      </select>
-    </label>
+    <div className="flex flex-col gap-1.5">
+      <Label>{label}</Label>
+      <Select value={stringValue} onValueChange={onValueChange}>
+        <SelectTrigger className="h-10 w-full">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent position="popper" className="z-[70]">
+          {options.map((o) => {
+            const optionValue = typeof o === 'object' ? String(o.value) : o
+            const optionLabel = typeof o === 'object' ? o.label : o
+            return (
+              <SelectItem key={optionValue} value={optionValue}>
+                {optionLabel}
+              </SelectItem>
+            )
+          })}
+        </SelectContent>
+      </Select>
+    </div>
   )
 }

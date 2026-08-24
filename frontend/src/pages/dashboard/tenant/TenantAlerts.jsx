@@ -42,12 +42,12 @@ export default function TenantAlerts() {
           </p>
           <div className="mt-3 flex flex-col gap-3">
             {alerts.map(({ search, matches }) => (
-              <div key={search.id} className="rounded-xl bg-white p-3">
-                <p className="text-sm font-medium text-gray-900">{filterLabel(search.filters)}</p>
+              <div key={search.id} className="rounded-xl bg-card p-3">
+                <p className="text-sm font-medium text-foreground">{filterLabel(search.filters)}</p>
                 <ul className="mt-2 flex flex-col gap-1 text-sm">
                   {matches.map((p) => (
                     <li key={p.id}>
-                      <Link to={`/listings/${p.id}`} className="text-forest hover:underline">
+                      <Link to={`/listings/${p.id}`} className="text-primary hover:underline">
                         {p.title} · ${p.price}/mo
                       </Link>
                     </li>
@@ -56,7 +56,7 @@ export default function TenantAlerts() {
                 <button
                   type="button"
                   onClick={() => markSeen(search.id)}
-                  className="mt-2 text-xs font-semibold text-gray-500 hover:text-forest"
+                  className="mt-2 text-xs font-semibold text-muted-foreground hover:text-primary"
                 >
                   Mark as seen
                 </button>
@@ -66,11 +66,11 @@ export default function TenantAlerts() {
         </div>
       )}
 
-      <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-2 sm:p-3">
+      <div className="mt-6 rounded-2xl border border-border bg-card p-2 sm:p-3">
         {searches.length === 0 ? (
           <div className="px-3 py-10 text-center">
-            <p className="text-sm text-gray-500">No saved searches yet.</p>
-            <Link to="/rent" className="mt-3 inline-block text-sm font-semibold text-forest hover:underline">
+            <p className="text-sm text-muted-foreground">No saved searches yet.</p>
+            <Link to="/rent" className="mt-3 inline-block text-sm font-semibold text-primary hover:underline">
               Browse rentals and save a search
             </Link>
           </div>
@@ -79,15 +79,15 @@ export default function TenantAlerts() {
             {searches.map((search) => (
                 <div key={search.id} className="flex flex-wrap items-center justify-between gap-3 p-3">
                   <div>
-                    <p className="font-medium text-gray-900">{filterLabel(search.filters)}</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="font-medium text-foreground">{filterLabel(search.filters)}</p>
+                    <p className="text-xs text-muted-foreground">
                       Saved {new Date(search.createdAt).toLocaleDateString()}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
                     <Link
                       to={searchToQuery(search.filters)}
-                      className="rounded-full border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+                      className="rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:bg-muted"
                     >
                       Open search
                     </Link>
@@ -95,7 +95,7 @@ export default function TenantAlerts() {
                       type="button"
                       onClick={() => removeSearch(search.id)}
                       aria-label="Delete search"
-                      className="rounded-full p-2 text-gray-400 hover:bg-gray-50 hover:text-red-600"
+                      className="rounded-full p-2 text-muted-foreground hover:bg-muted hover:text-red-600"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>

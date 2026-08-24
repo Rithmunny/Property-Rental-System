@@ -45,7 +45,7 @@ export default function PropertyGallery({ title, images = [] }) {
           <button
             type="button"
             onClick={() => open(0)}
-            className="mt-2 text-sm font-semibold text-forest hover:underline sm:hidden"
+            className="mt-2 text-sm font-semibold text-primary hover:underline sm:hidden"
           >
             View {photos.length} photos
           </button>
@@ -58,7 +58,7 @@ export default function PropertyGallery({ title, images = [] }) {
             type="button"
             onClick={close}
             aria-label="Close"
-            className="absolute right-4 top-4 rounded-full bg-white/90 p-2 text-gray-800"
+            className="absolute right-4 top-4 rounded-full bg-white/90 p-2 text-foreground"
           >
             <X className="h-5 w-5" />
           </button>
@@ -68,7 +68,7 @@ export default function PropertyGallery({ title, images = [] }) {
                 type="button"
                 onClick={prev}
                 aria-label="Previous photo"
-                className="absolute left-4 rounded-full bg-white/90 p-2 text-gray-800"
+                className="absolute left-4 rounded-full bg-white/90 p-2 text-foreground"
               >
                 <ChevronLeft className="h-5 w-5" />
               </button>
@@ -76,7 +76,7 @@ export default function PropertyGallery({ title, images = [] }) {
                 type="button"
                 onClick={next}
                 aria-label="Next photo"
-                className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-2 text-gray-800 md:right-16"
+                className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-2 text-foreground md:right-16"
               >
                 <ChevronRight className="h-5 w-5" />
               </button>

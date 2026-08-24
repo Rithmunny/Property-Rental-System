@@ -55,7 +55,7 @@ export default function TenantPayments() {
     return (
       <div>
         <PageHeader title="Payments" subtitle="Track your rent payments" />
-        <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-2 sm:p-3">
+        <div className="mt-6 rounded-2xl border border-border bg-card p-2 sm:p-3">
           {Array.from({ length: 3 }).map((_, i) => (
             <SkeletonRow key={i} />
           ))}
@@ -100,10 +100,10 @@ export default function TenantPayments() {
       <PageHeader title="Payments" subtitle="Track your rent payments" />
 
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 lg:col-span-1">
-          <h3 className="font-semibold text-gray-900">Next Payment</h3>
-          <p className="text-sm text-gray-500">Due {nextPayment.dueDate}</p>
-          <p className="mt-4 text-3xl font-bold text-gray-900">${nextPayment.amount}</p>
+        <div className="rounded-2xl border border-border bg-card p-5 lg:col-span-1">
+          <h3 className="font-semibold text-foreground">Next Payment</h3>
+          <p className="text-sm text-muted-foreground">Due {nextPayment.dueDate}</p>
+          <p className="mt-4 text-3xl font-bold text-foreground">${nextPayment.amount}</p>
 
           <div className="mt-4">
             <PaymentMethodBadge method={currentRental.paymentMethod} />
@@ -112,7 +112,7 @@ export default function TenantPayments() {
           <button
             type="button"
             onClick={() => setPayOpen(true)}
-            className="mt-5 w-full rounded-full bg-forest px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-forest-dark"
+            className="mt-5 w-full rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
           >
             Pay via ABA QR
           </button>
@@ -128,20 +128,20 @@ export default function TenantPayments() {
                 date: new Date().toISOString().slice(0, 10),
               })
             }
-            className="mt-2 w-full rounded-full border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+            className="mt-2 w-full rounded-full border border-border px-4 py-2.5 text-sm font-semibold text-muted-foreground hover:bg-muted"
           >
             View invoice
           </button>
         </div>
 
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 lg:col-span-2">
-          <h3 className="font-semibold text-gray-900">Payment History</h3>
-          <p className="text-sm text-gray-500">Your past rent payments</p>
+        <div className="rounded-2xl border border-border bg-card p-5 lg:col-span-2">
+          <h3 className="font-semibold text-foreground">Payment History</h3>
+          <p className="text-sm text-muted-foreground">Your past rent payments</p>
 
           {history.length === 0 ? (
             <div className="mt-6 text-center">
-              <p className="text-sm text-gray-500">No payment history yet.</p>
-              <p className="mt-1 text-xs text-gray-400">
+              <p className="text-sm text-muted-foreground">No payment history yet.</p>
+              <p className="mt-1 text-xs text-muted-foreground">
                 Payments will appear here after your first rent payment.
               </p>
             </div>
@@ -154,17 +154,17 @@ export default function TenantPayments() {
                       <ReceiptText className="h-4 w-4" />
                     </span>
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-medium text-gray-900">{p.month}</p>
-                      <p className="truncate text-xs text-gray-500">Paid {p.date}</p>
+                      <p className="truncate text-sm font-medium text-foreground">{p.month}</p>
+                      <p className="truncate text-xs text-muted-foreground">Paid {p.date}</p>
                     </div>
                   </div>
                   <div className="flex shrink-0 items-center gap-3">
                     <PaymentMethodBadge method={p.method} />
-                    <span className="text-sm font-semibold text-gray-900">${p.amount}</span>
+                    <span className="text-sm font-semibold text-foreground">${p.amount}</span>
                     <button
                       type="button"
                       onClick={() => openInvoice(p)}
-                      className="text-xs font-semibold text-forest hover:underline"
+                      className="text-xs font-semibold text-primary hover:underline"
                     >
                       Invoice
                     </button>
@@ -178,36 +178,51 @@ export default function TenantPayments() {
 
       {payOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-4">
-          <div className="w-full max-w-sm rounded-2xl bg-white p-6">
+          <div className="w-full max-w-sm rounded-2xl bg-card p-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold text-gray-900">Pay via ABA QR</h2>
+              <h2 className="text-lg font-bold text-foreground">Pay via ABA QR</h2>
               <button
                 type="button"
                 onClick={() => setPayOpen(false)}
                 aria-label="Close"
-                className="text-gray-400 hover:text-gray-600"
+                className="text-muted-foreground hover:text-muted-foreground"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <p className="mt-2 text-sm text-gray-500">
-              Scan this mock QR in the ABA app, then confirm below.
+            <p className="mt-2 text-sm text-muted-foreground">
+              {currentRental.abaQrImage
+                ? 'Scan your landlord\'s ABA QR in the ABA app, then confirm below.'
+                : 'Your landlord has not uploaded an ABA QR yet. Contact them, or mark as paid after you transfer.'}
             </p>
 
-            <div className="mx-auto mt-6 flex h-48 w-48 flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50">
-              <QrCode className="h-16 w-16 text-forest" strokeWidth={1.25} />
-              <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                ABA QR Placeholder
-              </p>
-              <p className="mt-1 text-sm font-semibold text-gray-900">${nextPayment.amount}</p>
-            </div>
+            {currentRental.abaQrImage ? (
+              <div className="mx-auto mt-6 w-full max-w-[220px]">
+                <img
+                  src={currentRental.abaQrImage}
+                  alt={`${currentRental.landlord || 'Landlord'} ABA QR`}
+                  className="aspect-square w-full rounded-2xl border border-border bg-card object-contain p-2"
+                />
+                <p className="mt-2 text-center text-sm font-semibold text-foreground">
+                  ${nextPayment.amount}
+                </p>
+              </div>
+            ) : (
+              <div className="mx-auto mt-6 flex h-48 w-48 flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border bg-muted">
+                <QrCode className="h-16 w-16 text-forest" strokeWidth={1.25} />
+                <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  Waiting for QR
+                </p>
+                <p className="mt-1 text-sm font-semibold text-foreground">${nextPayment.amount}</p>
+              </div>
+            )}
 
             <button
               type="button"
               disabled={paying}
               onClick={handleMarkPaid}
-              className="mt-6 w-full rounded-full bg-forest px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-forest-dark disabled:opacity-60"
+              className="mt-6 w-full rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
             >
               {paying ? 'Saving…' : 'Mark as paid'}
             </button>

@@ -50,7 +50,7 @@ export default function LandlordRequests() {
         <p className="mt-4 rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
       )}
 
-      <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-2 sm:p-3">
+      <div className="mt-6 rounded-2xl border border-border bg-card p-2 sm:p-3">
         {loading ? (
           <div>
             {Array.from({ length: 3 }).map((_, i) => (
@@ -65,8 +65,8 @@ export default function LandlordRequests() {
               return (
                 <div key={r.id} className="flex flex-wrap items-center justify-between gap-3 p-3">
                   <div>
-                    <p className="font-medium text-gray-900">{property?.title ?? 'Unknown property'}</p>
-                    <p className="text-sm text-gray-500">
+                    <p className="font-medium text-foreground">{property?.title ?? 'Unknown property'}</p>
+                    <p className="text-sm text-muted-foreground">
                       {REQUEST_KIND[r.kind] ?? 'Rent'} &middot; {r.tenantName ?? 'Tenant'} &middot;{' '}
                       {r.kind === 'viewing' && r.viewingDate
                         ? `Viewing ${r.viewingDate} at ${r.viewingTime}`
@@ -77,7 +77,7 @@ export default function LandlordRequests() {
                   <div className="flex items-center gap-2">
                     <Link
                       to={`/dashboard/landlord/messages?propertyId=${r.propertyId}&tenant=${encodeURIComponent(r.tenantEmail || '')}`}
-                      className="rounded-full border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+                      className="rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:bg-muted"
                     >
                       Message
                     </Link>
@@ -87,14 +87,14 @@ export default function LandlordRequests() {
                         <button
                           onClick={() => handleStatus(r.id, 'accepted')}
                           disabled={updatingId === r.id}
-                          className="min-h-10 flex-1 rounded-full bg-forest px-4 py-2 text-xs font-semibold text-white hover:bg-forest-dark disabled:opacity-60 sm:flex-none sm:py-1.5"
+                          className="min-h-10 flex-1 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-60 sm:flex-none sm:py-1.5"
                         >
                           Accept
                         </button>
                         <button
                           onClick={() => handleStatus(r.id, 'declined')}
                           disabled={updatingId === r.id}
-                          className="min-h-10 flex-1 rounded-full border border-gray-300 px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-60 sm:flex-none sm:py-1.5"
+                          className="min-h-10 flex-1 rounded-full border border-border px-4 py-2 text-xs font-semibold text-muted-foreground hover:bg-muted disabled:opacity-60 sm:flex-none sm:py-1.5"
                         >
                           Decline
                         </button>
@@ -107,12 +107,12 @@ export default function LandlordRequests() {
 
             {inbox.length === 0 && (
               <div className="px-3 py-10 text-center">
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   No incoming requests yet. Keep your listings up to date so tenants can find you.
                 </p>
                 <Link
                   to="/dashboard/landlord/listings"
-                  className="mt-3 inline-block text-sm font-semibold text-forest hover:underline"
+                  className="mt-3 inline-block text-sm font-semibold text-primary hover:underline"
                 >
                   Manage listings
                 </Link>

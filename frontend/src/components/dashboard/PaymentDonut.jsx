@@ -21,15 +21,15 @@ export default function PaymentDonut({ aba, cash }) {
           />
         </svg>
         <div className="absolute flex flex-col items-center">
-          <p className="text-2xl font-bold text-gray-900">{abaPct}%</p>
-          <p className="text-xs text-gray-500">via ABA QR</p>
+          <p className="text-2xl font-bold text-foreground">{abaPct}%</p>
+          <p className="text-xs text-muted-foreground">via ABA QR</p>
         </div>
       </div>
       <div className="mt-4 flex items-center justify-center gap-5 text-sm">
-        <span className="flex items-center gap-1.5 text-gray-600">
+        <span className="flex items-center gap-1.5 text-muted-foreground">
           <span className="h-2.5 w-2.5 rounded-full bg-forest" /> ABA QR ({aba})
         </span>
-        <span className="flex items-center gap-1.5 text-gray-600">
+        <span className="flex items-center gap-1.5 text-muted-foreground">
           <span className="h-2.5 w-2.5 rounded-full bg-gray-300" /> Cash ({cash})
         </span>
       </div>

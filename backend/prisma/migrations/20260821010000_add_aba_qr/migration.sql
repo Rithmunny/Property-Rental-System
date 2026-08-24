@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN "abaQrImage" TEXT NOT NULL DEFAULT '';

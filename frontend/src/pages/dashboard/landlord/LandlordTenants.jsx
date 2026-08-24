@@ -35,7 +35,7 @@ export default function LandlordTenants() {
         <p className="mt-4 rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
       )}
 
-      <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-2 sm:p-3">
+      <div className="mt-6 rounded-2xl border border-border bg-card p-2 sm:p-3">
         {loading ? (
           <div>
             {Array.from({ length: 3 }).map((_, i) => (
@@ -54,13 +54,13 @@ export default function LandlordTenants() {
                       {t.name.charAt(0)}
                     </span>
                     <div className="min-w-0">
-                      <p className="truncate font-medium text-gray-900">{t.name}</p>
-                      <p className="truncate text-sm text-gray-500">{property?.title}</p>
+                      <p className="truncate font-medium text-foreground">{t.name}</p>
+                      <p className="truncate text-sm text-muted-foreground">{property?.title}</p>
                     </div>
                   </div>
 
                   <div className="flex shrink-0 items-center gap-2">
-                    <p className="mr-2 text-sm text-gray-600">${t.rent}/mo</p>
+                    <p className="mr-2 text-sm text-muted-foreground">${t.rent}/mo</p>
                     <PaymentMethodBadge method={t.paymentMethod} />
                     <StatusPill label={status.label} tone={status.tone} />
                     <a
@@ -68,7 +68,7 @@ export default function LandlordTenants() {
                       target="_blank"
                       rel="noreferrer"
                       aria-label={`Message ${t.name} on Telegram`}
-                      className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition-colors hover:border-forest hover:text-forest"
+                      className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary"
                     >
                       <TelegramIcon className="h-4 w-4" />
                     </a>
@@ -79,10 +79,10 @@ export default function LandlordTenants() {
 
             {tenants.length === 0 && (
               <div className="px-3 py-10 text-center">
-                <p className="text-sm text-gray-500">No tenants on file yet.</p>
+                <p className="text-sm text-muted-foreground">No tenants on file yet.</p>
                 <Link
                   to="/dashboard/landlord/requests"
-                  className="mt-3 inline-block text-sm font-semibold text-forest hover:underline"
+                  className="mt-3 inline-block text-sm font-semibold text-primary hover:underline"
                 >
                   Review incoming requests
                 </Link>

@@ -26,7 +26,7 @@ export default function TenantMyRental() {
     return (
       <div>
         <PageHeader title="My Rental" subtitle="Your current lease details" />
-        <div className="mt-6 rounded-2xl border border-gray-200 bg-white p-2 sm:p-3">
+        <div className="mt-6 rounded-2xl border border-border bg-card p-2 sm:p-3">
           <SkeletonRow />
           <SkeletonRow />
         </div>
@@ -39,13 +39,13 @@ export default function TenantMyRental() {
       <div>
         <PageHeader title="My Rental" subtitle="Your current lease details" />
         <div className="mt-10 text-center">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             {error || 'No active rental on file yet.'}
           </p>
           {!error && (
             <Link
               to="/rent"
-              className="mt-3 inline-block text-sm font-semibold text-forest hover:underline"
+              className="mt-3 inline-block text-sm font-semibold text-primary hover:underline"
             >
               Browse listings
             </Link>
@@ -61,7 +61,7 @@ export default function TenantMyRental() {
     return (
       <div>
         <PageHeader title="My Rental" subtitle="Your current lease details" />
-        <p className="mt-6 text-center text-sm text-gray-500">Property details unavailable.</p>
+        <p className="mt-6 text-center text-sm text-muted-foreground">Property details unavailable.</p>
       </div>
     )
   }
@@ -70,7 +70,7 @@ export default function TenantMyRental() {
     <div>
       <PageHeader title="My Rental" subtitle="Your current lease details" />
 
-      <div className="mt-6 overflow-hidden rounded-2xl border border-gray-200 bg-white">
+      <div className="mt-6 overflow-hidden rounded-2xl border border-border bg-card">
         <div className="h-56 w-full">
           <img src={property.image} alt={property.title} className="h-full w-full object-cover" />
         </div>
@@ -78,8 +78,8 @@ export default function TenantMyRental() {
         <div className="p-6">
           <div className="flex items-start justify-between gap-2">
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">{property.title}</h2>
-              <p className="mt-1 flex items-center gap-1 text-sm text-gray-500">
+              <h2 className="text-xl font-semibold text-foreground">{property.title}</h2>
+              <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground">
                 <MapPin className="h-4 w-4" />
                 {property.address}, {property.city}
               </p>
@@ -89,38 +89,38 @@ export default function TenantMyRental() {
 
           <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
             <div>
-              <p className="text-sm text-gray-500">Rent</p>
-              <p className="text-lg font-semibold text-gray-900">${rental.rent}/mo</p>
+              <p className="text-sm text-muted-foreground">Rent</p>
+              <p className="text-lg font-semibold text-foreground">${rental.rent}/mo</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Deposit</p>
-              <p className="text-lg font-semibold text-gray-900">${rental.deposit}</p>
+              <p className="text-sm text-muted-foreground">Deposit</p>
+              <p className="text-lg font-semibold text-foreground">${rental.deposit}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Lease Start</p>
-              <p className="text-lg font-semibold text-gray-900">{rental.startDate}</p>
+              <p className="text-sm text-muted-foreground">Lease Start</p>
+              <p className="text-lg font-semibold text-foreground">{rental.startDate}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Lease Ends</p>
-              <p className="text-lg font-semibold text-gray-900">{rental.endDate}</p>
+              <p className="text-sm text-muted-foreground">Lease Ends</p>
+              <p className="text-lg font-semibold text-foreground">{rental.endDate}</p>
             </div>
           </div>
 
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-4 rounded-xl bg-gray-50 p-4">
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-4 rounded-xl bg-muted p-4">
             <div className="flex items-center gap-3">
               <span className="flex h-10 w-10 items-center justify-center rounded-full bg-forest text-sm font-semibold text-white">
                 {rental.landlord.charAt(0)}
               </span>
               <div>
-                <p className="font-medium text-gray-900">{rental.landlord}</p>
-                <p className="text-sm text-gray-500">Landlord</p>
+                <p className="font-medium text-foreground">{rental.landlord}</p>
+                <p className="text-sm text-muted-foreground">Landlord</p>
               </div>
             </div>
             <a
               href={`https://t.me/${rental.landlordTelegram.replace('@', '')}`}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-1.5 rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:border-forest hover:text-forest"
+              className="flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:border-primary hover:text-primary"
             >
               <TelegramIcon className="h-4 w-4" />
               Message on Telegram

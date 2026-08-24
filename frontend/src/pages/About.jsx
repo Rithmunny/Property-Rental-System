@@ -27,27 +27,27 @@ export default function About() {
       transition={{ duration: 0.4, ease: 'easeOut' }}
       className="mx-auto max-w-3xl px-4 py-16 sm:px-6"
     >
-      <h1 className="text-2xl font-bold text-gray-900">About PRS</h1>
-      <p className="mt-4 text-sm leading-relaxed text-gray-600">
+      <h1 className="text-2xl font-bold text-foreground">About PRS</h1>
+      <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
         The Property Rental System (PRS) connects tenants with landlords across Cambodia, making
         it simple to browse verified listings, request to rent a property, and manage your rental
         — all in one place.
       </p>
-      <p className="mt-4 text-sm leading-relaxed text-gray-600">
+      <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
         Whether you're looking for your next home or managing properties as a landlord, PRS gives
         you the tools to search, save favorites, send rental requests, and manage payments
         from a single dashboard.
       </p>
 
-      <h2 id="how-it-works" className="mt-10 text-lg font-semibold text-gray-900">How it works</h2>
+      <h2 id="how-it-works" className="mt-10 text-lg font-semibold text-foreground">How it works</h2>
       <div className="mt-5 grid gap-5 sm:grid-cols-3">
         {STEPS.map((step) => (
-          <div key={step.title} className="rounded-2xl border border-gray-200 bg-white p-5">
+          <div key={step.title} className="rounded-2xl border border-border bg-card p-5">
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-sage/60 text-forest">
               <step.icon className="h-5 w-5" />
             </span>
-            <h3 className="mt-3 font-semibold text-gray-900">{step.title}</h3>
-            <p className="mt-1 text-sm leading-relaxed text-gray-600">{step.description}</p>
+            <h3 className="mt-3 font-semibold text-foreground">{step.title}</h3>
+            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{step.description}</p>
           </div>
         ))}
       </div>

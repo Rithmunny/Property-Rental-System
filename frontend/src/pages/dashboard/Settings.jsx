@@ -3,6 +3,20 @@ import { useAuth } from '@/context/AuthContext'
 import { useToast } from '@/context/ToastContext'
 import * as settingsApi from '@/api/settings'
 import PageHeader from '@/components/dashboard/PageHeader'
+import AbaQrCard from '@/components/dashboard/AbaQrCard'
+import ThemeToggle from '@/components/common/ThemeToggle'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Switch } from '@/components/ui/switch'
 
 export default function Settings() {
   const { user, updateProfile, refreshSession } = useAuth()
@@ -108,154 +122,174 @@ export default function Settings() {
     }
   }
 
-  const roleLabel = user?.role === 'landlord' ? 'Landlord' : user?.role === 'admin' ? 'Admin' : 'Tenant'
+  const roleLabel =
+    user?.role === 'landlord'
+      ? 'Landlord'
+      : user?.role === 'super_admin'
+        ? 'Super Admin'
+        : user?.role === 'admin'
+          ? 'Admin'
+          : 'Tenant'
 
   return (
     <div>
       <PageHeader title="Settings" subtitle="Manage your PRS account and notifications" />
 
       {loading ? (
-        <p className="mt-6 text-sm text-gray-500">Loading settings…</p>
+        <p className="mt-6 text-sm text-muted-foreground">Loading settings…</p>
       ) : (
         <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <form onSubmit={handleSaveProfile} className="rounded-2xl border border-gray-200 bg-white p-5">
-            <h2 className="font-semibold text-gray-900">Profile</h2>
-            <p className="mt-1 text-sm text-gray-500">How your name appears on listings and invoices.</p>
+          <Card>
+            <CardHeader>
+              <CardTitle>Appearance</CardTitle>
+              <CardDescription>Light, dark, or match this device. Saved on this browser.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ThemeToggle variant="panel" />
+            </CardContent>
+          </Card>
 
-            <label className="mt-4 flex flex-col gap-1.5 text-sm font-medium text-gray-700">
-              Full name
-              <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                className="rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm outline-none focus:border-forest"
-              />
-            </label>
-            <label className="mt-3 flex flex-col gap-1.5 text-sm font-medium text-gray-700">
-              Email
-              <input
-                value={user?.email || ''}
-                readOnly
-                className="rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-sm text-gray-500"
-              />
-            </label>
-            <p className="mt-1 text-xs text-gray-400">Role: {roleLabel}</p>
-            <label className="mt-3 flex flex-col gap-1.5 text-sm font-medium text-gray-700">
-              Phone
-              <input
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="+855 12 000 000"
-                className="rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm outline-none focus:border-forest"
-              />
-            </label>
-            <label className="mt-3 flex flex-col gap-1.5 text-sm font-medium text-gray-700">
-              Telegram
-              <input
-                value={telegram}
-                onChange={(e) => setTelegram(e.target.value)}
-                placeholder="@username"
-                className="rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm outline-none focus:border-forest"
-              />
-            </label>
-            <button
-              type="submit"
-              disabled={savingProfile}
-              className="mt-5 rounded-full bg-forest px-5 py-2.5 text-sm font-semibold text-white hover:bg-forest-dark disabled:opacity-60"
-            >
-              {savingProfile ? 'Saving…' : 'Save profile'}
-            </button>
+          <form onSubmit={handleSaveProfile}>
+            <Card>
+              <CardHeader>
+                <CardTitle>Profile</CardTitle>
+                <CardDescription>How your name appears on listings and invoices.</CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-3">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="fullName">Full name</Label>
+                  <Input
+                    id="fullName"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="email">Email</Label>
+                  <Input id="email" value={user?.email || ''} readOnly disabled />
+                </div>
+                <p className="text-xs text-muted-foreground">Role: {roleLabel}</p>
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="phone">Phone</Label>
+                  <Input
+                    id="phone"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="+855 12 000 000"
+                  />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="telegram">Telegram</Label>
+                  <Input
+                    id="telegram"
+                    value={telegram}
+                    onChange={(e) => setTelegram(e.target.value)}
+                    placeholder="@username"
+                  />
+                </div>
+                <Button type="submit" disabled={savingProfile} className="mt-2 w-fit">
+                  {savingProfile ? 'Saving…' : 'Save profile'}
+                </Button>
+              </CardContent>
+            </Card>
           </form>
 
-          <form onSubmit={handleSavePrefs} className="rounded-2xl border border-gray-200 bg-white p-5">
-            <h2 className="font-semibold text-gray-900">Notifications</h2>
-            <p className="mt-1 text-sm text-gray-500">Choose what PRS shows you in the dashboard.</p>
+          <form onSubmit={handleSavePrefs}>
+            <Card>
+              <CardHeader>
+                <CardTitle>Notifications</CardTitle>
+                <CardDescription>Choose what PRS shows you in the dashboard.</CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-1">
+                <Toggle
+                  label="New listing alerts"
+                  hint="Saved-search matches on the bell"
+                  checked={notifyListings}
+                  onChange={setNotifyListings}
+                />
+                <Toggle
+                  label="Request updates"
+                  hint="Viewing and rent request status"
+                  checked={notifyRequests}
+                  onChange={setNotifyRequests}
+                />
+                <Toggle
+                  label="Payment reminders"
+                  hint="Upcoming rent due dates"
+                  checked={notifyPayments}
+                  onChange={setNotifyPayments}
+                />
 
-            <Toggle
-              label="New listing alerts"
-              hint="Saved-search matches on the bell"
-              checked={notifyListings}
-              onChange={setNotifyListings}
-            />
-            <Toggle
-              label="Request updates"
-              hint="Viewing and rent request status"
-              checked={notifyRequests}
-              onChange={setNotifyRequests}
-            />
-            <Toggle
-              label="Payment reminders"
-              hint="Upcoming rent due dates"
-              checked={notifyPayments}
-              onChange={setNotifyPayments}
-            />
-
-            <label className="mt-4 flex flex-col gap-1.5 text-sm font-medium text-gray-700">
-              Preferred contact
-              <select
-                value={preferredContact}
-                onChange={(e) => setPreferredContact(e.target.value)}
-                className="rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm outline-none focus:border-forest"
-              >
-                <option value="telegram">Telegram</option>
-                <option value="whatsapp">WhatsApp</option>
-                <option value="phone">Phone</option>
-                <option value="email">Email</option>
-              </select>
-            </label>
-            <button
-              type="submit"
-              disabled={savingPrefs}
-              className="mt-5 rounded-full bg-forest px-5 py-2.5 text-sm font-semibold text-white hover:bg-forest-dark disabled:opacity-60"
-            >
-              {savingPrefs ? 'Saving…' : 'Save preferences'}
-            </button>
+                <div className="mt-3 flex flex-col gap-1.5">
+                  <Label htmlFor="preferredContact">Preferred contact</Label>
+                  <Select value={preferredContact} onValueChange={setPreferredContact}>
+                    <SelectTrigger id="preferredContact" className="h-10 w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent position="popper">
+                      <SelectItem value="telegram">Telegram</SelectItem>
+                      <SelectItem value="whatsapp">WhatsApp</SelectItem>
+                      <SelectItem value="phone">Phone</SelectItem>
+                      <SelectItem value="email">Email</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Button type="submit" disabled={savingPrefs} className="mt-4 w-fit">
+                  {savingPrefs ? 'Saving…' : 'Save preferences'}
+                </Button>
+              </CardContent>
+            </Card>
           </form>
 
-          <form onSubmit={handlePassword} className="rounded-2xl border border-gray-200 bg-white p-5 lg:col-span-2">
-            <h2 className="font-semibold text-gray-900">Password</h2>
-            <p className="mt-1 text-sm text-gray-500">
-              Demo mode does not verify the current password. Use at least 6 characters.
-            </p>
-            <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
-              <label className="flex flex-col gap-1.5 text-sm font-medium text-gray-700">
-                Current password
-                <input
-                  type="password"
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  className="rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm outline-none focus:border-forest"
-                />
-              </label>
-              <label className="flex flex-col gap-1.5 text-sm font-medium text-gray-700">
-                New password
-                <input
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  required
-                  minLength={6}
-                  className="rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm outline-none focus:border-forest"
-                />
-              </label>
-              <label className="flex flex-col gap-1.5 text-sm font-medium text-gray-700">
-                Confirm password
-                <input
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                  className="rounded-xl border border-gray-300 px-3.5 py-2.5 text-sm outline-none focus:border-forest"
-                />
-              </label>
-            </div>
-            <button
-              type="submit"
-              disabled={savingPassword}
-              className="mt-5 rounded-full bg-forest px-5 py-2.5 text-sm font-semibold text-white hover:bg-forest-dark disabled:opacity-60"
-            >
-              {savingPassword ? 'Updating…' : 'Update password'}
-            </button>
+          {user?.role === 'landlord' && <AbaQrCard />}
+
+          <form onSubmit={handlePassword} className="lg:col-span-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>Password</CardTitle>
+                <CardDescription>
+                  Demo mode does not verify the current password. Use at least 6 characters.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                  <div className="flex flex-col gap-1.5">
+                    <Label htmlFor="currentPassword">Current password</Label>
+                    <Input
+                      id="currentPassword"
+                      type="password"
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <Label htmlFor="newPassword">New password</Label>
+                    <Input
+                      id="newPassword"
+                      type="password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      required
+                      minLength={6}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <Label htmlFor="confirmPassword">Confirm password</Label>
+                    <Input
+                      id="confirmPassword"
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+                <Button type="submit" disabled={savingPassword} className="mt-5">
+                  {savingPassword ? 'Updating…' : 'Update password'}
+                </Button>
+              </CardContent>
+            </Card>
           </form>
         </div>
       )}
@@ -265,17 +299,12 @@ export default function Settings() {
 
 function Toggle({ label, hint, checked, onChange }) {
   return (
-    <label className="mt-4 flex cursor-pointer items-start justify-between gap-4">
+    <div className="flex items-start justify-between gap-4 py-3">
       <span>
-        <span className="block text-sm font-medium text-gray-900">{label}</span>
-        <span className="block text-xs text-gray-500">{hint}</span>
+        <span className="block text-sm font-medium text-foreground">{label}</span>
+        <span className="block text-xs text-muted-foreground">{hint}</span>
       </span>
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={(e) => onChange(e.target.checked)}
-        className="mt-1 h-4 w-4 accent-forest"
-      />
-    </label>
+      <Switch checked={checked} onCheckedChange={onChange} />
+    </div>
   )
 }

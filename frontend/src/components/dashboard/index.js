@@ -1,3 +1,4 @@
+export { default as AbaQrCard } from './AbaQrCard'
 export { default as DashboardShell } from './DashboardShell'
 export { default as MessagesInbox } from './MessagesInbox'
 export { default as PageHeader } from './PageHeader'
