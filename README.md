@@ -75,8 +75,14 @@ Frontend-only mock: set `VITE_USE_MOCK=true`. Any email/password works; pick a r
 - Shared UI (buttons, dialogs, forms) with a common theme
 - REST API in `backend/` (`VITE_USE_MOCK=false`)
 
+### Review 2 — reliability, sandbox payments, recommendations
+- Request-to-rent workflow is race-safe: one active contract per property is enforced by a database unique index, acceptance runs in a transaction, duplicate requests collapse into one row, and unavailable listings refuse rent requests
+- 53 API tests in `backend/tests/` (run with `npm test` in `backend/`, uses a local `prs_test` database on port 5433)
+- Sandbox ABA-style checkout for tenants (`PAYMENT_GATEWAY=sandbox`): pending payment, simulated gateway confirm, receipt, no card data stored
+- "Recommended for you" on the tenant dashboard: content-based scoring over saved homes, requests and contracts, with explainable reasons
+
 ## Stack
 
 Frontend: React, Vite, Tailwind CSS, React Router, Leaflet (map), jsPDF (invoices).
 
-Backend: Node.js, Express, PostgreSQL, Prisma, JWT auth. Payments are recorded ABA/cash rows (no payment gateway). Property photos are URL strings.
+Backend: Node.js, Express, PostgreSQL, Prisma, JWT auth. Payments are ABA/cash rows with an optional sandbox checkout (`PAYMENT_GATEWAY=sandbox`, no real gateway yet, no card data stored). Property photos are URL strings.
