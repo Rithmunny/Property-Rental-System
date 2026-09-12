@@ -4,6 +4,8 @@ export function toRequestDto(request) {
   return {
     id: request.id,
     propertyId: request.propertyId,
+    propertyTitle: request.property?.title || request.propertyTitle || '',
+    propertyCity: request.property?.city || request.propertyCity || '',
     tenantEmail: request.tenant?.email || request.tenantEmail,
     tenantName: request.tenant?.name || request.tenantName,
     landlord: request.property?.landlordUser?.name || request.landlord,

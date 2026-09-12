@@ -43,6 +43,13 @@ savedSearchRoutes.patch('/:id/seen', requireAuth, asyncHandler(savedSearches.mar
 
 export const paymentRoutes = Router()
 paymentRoutes.get('/', requireAuth, asyncHandler(payments.get))
+paymentRoutes.post('/checkout', requireAuth, requireRole('tenant'), asyncHandler(payments.checkout))
+paymentRoutes.post(
+  '/checkout/:id/confirm',
+  requireAuth,
+  requireRole('tenant'),
+  asyncHandler(payments.confirmCheckout),
+)
 paymentRoutes.post('/mark-paid', requireAuth, requireRole('tenant'), asyncHandler(payments.markPaid))
 
 export const messageRoutes = Router()

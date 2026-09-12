@@ -6,6 +6,8 @@ import * as properties from '../controllers/propertyController.js'
 const router = Router()
 
 router.get('/', optionalAuth, asyncHandler(properties.list))
+// Keep above '/:id' so "recommendations" is not treated as an id.
+router.get('/recommendations', optionalAuth, asyncHandler(properties.recommendations))
 router.get('/:id', optionalAuth, asyncHandler(properties.get))
 router.post('/', requireAuth, requireRole('landlord'), asyncHandler(properties.create))
 router.put('/:id', requireAuth, requireRole('landlord', 'admin'), asyncHandler(properties.update))

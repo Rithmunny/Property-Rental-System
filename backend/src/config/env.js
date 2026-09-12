@@ -11,4 +11,7 @@ export const env = {
   jwtSecret: process.env.JWT_SECRET || 'dev-secret-change-me',
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
   frontendOrigin: process.env.FRONTEND_ORIGIN || 'http://localhost:5173',
+  // 'sandbox' enables the simulated payment gateway (checkout + confirm).
+  // Set to 'manual' to disable it and rely on mark-as-paid only.
+  paymentGateway: process.env.PAYMENT_GATEWAY || 'sandbox',
 }
