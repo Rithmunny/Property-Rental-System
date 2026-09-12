@@ -1,3 +1,4 @@
+import { MotionConfig } from 'framer-motion'
 import { ThemeProvider } from '@/context/ThemeContext'
 import { AuthProvider } from '@/context/AuthContext'
 import { PropertiesProvider } from '@/context/PropertiesContext'
@@ -9,20 +10,24 @@ import { ToastProvider } from '@/context/ToastContext'
 
 export default function AppProviders({ children }) {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <PropertiesProvider>
-          <RequestsProvider>
-            <SavedProvider>
-              <MessagesProvider>
-                <AlertsProvider>
-                  <ToastProvider>{children}</ToastProvider>
-                </AlertsProvider>
-              </MessagesProvider>
-            </SavedProvider>
-          </RequestsProvider>
-        </PropertiesProvider>
-      </AuthProvider>
-    </ThemeProvider>
+    // reducedMotion="user" disables transform animations for anyone with
+    // prefers-reduced-motion set, while opacity fades still communicate state.
+    <MotionConfig reducedMotion="user">
+      <ThemeProvider>
+        <AuthProvider>
+          <PropertiesProvider>
+            <RequestsProvider>
+              <SavedProvider>
+                <MessagesProvider>
+                  <AlertsProvider>
+                    <ToastProvider>{children}</ToastProvider>
+                  </AlertsProvider>
+                </MessagesProvider>
+              </SavedProvider>
+            </RequestsProvider>
+          </PropertiesProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </MotionConfig>
   )
 }

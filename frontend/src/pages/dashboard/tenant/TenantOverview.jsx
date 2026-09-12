@@ -1,11 +1,22 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { DollarSign, Clock3, Heart, Send, MapPin } from 'lucide-react'
+import { motion } from 'framer-motion'
+import {
+  DollarSign,
+  Clock3,
+  Heart,
+  Send,
+  MapPin,
+  Sparkles,
+  Search,
+  CreditCard,
+} from 'lucide-react'
 import { useProperties } from '@/context/PropertiesContext'
 import { useSaved } from '@/context/SavedContext'
 import { useRequests } from '@/context/RequestsContext'
 import * as rentalsApi from '@/api/rentals'
 import * as paymentsApi from '@/api/payments'
+import * as propertiesApi from '@/api/properties'
 import PropertyCard from '@/components/common/PropertyCard'
 import SkeletonCard from '@/components/common/SkeletonCard'
 import SkeletonRow from '@/components/common/SkeletonRow'
@@ -13,6 +24,13 @@ import StatCard from '@/components/dashboard/StatCard'
 import PageHeader from '@/components/dashboard/PageHeader'
 import StatusPill from '@/components/dashboard/StatusPill'
 import PaymentMethodBadge from '@/components/dashboard/PaymentMethodBadge'
+import { fadeUp, stagger } from '@/lib/motion'
+
+const QUICK_ACTIONS = [
+  { to: '/rent', label: 'Browse homes', icon: Search },
+  { to: '/dashboard/tenant/requests', label: 'My requests', icon: Send },
+  { to: '/dashboard/tenant/payments', label: 'Pay rent', icon: CreditCard },
+]
 
 export default function TenantOverview() {
   const { properties } = useProperties()
@@ -21,6 +39,7 @@ export default function TenantOverview() {
   const [rental, setRental] = useState(null)
   const [paymentData, setPaymentData] = useState(null)
   const [dataLoading, setDataLoading] = useState(true)
+  const [recommended, setRecommended] = useState(null)
 
   useEffect(() => {
     Promise.all([rentalsApi.getCurrentRental(), paymentsApi.getPayments('tenant')])
@@ -29,6 +48,13 @@ export default function TenantOverview() {
         setPaymentData(p)
       })
       .finally(() => setDataLoading(false))
+  }, [])
+
+  useEffect(() => {
+    propertiesApi
+      .getRecommendations(4)
+      .then(setRecommended)
+      .catch(() => setRecommended([]))
   }, [])
 
   const loading = dataLoading || savedLoading || requestsLoading
@@ -44,6 +70,19 @@ export default function TenantOverview() {
     <div>
       <PageHeader title="Dashboard" subtitle="Your rental, payments, and saved homes." />
 
+      <div className="mt-4 flex flex-wrap gap-2">
+        {QUICK_ACTIONS.map((action) => (
+          <Link
+            key={action.to}
+            to={action.to}
+            className="flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-sm active:scale-[0.98]"
+          >
+            <action.icon className="h-4 w-4 text-primary" />
+            {action.label}
+          </Link>
+        ))}
+      </div>
+
       {loading ? (
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
@@ -54,27 +93,46 @@ export default function TenantOverview() {
           ))}
         </div>
       ) : (
-        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
-          <StatCard
-            icon={DollarSign}
-            label="Current Rent"
-            value={currentRental ? `$${currentRental.rent}/mo` : '—'}
-          />
-          <StatCard
-            icon={Clock3}
-            label={nextPayment ? `Due ${nextPayment.dueDate}` : 'Next Payment'}
-            value={nextPayment ? `$${nextPayment.amount}` : '—'}
-          />
-          <StatCard icon={Heart} label="Saved Homes" value={savedProperties.length} />
-          <StatCard icon={Send} label="Pending Requests" value={pendingRequests} />
-        </div>
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          animate="show"
+          className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4"
+        >
+          {[
+            {
+              icon: DollarSign,
+              label: 'Current Rent',
+              value: currentRental ? `$${currentRental.rent}/mo` : '—',
+            },
+            {
+              icon: Clock3,
+              label: nextPayment ? `Due ${nextPayment.dueDate}` : 'Next Payment',
+              value: nextPayment ? `$${nextPayment.amount}` : '—',
+            },
+            { icon: Heart, label: 'Saved Homes', value: savedProperties.length },
+            { icon: Send, label: 'Pending Requests', value: pendingRequests },
+          ].map((stat) => (
+            <motion.div key={stat.label} variants={fadeUp}>
+              <StatCard icon={stat.icon} label={stat.label} value={stat.value} />
+            </motion.div>
+          ))}
+        </motion.div>
       )}
 
-      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <motion.div
+        variants={fadeUp}
+        initial="hidden"
+        animate="show"
+        className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3"
+      >
         <div className="rounded-2xl border border-border bg-card p-5 lg:col-span-2">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold text-foreground">My Rental</h3>
-            <Link to="/dashboard/tenant/my-rental" className="text-xs font-semibold text-primary hover:underline">
+            <Link
+              to="/dashboard/tenant/my-rental"
+              className="text-xs font-semibold text-primary hover:underline"
+            >
               View all
             </Link>
           </div>
@@ -84,7 +142,11 @@ export default function TenantOverview() {
           ) : rentalProperty && currentRental ? (
             <div className="mt-4 flex flex-col gap-4 sm:flex-row">
               <div className="h-32 w-full shrink-0 overflow-hidden rounded-xl sm:w-44">
-                <img src={rentalProperty.image} alt={rentalProperty.title} className="h-full w-full object-cover" />
+                <img
+                  src={rentalProperty.image}
+                  alt={rentalProperty.title}
+                  className="h-full w-full object-cover"
+                />
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-start justify-between gap-2">
@@ -153,17 +215,82 @@ export default function TenantOverview() {
 
           <Link
             to="/dashboard/tenant/payments"
-            className="mt-5 block w-full rounded-full bg-primary px-4 py-2.5 text-center text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+            className="mt-5 block w-full rounded-full bg-primary px-4 py-2.5 text-center text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.98]"
           >
             View Payments
           </Link>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="mt-6 rounded-2xl border border-border bg-card p-5">
+      {/* AI recommendations: content-based matches with explainable reasons */}
+      <motion.div
+        variants={fadeUp}
+        initial="hidden"
+        animate="show"
+        className="mt-6 rounded-2xl border border-border bg-card p-5"
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-secondary text-primary">
+              <Sparkles className="h-4 w-4" />
+            </span>
+            <h3 className="font-semibold text-foreground">Recommended for you</h3>
+          </div>
+          <Link
+            to="/rent"
+            className="text-xs font-semibold text-primary hover:underline"
+          >
+            Browse all
+          </Link>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Picked from your saved homes, requests, and rental history.
+        </p>
+
+        {recommended === null ? (
+          <div className="mt-5 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
+        ) : recommended.length === 0 ? (
+          <p className="mt-5 text-sm text-muted-foreground">
+            Request or save a few homes and fresh matches will appear here.
+          </p>
+        ) : (
+          <div className="mt-5 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
+            {recommended.map((p) => (
+              <div key={p.id} className="flex flex-col">
+                <PropertyCard property={p} />
+                <div className="mt-1.5 flex flex-wrap gap-1">
+                  {p.recommendation?.reasons?.slice(0, 2).map((reason) => (
+                    <span
+                      key={reason}
+                      className="rounded-full bg-secondary px-2 py-0.5 text-[11px] font-medium text-secondary-foreground"
+                    >
+                      {reason}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </motion.div>
+
+      <motion.div
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.1 }}
+        className="mt-6 rounded-2xl border border-border bg-card p-5"
+      >
         <div className="flex items-center justify-between">
           <h3 className="font-semibold text-foreground">Saved Homes</h3>
-          <Link to="/dashboard/tenant/saved" className="text-xs font-semibold text-primary hover:underline">
+          <Link
+            to="/dashboard/tenant/saved"
+            className="text-xs font-semibold text-primary hover:underline"
+          >
             View all
           </Link>
         </div>
@@ -190,7 +317,7 @@ export default function TenantOverview() {
             ))}
           </div>
         )}
-      </div>
+      </motion.div>
     </div>
   )
 }

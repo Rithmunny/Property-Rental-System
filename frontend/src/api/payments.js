@@ -43,3 +43,54 @@ export async function markPaymentPaid(payload = {}) {
     body: JSON.stringify(payload),
   })
 }
+
+// Sandbox gateway: checkout creates a pending payment + reference, confirm
+// plays the gateway's success callback and returns the refreshed history
+// plus a receipt.
+function sandboxReference(paymentId) {
+  return `PRS-SBX-${paymentId}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`
+}
+
+export async function createSandboxCheckout() {
+  if (USE_MOCK) {
+    const data = getTenantPayments()
+    const rent = data.nextPayment?.amount ?? data.currentRental?.rent ?? 0
+    return {
+      paymentId: Date.now(),
+      reference: sandboxReference('mock'),
+      amount: rent,
+      method: 'aba',
+      month: new Date().toLocaleString('en-US', { month: 'long', year: 'numeric' }),
+      status: 'pending',
+      qrImage: data.currentRental?.abaQrImage || '',
+      landlord: data.currentRental?.landlord || '',
+      sandbox: true,
+    }
+  }
+  return request('/api/payments/checkout', { method: 'POST' })
+}
+
+export async function confirmSandboxCheckout(paymentId) {
+  if (USE_MOCK) {
+    const data = getTenantPayments()
+    const rent = data.nextPayment?.amount ?? data.currentRental?.rent ?? 0
+    const next = appendTenantPayment({
+      month: new Date().toLocaleString('en-US', { month: 'long', year: 'numeric' }),
+      amount: rent,
+      method: 'aba',
+      status: 'paid',
+      date: new Date().toISOString().slice(0, 10),
+    })
+    return {
+      ...next,
+      receipt: {
+        paymentId,
+        reference: `PRS-SBX-${paymentId}`,
+        amount: rent,
+        date: new Date().toISOString().slice(0, 10),
+        alreadyPaid: false,
+      },
+    }
+  }
+  return request(`/api/payments/checkout/${paymentId}/confirm`, { method: 'POST' })
+}

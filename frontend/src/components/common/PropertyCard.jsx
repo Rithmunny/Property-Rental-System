@@ -23,12 +23,16 @@ export default function PropertyCard({ property }) {
   }
 
   return (
-    <Link to={`/listings/${property.id}`} className="group block">
-      <div className="relative aspect-square overflow-hidden rounded-xl">
+    <Link
+      to={`/listings/${property.id}`}
+      className="group block transition-all duration-300 hover:-translate-y-1"
+    >
+      <div className="relative aspect-square overflow-hidden rounded-xl shadow-sm transition-shadow duration-300 group-hover:shadow-lg">
         <img
           src={property.image}
           alt={property.title}
-          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          loading="lazy"
+          className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
         />
 
         <button

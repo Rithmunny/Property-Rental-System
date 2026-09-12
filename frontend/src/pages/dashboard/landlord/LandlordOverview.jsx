@@ -84,6 +84,21 @@ export default function LandlordOverview() {
         </div>
       )}
 
+      {!loading && pendingRequests > 0 && (
+        <Link
+          to="/dashboard/landlord/requests"
+          className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-3.5 transition-all hover:-translate-y-0.5 hover:shadow-sm dark:border-amber-900/60 dark:bg-amber-950/40"
+        >
+          <p className="text-sm font-medium text-amber-900 dark:text-amber-200">
+            {pendingRequests} pending request{pendingRequests > 1 ? 's' : ''} waiting for your
+            response — accepting a rent request signs the contract and closes the listing.
+          </p>
+          <span className="shrink-0 rounded-full bg-amber-500 px-3 py-1.5 text-xs font-semibold text-white">
+            Review now
+          </span>
+        </Link>
+      )}
+
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="rounded-2xl border border-border bg-card p-5 lg:col-span-1">
           <div className="flex items-center justify-between">
