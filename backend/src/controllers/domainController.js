@@ -47,6 +47,10 @@ export const payments = {
   get: async (req, res) => res.json(await paymentService.getPayments(req.user, req.query.role)),
   markPaid: async (req, res) =>
     res.json(await paymentService.markPaymentPaid(req.user, req.body || {})),
+  checkout: async (req, res) =>
+    res.status(201).json(await paymentService.createSandboxCheckout(req.user)),
+  confirmCheckout: async (req, res) =>
+    res.json(await paymentService.confirmSandboxCheckout(req.user, req.params.id)),
 }
 
 export const messages = {

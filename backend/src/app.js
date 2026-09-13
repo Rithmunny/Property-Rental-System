@@ -21,7 +21,13 @@ const app = express()
 
 app.use(
   cors({
-    origin: [env.frontendOrigin, 'http://localhost:5173', 'http://127.0.0.1:5173'],
+    origin: [
+      env.frontendOrigin,
+      'http://localhost:5173',
+      'http://127.0.0.1:5173',
+      'http://localhost:5174',
+      'http://127.0.0.1:5174',
+    ],
   }),
 )
 app.use(express.json({ limit: '8mb' }))

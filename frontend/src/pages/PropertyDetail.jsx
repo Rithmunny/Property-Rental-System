@@ -77,7 +77,7 @@ export default function PropertyDetail() {
         setViewingRequested(true)
         setViewingOpen(false)
       } else setRentRequested(true)
-      showToast(kind === 'viewing' ? 'Viewing requested' : 'Request sent!')
+      showToast(kind === 'viewing' ? 'Viewing requested' : 'Request sent!', 'success')
     } catch (err) {
       setRequestError(err.message || 'Could not send request')
     } finally {
@@ -382,7 +382,7 @@ export default function PropertyDetail() {
                     <button
                       onClick={() => setViewingOpen(true)}
                       disabled={pendingKind != null}
-                      className="w-full rounded-full border border-forest px-4 py-3 text-sm font-semibold text-forest transition-colors hover:bg-sage/40 disabled:opacity-60"
+                      className="w-full rounded-full border border-forest px-4 py-3 text-sm font-semibold text-forest transition-all hover:bg-sage/40 active:scale-[0.98] disabled:opacity-60"
                     >
                       Request a viewing
                     </button>
@@ -395,7 +395,7 @@ export default function PropertyDetail() {
                     <button
                       onClick={() => handleRequest('rent')}
                       disabled={pendingKind != null}
-                      className="w-full rounded-full bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
+                      className="w-full rounded-full bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.98] disabled:opacity-60"
                     >
                       {pendingKind === 'rent' ? 'Sending…' : 'Request to Rent'}
                     </button>

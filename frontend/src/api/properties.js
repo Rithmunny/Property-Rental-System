@@ -69,3 +69,17 @@ export async function deleteProperty(id) {
   if (USE_MOCK) return mockDelete(id)
   return request(`/api/properties/${id}`, { method: 'DELETE' })
 }
+
+// Content-based recommendations from the API. In mock mode, fall back to
+// popular available listings so the tenant dashboard section still renders.
+export async function getRecommendations(limit = 6) {
+  if (USE_MOCK) {
+    const available = getProperties().filter((p) => p.available !== false)
+    return available.slice(0, limit).map((p) => ({
+      ...p,
+      recommendation: { score: 60, reasons: ['Popular with tenants right now'] },
+    }))
+  }
+  const list = await request(`/api/properties/recommendations?limit=${limit}`)
+  return list.map(withPropertyDefaults)
+}

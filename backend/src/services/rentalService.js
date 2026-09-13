@@ -4,6 +4,12 @@ import { assertNotSuspended } from '../middleware/auth.js'
 import { isAdmin } from '../utils/roles.js'
 import { toContractDto, toCurrentRentalDto, contractInclude } from '../dto/rental.js'
 import { computeContractStatus, parseDate, parseId, asNumber } from '../utils/dates.js'
+import {
+  isUniqueViolation,
+  findActiveContract,
+  createActiveContract,
+  markPropertyUnavailable,
+} from './occupancy.js'
 
 function withComputedStatus(contract) {
   return {
@@ -65,19 +71,33 @@ export async function createContract(user, body) {
   const endDate = parseDate(body.endDate)
   if (!startDate || !endDate) throw new HttpError(400, 'Start and end dates are required')
 
-  const created = await prisma.contract.create({
-    data: {
-      propertyId,
-      tenantId: tenant.id,
-      startDate,
-      endDate,
-      rent: asNumber(body.rent, property.price),
-      deposit: asNumber(body.deposit, 0),
-      status: body.status || 'active',
-      paymentMethod: body.paymentMethod === 'cash' ? 'cash' : 'aba',
-    },
-    include: contractInclude,
-  })
-  await prisma.property.update({ where: { id: propertyId }, data: { available: false } })
-  return toContractDto(withComputedStatus(created))
+  try {
+    const created = await prisma.$transaction(async (tx) => {
+      const occupied = await findActiveContract(tx, propertyId)
+      if (occupied) {
+        throw new HttpError(409, 'This property already has an active contract')
+      }
+      const contract = await tx.contract.create({
+        data: {
+          propertyId,
+          tenantId: tenant.id,
+          startDate,
+          endDate,
+          rent: asNumber(body.rent, property.price),
+          deposit: asNumber(body.deposit, 0),
+          status: 'active',
+          paymentMethod: body.paymentMethod === 'cash' ? 'cash' : 'aba',
+        },
+        include: contractInclude,
+      })
+      await markPropertyUnavailable(tx, propertyId)
+      return contract
+    })
+    return toContractDto(withComputedStatus(created))
+  } catch (error) {
+    if (isUniqueViolation(error)) {
+      throw new HttpError(409, 'This property already has an active contract')
+    }
+    throw error
+  }
 }

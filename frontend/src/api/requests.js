@@ -7,6 +7,7 @@ import {
   getSession,
   nextId,
   getProperties,
+  setProperties,
   getContracts,
   setContracts,
 } from './mockStore'
@@ -33,6 +34,9 @@ async function mockCreate(propertyId, kind, extras = {}) {
   if (existing) return existing
 
   const property = getProperties().find((p) => p.id === Number(propertyId))
+  if (requestKindValue === 'rent' && property && property.available === false) {
+    throw new Error('This listing is no longer available for rent')
+  }
   const newRequest = {
     id: nextId(requests),
     propertyId: Number(propertyId),
@@ -72,6 +76,16 @@ async function mockListInbox() {
 
 async function mockUpdateStatus(id, status) {
   const requests = getRequests()
+  const target = requests.find((r) => r.id === Number(id))
+  if (
+    target &&
+    status === 'accepted' &&
+    requestKind(target) !== 'viewing' &&
+    target.status === 'accepted'
+  ) {
+    throw new Error('This request is already accepted and its contract is active')
+  }
+
   const next = requests.map((r) => (r.id === Number(id) ? { ...r, status } : r))
   setRequests(next)
   const updated = next.find((r) => r.id === Number(id))
@@ -79,12 +93,13 @@ async function mockUpdateStatus(id, status) {
   if (updated && status === 'accepted' && requestKind(updated) !== 'viewing') {
     const property = getProperties().find((p) => p.id === updated.propertyId)
     const contracts = getContracts()
-    const already = contracts.some(
-      (c) =>
-        c.propertyId === updated.propertyId &&
-        c.tenant === (updated.tenantName ?? 'Tenant') &&
-        c.status === 'active',
+    const activeOnProperty = contracts.find(
+      (c) => c.propertyId === updated.propertyId && c.status === 'active',
     )
+    if (activeOnProperty && activeOnProperty.tenant !== (updated.tenantName ?? 'Tenant')) {
+      throw new Error('This listing already has an active contract with another tenant')
+    }
+    const already = Boolean(activeOnProperty)
     if (!already) {
       const start = new Date()
       const end = new Date(start)
@@ -104,6 +119,11 @@ async function mockUpdateStatus(id, status) {
         },
         ...contracts,
       ])
+      if (property) {
+        setProperties(
+          getProperties().map((p) => (p.id === property.id ? { ...p, available: false } : p)),
+        )
+      }
     }
   }
 

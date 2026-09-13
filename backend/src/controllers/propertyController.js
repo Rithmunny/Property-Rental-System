@@ -1,4 +1,5 @@
 import * as propertyService from '../services/propertyService.js'
+import * as recommendationService from '../services/recommendationService.js'
 
 export async function list(req, res) {
   res.json(await propertyService.listProperties(req.user))
@@ -18,4 +19,8 @@ export async function update(req, res) {
 
 export async function remove(req, res) {
   res.json(await propertyService.deleteProperty(req.user, req.params.id))
+}
+
+export async function recommendations(req, res) {
+  res.json(await recommendationService.recommendProperties(req.user, { limit: req.query.limit }))
 }

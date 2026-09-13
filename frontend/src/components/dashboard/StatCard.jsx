@@ -2,7 +2,7 @@ import { Card, CardContent } from '@/components/ui/card'
 
 export default function StatCard({ icon: Icon, label, value }) {
   return (
-    <Card>
+    <Card className="transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md">
       <CardContent>
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-primary">
           <Icon className="h-5 w-5" />

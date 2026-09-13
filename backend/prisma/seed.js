@@ -190,6 +190,13 @@ async function main() {
   const cVibol = contracts.find((c) => c.tenantId === vibol.id)
   const cDemo = contracts.find((c) => c.tenantId === demoTenant.id)
 
+  // Listings with a live contract are occupied; keep available in sync with
+  // the workflow invariant (accepted occupancy => listing not offered).
+  await prisma.property.updateMany({
+    where: { id: { in: [p1.id, p2.id, p3.id, p4.id] } },
+    data: { available: false },
+  })
+
   await prisma.payment.createMany({
     data: [
       { contractId: cRatana.id, amount: 450, method: 'aba', status: 'paid', month: 'August 2026', date: d('2026-08-01') },
@@ -213,7 +220,7 @@ async function main() {
         propertyId: p6.id,
         tenantId: demoTenant.id,
         kind: 'rent',
-        status: 'accepted',
+        status: 'pending',
         requestedDate: d('2026-07-10'),
       },
       {

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import {
   Bell,
   Search,
@@ -28,6 +29,7 @@ export default function DashboardShell({ roleLabel, title, subtitle, actions, me
   const { showToast } = useToast()
   const { alerts, unreadCount, markSeen } = useAlerts()
   const navigate = useNavigate()
+  const location = useLocation()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [alertsOpen, setAlertsOpen] = useState(false)
   const alertsRef = useRef(null)
@@ -294,7 +296,15 @@ export default function DashboardShell({ roleLabel, title, subtitle, actions, me
             </div>
           )}
 
-          <div className={title ? 'mt-6' : ''}>{children}</div>
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
+            className={title ? 'mt-6' : ''}
+          >
+            {children}
+          </motion.div>
         </main>
       </div>
     </div>
